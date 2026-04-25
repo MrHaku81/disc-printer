@@ -489,7 +489,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def _on_detection_done(self, printers: list[DiscPrinter]) -> bool:
         self._printers = printers
         n = self._str_list.get_n_items()
-        for _ in range(n):
+        for _i in range(n):
             self._str_list.remove(0)
 
         if not printers:
