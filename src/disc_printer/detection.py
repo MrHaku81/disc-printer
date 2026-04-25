@@ -1,5 +1,7 @@
+import http.client
 import os
 import re
+import socket
 import subprocess
 from pathlib import Path
 
@@ -153,6 +155,82 @@ def _query_via_lpoptions(name: str) -> tuple[str | None, str | None, str] | None
     return slot, mtype, msize or "120x120mm"
 
 
+# ── CUPS-HTTP-Fallback ────────────────────────────────────────────────────────
+
+_CUPS_SOCKETS = ["/run/cups/cups.sock", "/var/run/cups/cups.sock"]
+
+
+def _fetch_ppd_via_cups_http(name: str) -> str | None:
+    """
+    Holt die PPD-Datei eines Druckers über die CUPS HTTP-API via Unix-Socket.
+
+    Funktioniert im Flatpak-Sandbox ohne Dateisystemzugriff auf /etc/cups,
+    solange --socket=cups das Host-Socket nach /run/cups/cups.sock mappt.
+    """
+    for sock_path in _CUPS_SOCKETS:
+        if not os.path.exists(sock_path):
+            continue
+        try:
+            class _UnixConn(http.client.HTTPConnection):
+                def connect(self) -> None:
+                    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+                    s.settimeout(6)
+                    s.connect(sock_path)
+                    self.sock = s
+
+            conn = _UnixConn("localhost")
+            conn.request("GET", f"/printers/{name}.ppd")
+            resp = conn.getresponse()
+            if resp.status == 200:
+                content = resp.read().decode("latin-1", errors="replace")
+                log.debug(f"    PPD via CUPS-HTTP geholt ({len(content)} Bytes)")
+                return content
+            log.debug(f"    CUPS-HTTP PPD Status {resp.status} für {name!r}")
+        except Exception as e:
+            log.debug(f"    CUPS-HTTP Fehler ({sock_path}): {e}")
+    return None
+
+
+def _query_via_cups_http(name: str) -> tuple[str | None, str | None, str] | None:
+    """Lädt PPD über CUPS HTTP-API und analysiert sie wie eine lokale PPD-Datei."""
+    content = _fetch_ppd_via_cups_http(name)
+    if content is None:
+        return None
+
+    slot:  str | None = None
+    mtype: str | None = None
+    msize: str | None = None
+
+    for line in content.splitlines():
+        m = _PPD_OPT_RE.match(line)
+        if not m:
+            continue
+        key   = m.group(1).lower()
+        value = m.group(2)
+        label = m.group(3) or ""
+
+        if key == "inputslot" and slot is None:
+            if _matches(value, _SLOT_KEYS) or _matches(label, _SLOT_KEYS):
+                slot = value
+                log.debug(f"    HTTP-PPD InputSlot: {value!r}  label={label!r}")
+        elif key == "mediatype" and mtype is None:
+            if _matches(value, _TYPE_KEYS) or _matches(label, _TYPE_KEYS):
+                mtype = value
+                log.debug(f"    HTTP-PPD MediaType: {value!r}  label={label!r}")
+        elif key == "pagesize" and msize is None:
+            if (
+                _matches(value, _SIZE_KEYS)
+                or _matches(label, _SIZE_KEYS)
+                or bool(_SIZE_PT_RE.search(value))
+            ):
+                msize = value
+                log.debug(f"    HTTP-PPD PageSize:  {value!r}  label={label!r}")
+
+    if slot is None and mtype is None:
+        return None
+    return slot, mtype, msize or "120x120mm"
+
+
 # ── Orchestrierung ────────────────────────────────────────────────────────────
 
 def _detect_caps(
@@ -165,11 +243,14 @@ def _detect_caps(
       1. PPD vorhanden + lesbar  → PPD-Parser (schnell, kein Subprocess)
       2. PPD vorhanden, aber kein Lesezugriff (cups-Gruppe fehlt)
                                  → lpoptions-Fallback
-      3. Kein PPD (driverless / IPP)  → lpoptions-Fallback
+      3. Kein PPD (driverless / IPP / Flatpak-Sandbox)
+                                 → lpoptions-Fallback
+      4. lpoptions liefert kein Ergebnis (z. B. Flatpak-Sandbox ohne
+         /etc/cups-Zugriff)    → PPD via CUPS HTTP-API (Unix-Socket)
 
     Rückgabe: (caps | None, Quelle)
       caps   = (input_slot, media_type, page_size) oder None
-      Quelle = "ppd" | "lpoptions"
+      Quelle = "ppd" | "lpoptions" | "cups-http"
     """
     ppd_path = _find_ppd(name)
 
@@ -188,7 +269,12 @@ def _detect_caps(
     else:
         log.debug(f"    Kein PPD für {name!r} (driverless?) → lpoptions")
 
-    return _query_via_lpoptions(name), "lpoptions"
+    result = _query_via_lpoptions(name)
+    if result is not None:
+        return result, "lpoptions"
+
+    log.debug(f"    lpoptions kein Ergebnis → versuche CUPS HTTP-API")
+    return _query_via_cups_http(name), "cups-http"
 
 
 # ── lpstat ────────────────────────────────────────────────────────────────────
