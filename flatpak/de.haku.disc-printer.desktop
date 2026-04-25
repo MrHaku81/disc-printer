@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Disc Printer
+GenericName=Disc Label Editor
+Comment=Design and print CD/DVD/Blu-ray disc labels
+Exec=disc-printer
+Icon=de.haku.disc-printer
+Type=Application
+Categories=Graphics;Publishing;GTK;
+Keywords=disc;cd;dvd;bluray;label;print;
+StartupWMClass=disc-printer

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Outer disc ring -->
+  <circle cx="64" cy="64" r="60" fill="#1a73e8" stroke="#0d47a1" stroke-width="2"/>
+  <!-- Disc label area (printable ring) -->
+  <circle cx="64" cy="64" r="56" fill="#e3f2fd"/>
+  <!-- Hub area -->
+  <circle cx="64" cy="64" r="18" fill="#1a73e8"/>
+  <!-- Spindle hole -->
+  <circle cx="64" cy="64" r="7" fill="white"/>
+  <!-- Decorative label arc hint -->
+  <path d="M 20 64 A 44 44 0 0 1 108 64" fill="none" stroke="#90caf9" stroke-width="3" stroke-dasharray="6,4"/>
+  <!-- Print icon overlay -->
+  <rect x="46" y="50" width="36" height="28" rx="4" fill="none" stroke="#1a73e8" stroke-width="3"/>
+  <rect x="52" y="43" width="24" height="12" rx="2" fill="#1a73e8"/>
+  <rect x="52" y="66" width="24" height="8" rx="1" fill="#1a73e8"/>
+</svg>

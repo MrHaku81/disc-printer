@@ -1,0 +1,9 @@
+[Flatpak Ref]
+Name=de.haku.disc-printer
+Branch=master
+Title=Disc Printer
+Comment=Universal disc label editor for Linux
+Url=https://raw.githubusercontent.com/MrHaku81/disc-printer/main/flatpak/repo/
+RuntimeRepo=https://dl.flathub.org/repo/flathub.flatpakrepo
+IsRuntime=false
+GPGKey=

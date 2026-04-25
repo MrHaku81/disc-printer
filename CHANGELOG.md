@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Flatpak-Paket (2026-04-25)
+- `flatpak/de.haku.disc-printer.yml`: Manifest für GNOME Platform 47;
+  Module: python-numpy (manylinux wheel), cups-client-tools (CUPS 2.4.11,
+  nur lp/lpstat/lpoptions), disc-printer (aus GitHub-Tag v0.1.0)
+- `flatpak/de.haku.disc-printer.desktop`, `.metainfo.xml`, `.svg`: Desktop-
+  Integration, AppStream-Metadaten, App-Icon
+- `flatpak/disc-printer.flatpak`: Fertig gebautes Single-File-Bundle (13 MB)
+- `flatpak/de.haku.disc-printer.flatpakref`: Referenzdatei für Flatpak-Install
+
+### Fixed
+
+#### Gettext-Shadowing in _on_detection_done (2026-04-25)
+- `window.py`: Loop-Variable `_` in `for _ in range(n):` durch `_i` ersetzt,
+  da `_` die gettext-Funktion überschrieb und `_("...")` im Rumpf abstürzte
+  (TypeError: 'int' object is not callable) wenn keine Disc-Drucker gefunden
+
 #### Helligkeit & Kontrast pro Bild-Element (2026-04-25)
 - `model.py`: `ImageElement` erhält `brightness` (float, default 1.0) und
   `contrast` (float, default 1.0) als Konstruktor-Parameter; interne Felder

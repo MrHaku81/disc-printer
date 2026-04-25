@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>de.haku.disc-printer</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Disc Printer</name>
+  <summary>Universal disc label editor for Linux</summary>
+  <description>
+    <p>
+      Disc Printer is a universal CD/DVD/Blu-ray label editor for Linux that
+      works with any disc-capable printer — no proprietary software required.
+      Printer detection is fully automatic: the application analyses installed
+      CUPS PPD files to identify compatible devices.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Multiple image layers with move, scale, rotate, flip, lock and visibility</li>
+      <li>Per-image opacity, brightness and contrast sliders</li>
+      <li>Text elements with font, size, style and colour control</li>
+      <li>Full undo/redo history (Ctrl+Z / Ctrl+Y)</li>
+      <li>Save and load designs as .discprint files</li>
+      <li>34 UI languages</li>
+    </ul>
+  </description>
+  <url type="homepage">https://github.com/MrHaku81/disc-printer</url>
+  <url type="bugtracker">https://github.com/MrHaku81/disc-printer/issues</url>
+  <developer_name>MrHaku81</developer_name>
+  <launchable type="desktop-id">de.haku.disc-printer.desktop</launchable>
+  <provides>
+    <binary>disc-printer</binary>
+  </provides>
+  <categories>
+    <category>Graphics</category>
+    <category>Publishing</category>
+  </categories>
+  <releases>
+    <release version="0.1.0" date="2026-04-25">
+      <description>
+        <p>Initial release with full layer editing, undo/redo, and 34-language support.</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1"/>
+</component>
