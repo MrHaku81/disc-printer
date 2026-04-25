@@ -1,0 +1,40 @@
+# Verfügbare Übersetzungen — eine Sprache pro Zeile (ISO 639 Codes).
+# Neue Sprache hinzufügen:
+#   1. Code hier eintragen
+#   2. make init-po LANG=<code>
+#   3. .po-Datei übersetzen
+#   4. make compile-mo
+ar
+bg
+cs
+da
+de
+el
+en
+es
+fa
+fi
+fr
+he
+hi
+hr
+hu
+id
+it
+ja
+ko
+nb
+nl
+pl
+pt
+ro
+ru
+sk
+sr
+sv
+th
+tr
+uk
+vi
+zh_CN
+zh_TW

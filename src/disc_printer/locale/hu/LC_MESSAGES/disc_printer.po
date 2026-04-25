@@ -1,0 +1,241 @@
+# Hungarian translation of disc-printer
+# Copyright (C) 2026 haku
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Hungarian\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "Agy · nem nyomtatható"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (nyomtatható)"
+
+msgid "Text bearbeiten"
+msgstr "Szöveg szerkesztése"
+
+msgid "Text hinzufügen"
+msgstr "Szöveg hozzáadása"
+
+msgid "Text:"
+msgstr "Szöveg:"
+
+msgid "Schriftart wählen"
+msgstr "Betűtípus választása"
+
+msgid "Schrift:"
+msgstr "Betűtípus:"
+
+msgid "Textfarbe"
+msgstr "Szöveg színe"
+
+msgid "Farbe:"
+msgstr "Szín:"
+
+msgid "Abbrechen"
+msgstr "Mégse"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Drucken …"
+msgstr "Nyomtatás …"
+
+msgid "Disc-Vorschau"
+msgstr "Lemez előnézete"
+
+msgid "Drucker"
+msgstr "Nyomtató"
+
+msgid "Drucker:"
+msgstr "Nyomtató:"
+
+msgid "Erkenne Drucker …"
+msgstr "Nyomtató felismerése …"
+
+msgid "Drucker neu erkennen"
+msgstr "Nyomtató újrafelismerése"
+
+msgid "Initialisierung …"
+msgstr "Inicializálás …"
+
+msgid "Disc-Optionen"
+msgstr "Lemezbeállítások"
+
+msgid "Hub-Größe:"
+msgstr "Agy mérete:"
+
+msgid "Hintergrund"
+msgstr "Háttér"
+
+msgid "Hintergrundfarbe"
+msgstr "Háttér színe"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "Visszaállítás fehérre"
+
+msgid "Bild:"
+msgstr "Kép:"
+
+msgid "Laden …"
+msgstr "Betöltés …"
+
+msgid "(kein Bild)"
+msgstr "(nincs kép)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "Háttérkép eltávolítása"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "Tipp: húzza a képfájlt közvetlenül az előnézetre."
+
+msgid "Bild-Position & Zoom"
+msgstr "Kép helyzete & zoom"
+
+msgid "Zoom:"
+msgstr "Zoom:"
+
+msgid "5 mm links"
+msgstr "5 mm balra"
+
+msgid "5 mm rechts"
+msgstr "5 mm jobbra"
+
+msgid "5 mm oben"
+msgstr "5 mm fel"
+
+msgid "5 mm unten"
+msgstr "5 mm le"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ Középre igazítás"
+
+msgid "Zurücksetzen"
+msgstr "Visszaállítás"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "Húzás = mozgatás · Egérgörgő = zoom"
+
+msgid "Text-Elemente"
+msgstr "Szövegelemek"
+
+msgid "+ Hinzufügen"
+msgstr "+ Hozzáadás"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "Új szövegelem hozzáadása"
+
+msgid "Keine Text-Elemente"
+msgstr "Nincsenek szövegelemek"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "Kattintás = kijelölés · Dupla kattintás = szerkesztés · Húzás = mozgatás"
+
+msgid "Element löschen"
+msgstr "Elem törlése"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(Nem található lemeznyomtató)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "Nem található lemezkompatibilis nyomtató"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "Nem ismert fel lemezkompatibilis nyomtató."
+
+msgid "Prüfe Status …"
+msgstr "Állapot ellenőrzése …"
+
+msgid "Hintergrundbild wählen"
+msgstr "Háttérkép választása"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "Képek (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "Minden fájl"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"A kép nem tölthető be:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "Kész"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "Letiltva / leállítva"
+
+msgid "Status unbekannt"
+msgstr "Ismeretlen állapot"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "Nem elérhető (időtúllépés)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "Hiba: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "Nincs nyomtató kiválasztva."
+
+msgid "Disc drucken?"
+msgstr "Lemezt nyomtat?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"Nyomtató:   %(name)s\n"
+"Felbontás:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "Nyomtatás"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"Renderelési hiba:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"Nyomtatási hiba:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "Időtúllépés: a nyomtató nem válaszol (>30 s)."
+
+msgid "Druckauftrag gesendet"
+msgstr "Nyomtatási feladat elküldve"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "Nyomtatási feladat sikeresen hozzáadva a várakozási sorhoz."

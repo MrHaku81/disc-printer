@@ -1,0 +1,241 @@
+# Simplified Chinese translation of disc-printer
+# Copyright (C) 2026 haku
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Simplified Chinese\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "轴心 · 不可打印"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (可打印)"
+
+msgid "Text bearbeiten"
+msgstr "编辑文本"
+
+msgid "Text hinzufügen"
+msgstr "添加文本"
+
+msgid "Text:"
+msgstr "文本："
+
+msgid "Schriftart wählen"
+msgstr "选择字体"
+
+msgid "Schrift:"
+msgstr "字体："
+
+msgid "Textfarbe"
+msgstr "文字颜色"
+
+msgid "Farbe:"
+msgstr "颜色："
+
+msgid "Abbrechen"
+msgstr "取消"
+
+msgid "OK"
+msgstr "确定"
+
+msgid "Drucken …"
+msgstr "打印 …"
+
+msgid "Disc-Vorschau"
+msgstr "光盘预览"
+
+msgid "Drucker"
+msgstr "打印机"
+
+msgid "Drucker:"
+msgstr "打印机："
+
+msgid "Erkenne Drucker …"
+msgstr "正在检测打印机 …"
+
+msgid "Drucker neu erkennen"
+msgstr "重新检测打印机"
+
+msgid "Initialisierung …"
+msgstr "正在初始化 …"
+
+msgid "Disc-Optionen"
+msgstr "光盘选项"
+
+msgid "Hub-Größe:"
+msgstr "轴心大小："
+
+msgid "Hintergrund"
+msgstr "背景"
+
+msgid "Hintergrundfarbe"
+msgstr "背景颜色"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "重置为白色"
+
+msgid "Bild:"
+msgstr "图像："
+
+msgid "Laden …"
+msgstr "加载 …"
+
+msgid "(kein Bild)"
+msgstr "（无图像）"
+
+msgid "Hintergrundbild entfernen"
+msgstr "删除背景图像"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "提示：将图像文件直接拖到预览区域。"
+
+msgid "Bild-Position & Zoom"
+msgstr "图像位置 & 缩放"
+
+msgid "Zoom:"
+msgstr "缩放："
+
+msgid "5 mm links"
+msgstr "向左 5 mm"
+
+msgid "5 mm rechts"
+msgstr "向右 5 mm"
+
+msgid "5 mm oben"
+msgstr "向上 5 mm"
+
+msgid "5 mm unten"
+msgstr "向下 5 mm"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ 居中"
+
+msgid "Zurücksetzen"
+msgstr "重置"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "拖动 = 移动 · 滚轮 = 缩放"
+
+msgid "Text-Elemente"
+msgstr "文本元素"
+
+msgid "+ Hinzufügen"
+msgstr "+ 添加"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "添加新文本元素"
+
+msgid "Keine Text-Elemente"
+msgstr "无文本元素"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "点击 = 选择 · 双击 = 编辑 · 拖动 = 移动"
+
+msgid "Element löschen"
+msgstr "删除元素"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "（未找到光盘打印机）"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "未找到支持光盘打印的打印机"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "未检测到支持光盘打印的打印机。"
+
+msgid "Prüfe Status …"
+msgstr "正在检查状态 …"
+
+msgid "Hintergrundbild wählen"
+msgstr "选择背景图像"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "图像 (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "所有文件"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"无法加载图像：\n"
+"%s"
+
+msgid "Bereit"
+msgstr "就绪"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "已禁用 / 已停止"
+
+msgid "Status unbekannt"
+msgstr "状态未知"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "无法访问（超时）"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "错误：%s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "未选择打印机。"
+
+msgid "Disc drucken?"
+msgstr "打印光盘？"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"打印机：  %(name)s\n"
+"分辨率：  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "打印"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"渲染错误：\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"打印错误：\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "超时：打印机无响应（>30 秒）。"
+
+msgid "Druckauftrag gesendet"
+msgstr "打印任务已发送"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "打印任务已成功加入队列。"

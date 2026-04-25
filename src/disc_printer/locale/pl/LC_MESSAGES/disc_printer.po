@@ -1,0 +1,242 @@
+# Polish translation of disc-printer
+# Copyright (C) 2026 haku
+# This file is distributed under the same license as the disc-printer package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Polish\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "Piasta · nie do drukowania"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (do drukowania)"
+
+msgid "Text bearbeiten"
+msgstr "Edytuj tekst"
+
+msgid "Text hinzufügen"
+msgstr "Dodaj tekst"
+
+msgid "Text:"
+msgstr "Tekst:"
+
+msgid "Schriftart wählen"
+msgstr "Wybierz czcionkę"
+
+msgid "Schrift:"
+msgstr "Czcionka:"
+
+msgid "Textfarbe"
+msgstr "Kolor tekstu"
+
+msgid "Farbe:"
+msgstr "Kolor:"
+
+msgid "Abbrechen"
+msgstr "Anuluj"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Drucken …"
+msgstr "Drukuj …"
+
+msgid "Disc-Vorschau"
+msgstr "Podgląd dysku"
+
+msgid "Drucker"
+msgstr "Drukarka"
+
+msgid "Drucker:"
+msgstr "Drukarka:"
+
+msgid "Erkenne Drucker …"
+msgstr "Wykrywanie drukarki …"
+
+msgid "Drucker neu erkennen"
+msgstr "Wykryj drukarkę ponownie"
+
+msgid "Initialisierung …"
+msgstr "Inicjalizacja …"
+
+msgid "Disc-Optionen"
+msgstr "Opcje dysku"
+
+msgid "Hub-Größe:"
+msgstr "Rozmiar piasty:"
+
+msgid "Hintergrund"
+msgstr "Tło"
+
+msgid "Hintergrundfarbe"
+msgstr "Kolor tła"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "Przywróć biel"
+
+msgid "Bild:"
+msgstr "Obraz:"
+
+msgid "Laden …"
+msgstr "Wczytaj …"
+
+msgid "(kein Bild)"
+msgstr "(brak obrazu)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "Usuń obraz tła"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "Wskazówka: przeciągnij plik obrazu bezpośrednio na podgląd."
+
+msgid "Bild-Position & Zoom"
+msgstr "Pozycja obrazu & zoom"
+
+msgid "Zoom:"
+msgstr "Zoom:"
+
+msgid "5 mm links"
+msgstr "5 mm lewo"
+
+msgid "5 mm rechts"
+msgstr "5 mm prawo"
+
+msgid "5 mm oben"
+msgstr "5 mm góra"
+
+msgid "5 mm unten"
+msgstr "5 mm dół"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ Wyśrodkuj"
+
+msgid "Zurücksetzen"
+msgstr "Przywróć"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "Przeciągnij = przesuń · Kółko myszy = zoom"
+
+msgid "Text-Elemente"
+msgstr "Elementy tekstowe"
+
+msgid "+ Hinzufügen"
+msgstr "+ Dodaj"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "Dodaj nowy element tekstowy"
+
+msgid "Keine Text-Elemente"
+msgstr "Brak elementów tekstowych"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "Kliknij = zaznacz · Dwuklik = edytuj · Przeciągnij = przesuń"
+
+msgid "Element löschen"
+msgstr "Usuń element"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(Nie znaleziono drukarki dysków)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "Nie znaleziono drukarki obsługującej dyski"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "Nie wykryto drukarki obsługującej dyski."
+
+msgid "Prüfe Status …"
+msgstr "Sprawdzanie stanu …"
+
+msgid "Hintergrundbild wählen"
+msgstr "Wybierz obraz tła"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "Obrazy (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "Wszystkie pliki"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"Nie można wczytać obrazu:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "Gotowe"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "Wyłączone / zatrzymane"
+
+msgid "Status unbekannt"
+msgstr "Stan nieznany"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "Niedostępne (przekroczenie czasu)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "Błąd: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "Nie wybrano drukarki."
+
+msgid "Disc drucken?"
+msgstr "Drukować dysk?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"Drukarka:    %(name)s\n"
+"Rozdzielczość: %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "Drukuj"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"Błąd renderowania:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"Błąd drukowania:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "Przekroczenie czasu: drukarka nie odpowiada (>30 s)."
+
+msgid "Druckauftrag gesendet"
+msgstr "Zadanie drukowania wysłane"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "Zadanie drukowania pomyślnie dodane do kolejki."

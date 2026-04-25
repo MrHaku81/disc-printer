@@ -1,0 +1,241 @@
+# Russian translation of disc-printer
+# Copyright (C) 2026 haku
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f мм"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "Втулка · не для печати"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f мм  (для печати)"
+
+msgid "Text bearbeiten"
+msgstr "Редактировать текст"
+
+msgid "Text hinzufügen"
+msgstr "Добавить текст"
+
+msgid "Text:"
+msgstr "Текст:"
+
+msgid "Schriftart wählen"
+msgstr "Выбрать шрифт"
+
+msgid "Schrift:"
+msgstr "Шрифт:"
+
+msgid "Textfarbe"
+msgstr "Цвет текста"
+
+msgid "Farbe:"
+msgstr "Цвет:"
+
+msgid "Abbrechen"
+msgstr "Отмена"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Drucken …"
+msgstr "Печать …"
+
+msgid "Disc-Vorschau"
+msgstr "Предварительный просмотр диска"
+
+msgid "Drucker"
+msgstr "Принтер"
+
+msgid "Drucker:"
+msgstr "Принтер:"
+
+msgid "Erkenne Drucker …"
+msgstr "Определение принтера …"
+
+msgid "Drucker neu erkennen"
+msgstr "Определить принтер повторно"
+
+msgid "Initialisierung …"
+msgstr "Инициализация …"
+
+msgid "Disc-Optionen"
+msgstr "Параметры диска"
+
+msgid "Hub-Größe:"
+msgstr "Размер втулки:"
+
+msgid "Hintergrund"
+msgstr "Фон"
+
+msgid "Hintergrundfarbe"
+msgstr "Цвет фона"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "Сбросить до белого"
+
+msgid "Bild:"
+msgstr "Изображение:"
+
+msgid "Laden …"
+msgstr "Загрузить …"
+
+msgid "(kein Bild)"
+msgstr "(нет изображения)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "Удалить фоновое изображение"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "Совет: перетащите файл изображения прямо на область предварительного просмотра."
+
+msgid "Bild-Position & Zoom"
+msgstr "Положение изображения и масштаб"
+
+msgid "Zoom:"
+msgstr "Масштаб:"
+
+msgid "5 mm links"
+msgstr "5 мм влево"
+
+msgid "5 mm rechts"
+msgstr "5 мм вправо"
+
+msgid "5 mm oben"
+msgstr "5 мм вверх"
+
+msgid "5 mm unten"
+msgstr "5 мм вниз"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ По центру"
+
+msgid "Zurücksetzen"
+msgstr "Сбросить"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "Перетащить = переместить · Колёсико мыши = масштаб"
+
+msgid "Text-Elemente"
+msgstr "Текстовые элементы"
+
+msgid "+ Hinzufügen"
+msgstr "+ Добавить"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "Добавить новый текстовый элемент"
+
+msgid "Keine Text-Elemente"
+msgstr "Нет текстовых элементов"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "Клик = выбрать · Двойной клик = редактировать · Перетащить = переместить"
+
+msgid "Element löschen"
+msgstr "Удалить элемент"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(Принтер для дисков не найден)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "Принтер, совместимый с дисками, не найден"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "Принтер, совместимый с дисками, не определён."
+
+msgid "Prüfe Status …"
+msgstr "Проверка состояния …"
+
+msgid "Hintergrundbild wählen"
+msgstr "Выбрать фоновое изображение"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "Изображения (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "Все файлы"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"Не удалось загрузить изображение:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "Готово"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "Отключено / остановлено"
+
+msgid "Status unbekannt"
+msgstr "Состояние неизвестно"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "Недоступно (таймаут)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "Ошибка: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "Принтер не выбран."
+
+msgid "Disc drucken?"
+msgstr "Печатать диск?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"Принтер:    %(name)s\n"
+"Разрешение: %(px)d×%(px)d пкс  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "Печать"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"Ошибка рендеринга:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"Ошибка печати:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "Таймаут: принтер не отвечает (>30 с)."
+
+msgid "Druckauftrag gesendet"
+msgstr "Задание на печать отправлено"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "Задание на печать успешно добавлено в очередь."

@@ -1,0 +1,307 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR haku
+# This file is distributed under the same license as the disc-printer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. TRANSLATORS: Disc measurement label — keep "Ø" and the unit "mm"
+#. TRANSLATORS: Radio button label showing hub diameter, e.g. "Ø 50 mm"
+#: src/disc_printer/gui/canvas.py:328 src/disc_printer/gui/canvas.py:340
+#: src/disc_printer/gui/window.py:158 src/disc_printer/gui/window.py:159
+#, python-format
+msgid "Ø %.0f mm"
+msgstr ""
+
+#. TRANSLATORS: Label inside the hub ring on the disc preview
+#: src/disc_printer/gui/canvas.py:331
+msgid "Hub · nicht bedruckbar"
+msgstr ""
+
+#. TRANSLATORS: Printable zone diameter label
+#: src/disc_printer/gui/canvas.py:337
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr ""
+
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:336
+msgid "Text bearbeiten"
+msgstr ""
+
+#: src/disc_printer/gui/dialogs.py:17
+msgid "Text hinzufügen"
+msgstr ""
+
+#: src/disc_printer/gui/dialogs.py:31
+msgid "Text:"
+msgstr ""
+
+#: src/disc_printer/gui/dialogs.py:33
+msgid "Schriftart wählen"
+msgstr ""
+
+#: src/disc_printer/gui/dialogs.py:41
+msgid "Schrift:"
+msgstr ""
+
+#: src/disc_printer/gui/dialogs.py:43
+msgid "Textfarbe"
+msgstr ""
+
+#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:179
+msgid "Farbe:"
+msgstr ""
+
+#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:643
+msgid "Abbrechen"
+msgstr ""
+
+#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:715
+msgid "OK"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:43
+msgid "Drucken …"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:65
+msgid "Disc-Vorschau"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:107
+msgid "Drucker"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:114
+msgid "Drucker:"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:118 src/disc_printer/gui/window.py:356
+msgid "Erkenne Drucker …"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:126
+msgid "Drucker neu erkennen"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:134
+msgid "Initialisierung …"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:150
+msgid "Disc-Optionen"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:155
+msgid "Hub-Größe:"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:174
+msgid "Hintergrund"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:180
+msgid "Hintergrundfarbe"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:188
+msgid "Zurücksetzen auf Weiß"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:195
+msgid "Bild:"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:196
+msgid "Laden …"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:204 src/disc_printer/gui/window.py:478
+msgid "(kein Bild)"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:209
+msgid "Hintergrundbild entfernen"
+msgstr ""
+
+#. TRANSLATORS: Hint shown below the image filename — keep it short
+#: src/disc_printer/gui/window.py:218
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr ""
+
+#. TRANSLATORS: Section title; "&" must stay as "&amp;" in Pango markup
+#: src/disc_printer/gui/window.py:230
+msgid "Bild-Position & Zoom"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:235
+msgid "Zoom:"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:253
+msgid "5 mm links"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:254
+msgid "5 mm rechts"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:255
+msgid "5 mm oben"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:256
+msgid "5 mm unten"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:263
+msgid "⌂ Zentrieren"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:264
+msgid "Zurücksetzen"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:272
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:286
+msgid "Text-Elemente"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:289
+msgid "+ Hinzufügen"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:290
+msgid "Neues Text-Element hinzufügen"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:299
+msgid "Keine Text-Elemente"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:310
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:343
+msgid "Element löschen"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:369
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:371
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:373
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr ""
+
+#: src/disc_printer/gui/window.py:402
+msgid "Prüfe Status …"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:430
+msgid "Hintergrundbild wählen"
+msgstr ""
+
+#. TRANSLATORS: File filter label in the image chooser dialog
+#: src/disc_printer/gui/window.py:433
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:438
+msgid "Alle Dateien"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:473
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:604
+msgid "Bereit"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:607
+msgid "Deaktiviert / gestoppt"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:610
+msgid "Status unbekannt"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:612
+msgid "Nicht erreichbar (Timeout)"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:615
+#, python-format
+msgid "Fehler: %s"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:630
+msgid "Kein Drucker ausgewählt."
+msgstr ""
+
+#: src/disc_printer/gui/window.py:635
+msgid "Disc drucken?"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:639
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:643
+msgid "Drucken"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:668
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:693 src/disc_printer/gui/window.py:701
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:698
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr ""
+
+#: src/disc_printer/gui/window.py:711
+msgid "Druckauftrag gesendet"
+msgstr ""
+
+#: src/disc_printer/gui/window.py:713
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr ""

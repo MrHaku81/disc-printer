@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Build / distribution
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# pip editable install metadata
+*.dist-info/
+
+# Compiled translations (regenerated from .po by `make`)
+*.mo
+
+# Byte-compiled locale files
+src/disc_printer/locale/**/*.mo
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test artefacts
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# Saved designs (user data — not source)
+~/Dokumente/DiscPrinter/
+
+# Claude Code project files (not relevant to contributors)
+CLAUDE.md
+dev.log

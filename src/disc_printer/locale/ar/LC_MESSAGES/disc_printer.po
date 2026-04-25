@@ -1,0 +1,241 @@
+# Arabic translation of disc-printer
+# Copyright (C) 2026 haku
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f مم"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "المحور · غير قابل للطباعة"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f مم  (قابل للطباعة)"
+
+msgid "Text bearbeiten"
+msgstr "تحرير النص"
+
+msgid "Text hinzufügen"
+msgstr "إضافة نص"
+
+msgid "Text:"
+msgstr "النص:"
+
+msgid "Schriftart wählen"
+msgstr "اختيار الخط"
+
+msgid "Schrift:"
+msgstr "الخط:"
+
+msgid "Textfarbe"
+msgstr "لون النص"
+
+msgid "Farbe:"
+msgstr "اللون:"
+
+msgid "Abbrechen"
+msgstr "إلغاء"
+
+msgid "OK"
+msgstr "موافق"
+
+msgid "Drucken …"
+msgstr "طباعة …"
+
+msgid "Disc-Vorschau"
+msgstr "معاينة القرص"
+
+msgid "Drucker"
+msgstr "الطابعة"
+
+msgid "Drucker:"
+msgstr "الطابعة:"
+
+msgid "Erkenne Drucker …"
+msgstr "جارٍ اكتشاف الطابعة …"
+
+msgid "Drucker neu erkennen"
+msgstr "إعادة اكتشاف الطابعة"
+
+msgid "Initialisierung …"
+msgstr "جارٍ التهيئة …"
+
+msgid "Disc-Optionen"
+msgstr "خيارات القرص"
+
+msgid "Hub-Größe:"
+msgstr "حجم المحور:"
+
+msgid "Hintergrund"
+msgstr "الخلفية"
+
+msgid "Hintergrundfarbe"
+msgstr "لون الخلفية"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "إعادة تعيين إلى الأبيض"
+
+msgid "Bild:"
+msgstr "الصورة:"
+
+msgid "Laden …"
+msgstr "تحميل …"
+
+msgid "(kein Bild)"
+msgstr "(لا توجد صورة)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "إزالة صورة الخلفية"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "تلميح: اسحب ملف الصورة مباشرة إلى المعاينة."
+
+msgid "Bild-Position & Zoom"
+msgstr "موضع الصورة والتكبير"
+
+msgid "Zoom:"
+msgstr "التكبير:"
+
+msgid "5 mm links"
+msgstr "5 مم يساراً"
+
+msgid "5 mm rechts"
+msgstr "5 مم يميناً"
+
+msgid "5 mm oben"
+msgstr "5 مم لأعلى"
+
+msgid "5 mm unten"
+msgstr "5 مم لأسفل"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ توسيط"
+
+msgid "Zurücksetzen"
+msgstr "إعادة تعيين"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "السحب = نقل · عجلة الماوس = تكبير"
+
+msgid "Text-Elemente"
+msgstr "عناصر النص"
+
+msgid "+ Hinzufügen"
+msgstr "+ إضافة"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "إضافة عنصر نص جديد"
+
+msgid "Keine Text-Elemente"
+msgstr "لا توجد عناصر نص"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "نقرة = تحديد · نقرة مزدوجة = تحرير · سحب = نقل"
+
+msgid "Element löschen"
+msgstr "حذف العنصر"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(لم يتم العثور على طابعة أقراص)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "لم يتم العثور على طابعة متوافقة مع الأقراص"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "لم يتم اكتشاف طابعة متوافقة مع الأقراص."
+
+msgid "Prüfe Status …"
+msgstr "جارٍ فحص الحالة …"
+
+msgid "Hintergrundbild wählen"
+msgstr "اختيار صورة الخلفية"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "صور (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "جميع الملفات"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"تعذّر تحميل الصورة:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "جاهز"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "معطّل / موقوف"
+
+msgid "Status unbekannt"
+msgstr "الحالة غير معروفة"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "غير متاح (انتهاء المهلة)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "خطأ: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "لم يتم اختيار طابعة."
+
+msgid "Disc drucken?"
+msgstr "طباعة القرص؟"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"الطابعة:    %(name)s\n"
+"الدقة:      %(px)d×%(px)d بكسل  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "طباعة"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"خطأ في العرض:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"خطأ في الطباعة:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "انتهت المهلة: الطابعة لا تستجيب (>30 ثانية)."
+
+msgid "Druckauftrag gesendet"
+msgstr "تم إرسال مهمة الطباعة"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "تمت إضافة مهمة الطباعة إلى قائمة الانتظار بنجاح."

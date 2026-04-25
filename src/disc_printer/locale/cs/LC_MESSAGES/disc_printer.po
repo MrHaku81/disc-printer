@@ -1,0 +1,242 @@
+# Czech translation of disc-printer
+# Copyright (C) 2026 haku
+# This file is distributed under the same license as the disc-printer package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Czech\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "Střed · netisknutelný"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (tisknutelné)"
+
+msgid "Text bearbeiten"
+msgstr "Upravit text"
+
+msgid "Text hinzufügen"
+msgstr "Přidat text"
+
+msgid "Text:"
+msgstr "Text:"
+
+msgid "Schriftart wählen"
+msgstr "Vybrat písmo"
+
+msgid "Schrift:"
+msgstr "Písmo:"
+
+msgid "Textfarbe"
+msgstr "Barva textu"
+
+msgid "Farbe:"
+msgstr "Barva:"
+
+msgid "Abbrechen"
+msgstr "Zrušit"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Drucken …"
+msgstr "Tisknout …"
+
+msgid "Disc-Vorschau"
+msgstr "Náhled disku"
+
+msgid "Drucker"
+msgstr "Tiskárna"
+
+msgid "Drucker:"
+msgstr "Tiskárna:"
+
+msgid "Erkenne Drucker …"
+msgstr "Rozpoznávání tiskárny …"
+
+msgid "Drucker neu erkennen"
+msgstr "Znovu rozpoznat tiskárnu"
+
+msgid "Initialisierung …"
+msgstr "Inicializace …"
+
+msgid "Disc-Optionen"
+msgstr "Možnosti disku"
+
+msgid "Hub-Größe:"
+msgstr "Velikost středu:"
+
+msgid "Hintergrund"
+msgstr "Pozadí"
+
+msgid "Hintergrundfarbe"
+msgstr "Barva pozadí"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "Obnovit na bílou"
+
+msgid "Bild:"
+msgstr "Obrázek:"
+
+msgid "Laden …"
+msgstr "Načíst …"
+
+msgid "(kein Bild)"
+msgstr "(žádný obrázek)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "Odebrat obrázek pozadí"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "Tip: přetáhněte soubor obrázku přímo na náhled."
+
+msgid "Bild-Position & Zoom"
+msgstr "Poloha obrázku & zoom"
+
+msgid "Zoom:"
+msgstr "Zoom:"
+
+msgid "5 mm links"
+msgstr "5 mm vlevo"
+
+msgid "5 mm rechts"
+msgstr "5 mm vpravo"
+
+msgid "5 mm oben"
+msgstr "5 mm nahoru"
+
+msgid "5 mm unten"
+msgstr "5 mm dolů"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ Vystředit"
+
+msgid "Zurücksetzen"
+msgstr "Obnovit"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "Přetáhnout = přesunout · Kolečko myši = zoom"
+
+msgid "Text-Elemente"
+msgstr "Textové prvky"
+
+msgid "+ Hinzufügen"
+msgstr "+ Přidat"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "Přidat nový textový prvek"
+
+msgid "Keine Text-Elemente"
+msgstr "Žádné textové prvky"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "Klik = vybrat · Dvojklik = upravit · Přetáhnout = přesunout"
+
+msgid "Element löschen"
+msgstr "Odstranit prvek"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(Nebyla nalezena žádná disková tiskárna)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "Nebyla nalezena žádná tiskárna kompatibilní s disky"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "Nebyla rozpoznána žádná tiskárna kompatibilní s disky."
+
+msgid "Prüfe Status …"
+msgstr "Kontrola stavu …"
+
+msgid "Hintergrundbild wählen"
+msgstr "Vybrat obrázek pozadí"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "Obrázky (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "Všechny soubory"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"Obrázek nelze načíst:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "Připraven"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "Deaktivováno / zastaveno"
+
+msgid "Status unbekannt"
+msgstr "Stav neznámý"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "Nedostupné (časový limit)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "Chyba: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "Není vybrána žádná tiskárna."
+
+msgid "Disc drucken?"
+msgstr "Tisknout disk?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"Tiskárna:   %(name)s\n"
+"Rozlišení:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "Tisknout"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"Chyba vykreslování:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"Chyba tisku:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "Časový limit: tiskárna nereaguje (>30 s)."
+
+msgid "Druckauftrag gesendet"
+msgstr "Tisková úloha odeslána"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "Tisková úloha byla úspěšně přidána do fronty."

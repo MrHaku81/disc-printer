@@ -1,0 +1,242 @@
+# Korean translation of disc-printer
+# Copyright (C) 2026 haku
+# This file is distributed under the same license as the disc-printer package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Korean\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "허브 · 인쇄 불가"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (인쇄 가능)"
+
+msgid "Text bearbeiten"
+msgstr "텍스트 편집"
+
+msgid "Text hinzufügen"
+msgstr "텍스트 추가"
+
+msgid "Text:"
+msgstr "텍스트:"
+
+msgid "Schriftart wählen"
+msgstr "글꼴 선택"
+
+msgid "Schrift:"
+msgstr "글꼴:"
+
+msgid "Textfarbe"
+msgstr "텍스트 색상"
+
+msgid "Farbe:"
+msgstr "색상:"
+
+msgid "Abbrechen"
+msgstr "취소"
+
+msgid "OK"
+msgstr "확인"
+
+msgid "Drucken …"
+msgstr "인쇄 …"
+
+msgid "Disc-Vorschau"
+msgstr "디스크 미리보기"
+
+msgid "Drucker"
+msgstr "프린터"
+
+msgid "Drucker:"
+msgstr "프린터:"
+
+msgid "Erkenne Drucker …"
+msgstr "프린터 감지 중 …"
+
+msgid "Drucker neu erkennen"
+msgstr "프린터 다시 감지"
+
+msgid "Initialisierung …"
+msgstr "초기화 중 …"
+
+msgid "Disc-Optionen"
+msgstr "디스크 옵션"
+
+msgid "Hub-Größe:"
+msgstr "허브 크기:"
+
+msgid "Hintergrund"
+msgstr "배경"
+
+msgid "Hintergrundfarbe"
+msgstr "배경색"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "흰색으로 초기화"
+
+msgid "Bild:"
+msgstr "이미지:"
+
+msgid "Laden …"
+msgstr "불러오기 …"
+
+msgid "(kein Bild)"
+msgstr "(이미지 없음)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "배경 이미지 제거"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "팁: 이미지 파일을 미리보기에 직접 끌어다 놓으세요."
+
+msgid "Bild-Position & Zoom"
+msgstr "이미지 위치 & 확대/축소"
+
+msgid "Zoom:"
+msgstr "확대/축소:"
+
+msgid "5 mm links"
+msgstr "5 mm 왼쪽"
+
+msgid "5 mm rechts"
+msgstr "5 mm 오른쪽"
+
+msgid "5 mm oben"
+msgstr "5 mm 위"
+
+msgid "5 mm unten"
+msgstr "5 mm 아래"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ 가운데 정렬"
+
+msgid "Zurücksetzen"
+msgstr "초기화"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "드래그 = 이동 · 마우스 휠 = 확대/축소"
+
+msgid "Text-Elemente"
+msgstr "텍스트 요소"
+
+msgid "+ Hinzufügen"
+msgstr "+ 추가"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "새 텍스트 요소 추가"
+
+msgid "Keine Text-Elemente"
+msgstr "텍스트 요소 없음"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "클릭 = 선택 · 더블클릭 = 편집 · 드래그 = 이동"
+
+msgid "Element löschen"
+msgstr "요소 삭제"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(디스크 프린터를 찾을 수 없음)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "디스크 호환 프린터를 찾을 수 없음"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "디스크 호환 프린터가 감지되지 않았습니다."
+
+msgid "Prüfe Status …"
+msgstr "상태 확인 중 …"
+
+msgid "Hintergrundbild wählen"
+msgstr "배경 이미지 선택"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "이미지 (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "모든 파일"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"이미지를 불러올 수 없습니다:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "준비 완료"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "비활성화 / 중지"
+
+msgid "Status unbekannt"
+msgstr "상태 알 수 없음"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "연결 불가 (시간 초과)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "오류: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "프린터가 선택되지 않았습니다."
+
+msgid "Disc drucken?"
+msgstr "디스크를 인쇄하시겠습니까?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"프린터:   %(name)s\n"
+"해상도:   %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "인쇄"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"렌더링 오류:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"인쇄 오류:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "시간 초과: 프린터가 응답하지 않습니다 (>30 초)."
+
+msgid "Druckauftrag gesendet"
+msgstr "인쇄 작업이 전송되었습니다"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "인쇄 작업이 대기열에 성공적으로 추가되었습니다."

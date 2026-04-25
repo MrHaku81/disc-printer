@@ -1,0 +1,242 @@
+# French translation of disc-printer
+# Copyright (C) 2026 haku
+# This file is distributed under the same license as the disc-printer package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "Moyeu · non imprimable"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (imprimable)"
+
+msgid "Text bearbeiten"
+msgstr "Modifier le texte"
+
+msgid "Text hinzufügen"
+msgstr "Ajouter du texte"
+
+msgid "Text:"
+msgstr "Texte :"
+
+msgid "Schriftart wählen"
+msgstr "Choisir la police"
+
+msgid "Schrift:"
+msgstr "Police :"
+
+msgid "Textfarbe"
+msgstr "Couleur du texte"
+
+msgid "Farbe:"
+msgstr "Couleur :"
+
+msgid "Abbrechen"
+msgstr "Annuler"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Drucken …"
+msgstr "Imprimer …"
+
+msgid "Disc-Vorschau"
+msgstr "Aperçu du disque"
+
+msgid "Drucker"
+msgstr "Imprimante"
+
+msgid "Drucker:"
+msgstr "Imprimante :"
+
+msgid "Erkenne Drucker …"
+msgstr "Détection de l'imprimante …"
+
+msgid "Drucker neu erkennen"
+msgstr "Redétecter l'imprimante"
+
+msgid "Initialisierung …"
+msgstr "Initialisation …"
+
+msgid "Disc-Optionen"
+msgstr "Options du disque"
+
+msgid "Hub-Größe:"
+msgstr "Taille du moyeu :"
+
+msgid "Hintergrund"
+msgstr "Arrière-plan"
+
+msgid "Hintergrundfarbe"
+msgstr "Couleur d'arrière-plan"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "Réinitialiser en blanc"
+
+msgid "Bild:"
+msgstr "Image :"
+
+msgid "Laden …"
+msgstr "Charger …"
+
+msgid "(kein Bild)"
+msgstr "(aucune image)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "Supprimer l'image d'arrière-plan"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "Conseil : faites glisser le fichier image directement sur l'aperçu."
+
+msgid "Bild-Position & Zoom"
+msgstr "Position & zoom de l'image"
+
+msgid "Zoom:"
+msgstr "Zoom :"
+
+msgid "5 mm links"
+msgstr "5 mm gauche"
+
+msgid "5 mm rechts"
+msgstr "5 mm droite"
+
+msgid "5 mm oben"
+msgstr "5 mm haut"
+
+msgid "5 mm unten"
+msgstr "5 mm bas"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ Centrer"
+
+msgid "Zurücksetzen"
+msgstr "Réinitialiser"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "Glisser = déplacer · Molette = zoom"
+
+msgid "Text-Elemente"
+msgstr "Éléments de texte"
+
+msgid "+ Hinzufügen"
+msgstr "+ Ajouter"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "Ajouter un nouvel élément de texte"
+
+msgid "Keine Text-Elemente"
+msgstr "Aucun élément de texte"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "Clic = sélectionner · Double-clic = modifier · Glisser = déplacer"
+
+msgid "Element löschen"
+msgstr "Supprimer l'élément"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(Aucune imprimante disque trouvée)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "Aucune imprimante compatible disque trouvée"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "Aucune imprimante compatible disque détectée."
+
+msgid "Prüfe Status …"
+msgstr "Vérification du statut …"
+
+msgid "Hintergrundbild wählen"
+msgstr "Choisir l'image d'arrière-plan"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "Images (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "Tous les fichiers"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"Impossible de charger l'image :\n"
+"%s"
+
+msgid "Bereit"
+msgstr "Prêt"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "Désactivé / arrêté"
+
+msgid "Status unbekannt"
+msgstr "Statut inconnu"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "Inaccessible (délai dépassé)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "Erreur : %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "Aucune imprimante sélectionnée."
+
+msgid "Disc drucken?"
+msgstr "Imprimer le disque ?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"Imprimante :  %(name)s\n"
+"Résolution :  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "Imprimer"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"Erreur de rendu :\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"Erreur d'impression :\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "Délai dépassé : l'imprimante ne répond pas (>30 s)."
+
+msgid "Druckauftrag gesendet"
+msgstr "Travail d'impression envoyé"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "Travail d'impression mis en file d'attente avec succès."

@@ -1,0 +1,242 @@
+# Dutch translation of disc-printer
+# Copyright (C) 2026 haku
+# This file is distributed under the same license as the disc-printer package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Dutch\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "Hub · niet bedrukbaar"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (bedrukbaar)"
+
+msgid "Text bearbeiten"
+msgstr "Tekst bewerken"
+
+msgid "Text hinzufügen"
+msgstr "Tekst toevoegen"
+
+msgid "Text:"
+msgstr "Tekst:"
+
+msgid "Schriftart wählen"
+msgstr "Lettertype kiezen"
+
+msgid "Schrift:"
+msgstr "Lettertype:"
+
+msgid "Textfarbe"
+msgstr "Tekstkleur"
+
+msgid "Farbe:"
+msgstr "Kleur:"
+
+msgid "Abbrechen"
+msgstr "Annuleren"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Drucken …"
+msgstr "Afdrukken …"
+
+msgid "Disc-Vorschau"
+msgstr "Disc-voorbeeld"
+
+msgid "Drucker"
+msgstr "Printer"
+
+msgid "Drucker:"
+msgstr "Printer:"
+
+msgid "Erkenne Drucker …"
+msgstr "Printer detecteren …"
+
+msgid "Drucker neu erkennen"
+msgstr "Printer opnieuw detecteren"
+
+msgid "Initialisierung …"
+msgstr "Initialiseren …"
+
+msgid "Disc-Optionen"
+msgstr "Disc-opties"
+
+msgid "Hub-Größe:"
+msgstr "Hub-grootte:"
+
+msgid "Hintergrund"
+msgstr "Achtergrond"
+
+msgid "Hintergrundfarbe"
+msgstr "Achtergrondkleur"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "Terugzetten naar wit"
+
+msgid "Bild:"
+msgstr "Afbeelding:"
+
+msgid "Laden …"
+msgstr "Laden …"
+
+msgid "(kein Bild)"
+msgstr "(geen afbeelding)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "Achtergrondafbeelding verwijderen"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "Tip: sleep het afbeeldingsbestand direct naar het voorbeeld."
+
+msgid "Bild-Position & Zoom"
+msgstr "Afbeeldingspositie & zoom"
+
+msgid "Zoom:"
+msgstr "Zoom:"
+
+msgid "5 mm links"
+msgstr "5 mm links"
+
+msgid "5 mm rechts"
+msgstr "5 mm rechts"
+
+msgid "5 mm oben"
+msgstr "5 mm omhoog"
+
+msgid "5 mm unten"
+msgstr "5 mm omlaag"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ Centreren"
+
+msgid "Zurücksetzen"
+msgstr "Terugzetten"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "Slepen = verplaatsen · Muiswiel = zoom"
+
+msgid "Text-Elemente"
+msgstr "Tekstelementen"
+
+msgid "+ Hinzufügen"
+msgstr "+ Toevoegen"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "Nieuw tekstelement toevoegen"
+
+msgid "Keine Text-Elemente"
+msgstr "Geen tekstelementen"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "Klik = selecteren · Dubbelklik = bewerken · Slepen = verplaatsen"
+
+msgid "Element löschen"
+msgstr "Element verwijderen"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(Geen disc-printer gevonden)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "Geen disc-geschikte printer gevonden"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "Geen disc-geschikte printer gedetecteerd."
+
+msgid "Prüfe Status …"
+msgstr "Status controleren …"
+
+msgid "Hintergrundbild wählen"
+msgstr "Achtergrondafbeelding kiezen"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "Afbeeldingen (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "Alle bestanden"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"Afbeelding kon niet worden geladen:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "Gereed"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "Uitgeschakeld / gestopt"
+
+msgid "Status unbekannt"
+msgstr "Status onbekend"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "Niet bereikbaar (time-out)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "Fout: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "Geen printer geselecteerd."
+
+msgid "Disc drucken?"
+msgstr "Disc afdrukken?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"Printer:      %(name)s\n"
+"Resolutie:    %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "Afdrukken"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"Renderfout:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"Afdrukfout:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "Time-out: printer reageert niet (>30 s)."
+
+msgid "Druckauftrag gesendet"
+msgstr "Afdruktaak verzonden"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "Afdruktaak succesvol in de wachtrij geplaatst."

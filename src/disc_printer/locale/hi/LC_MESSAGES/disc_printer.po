@@ -1,0 +1,241 @@
+# Hindi translation of disc-printer
+# Copyright (C) 2026 haku
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Hindi\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f मिमी"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "हब · मुद्रण योग्य नहीं"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f मिमी  (मुद्रण योग्य)"
+
+msgid "Text bearbeiten"
+msgstr "पाठ संपादित करें"
+
+msgid "Text hinzufügen"
+msgstr "पाठ जोड़ें"
+
+msgid "Text:"
+msgstr "पाठ:"
+
+msgid "Schriftart wählen"
+msgstr "फ़ॉन्ट चुनें"
+
+msgid "Schrift:"
+msgstr "फ़ॉन्ट:"
+
+msgid "Textfarbe"
+msgstr "पाठ रंग"
+
+msgid "Farbe:"
+msgstr "रंग:"
+
+msgid "Abbrechen"
+msgstr "रद्द करें"
+
+msgid "OK"
+msgstr "ठीक है"
+
+msgid "Drucken …"
+msgstr "मुद्रण करें …"
+
+msgid "Disc-Vorschau"
+msgstr "डिस्क पूर्वावलोकन"
+
+msgid "Drucker"
+msgstr "प्रिंटर"
+
+msgid "Drucker:"
+msgstr "प्रिंटर:"
+
+msgid "Erkenne Drucker …"
+msgstr "प्रिंटर पहचाना जा रहा है …"
+
+msgid "Drucker neu erkennen"
+msgstr "प्रिंटर को फिर से पहचानें"
+
+msgid "Initialisierung …"
+msgstr "प्रारंभ हो रहा है …"
+
+msgid "Disc-Optionen"
+msgstr "डिस्क विकल्प"
+
+msgid "Hub-Größe:"
+msgstr "हब का आकार:"
+
+msgid "Hintergrund"
+msgstr "पृष्ठभूमि"
+
+msgid "Hintergrundfarbe"
+msgstr "पृष्ठभूमि रंग"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "सफ़ेद पर रीसेट करें"
+
+msgid "Bild:"
+msgstr "चित्र:"
+
+msgid "Laden …"
+msgstr "लोड करें …"
+
+msgid "(kein Bild)"
+msgstr "(कोई चित्र नहीं)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "पृष्ठभूमि चित्र हटाएं"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "सुझाव: चित्र फ़ाइल को सीधे पूर्वावलोकन पर खींचें।"
+
+msgid "Bild-Position & Zoom"
+msgstr "चित्र स्थिति और ज़ूम"
+
+msgid "Zoom:"
+msgstr "ज़ूम:"
+
+msgid "5 mm links"
+msgstr "5 मिमी बाएं"
+
+msgid "5 mm rechts"
+msgstr "5 मिमी दाएं"
+
+msgid "5 mm oben"
+msgstr "5 मिमी ऊपर"
+
+msgid "5 mm unten"
+msgstr "5 मिमी नीचे"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ केंद्रित करें"
+
+msgid "Zurücksetzen"
+msgstr "रीसेट करें"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "खींचें = ले जाएं · माउस व्हील = ज़ूम"
+
+msgid "Text-Elemente"
+msgstr "पाठ तत्व"
+
+msgid "+ Hinzufügen"
+msgstr "+ जोड़ें"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "नया पाठ तत्व जोड़ें"
+
+msgid "Keine Text-Elemente"
+msgstr "कोई पाठ तत्व नहीं"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "क्लिक = चुनें · डबल क्लिक = संपादित करें · खींचें = ले जाएं"
+
+msgid "Element löschen"
+msgstr "तत्व हटाएं"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(कोई डिस्क प्रिंटर नहीं मिला)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "डिस्क-संगत प्रिंटर नहीं मिला"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "डिस्क-संगत प्रिंटर नहीं पहचाना गया।"
+
+msgid "Prüfe Status …"
+msgstr "स्थिति जांची जा रही है …"
+
+msgid "Hintergrundbild wählen"
+msgstr "पृष्ठभूमि चित्र चुनें"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "चित्र (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "सभी फ़ाइलें"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"चित्र लोड नहीं हो सका:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "तैयार"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "अक्षम / बंद"
+
+msgid "Status unbekannt"
+msgstr "स्थिति अज्ञात"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "पहुंच योग्य नहीं (टाइमआउट)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "त्रुटि: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "कोई प्रिंटर नहीं चुना गया।"
+
+msgid "Disc drucken?"
+msgstr "डिस्क मुद्रित करें?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"प्रिंटर:    %(name)s\n"
+"रिज़ॉल्यूशन: %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "मुद्रण"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"रेंडर त्रुटि:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"मुद्रण त्रुटि:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "टाइमआउट: प्रिंटर प्रतिसाद नहीं दे रहा (>30 सेकंड)।"
+
+msgid "Druckauftrag gesendet"
+msgstr "मुद्रण कार्य भेजा गया"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "मुद्रण कार्य सफलतापूर्वक कतार में जोड़ा गया।"

@@ -1,0 +1,241 @@
+# Indonesian translation of disc-printer
+# Copyright (C) 2026 haku
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Indonesian\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "Hub · tidak dapat dicetak"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (dapat dicetak)"
+
+msgid "Text bearbeiten"
+msgstr "Edit teks"
+
+msgid "Text hinzufügen"
+msgstr "Tambah teks"
+
+msgid "Text:"
+msgstr "Teks:"
+
+msgid "Schriftart wählen"
+msgstr "Pilih font"
+
+msgid "Schrift:"
+msgstr "Font:"
+
+msgid "Textfarbe"
+msgstr "Warna teks"
+
+msgid "Farbe:"
+msgstr "Warna:"
+
+msgid "Abbrechen"
+msgstr "Batal"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Drucken …"
+msgstr "Cetak …"
+
+msgid "Disc-Vorschau"
+msgstr "Pratinjau disc"
+
+msgid "Drucker"
+msgstr "Printer"
+
+msgid "Drucker:"
+msgstr "Printer:"
+
+msgid "Erkenne Drucker …"
+msgstr "Mendeteksi printer …"
+
+msgid "Drucker neu erkennen"
+msgstr "Deteksi ulang printer"
+
+msgid "Initialisierung …"
+msgstr "Menginisialisasi …"
+
+msgid "Disc-Optionen"
+msgstr "Opsi disc"
+
+msgid "Hub-Größe:"
+msgstr "Ukuran hub:"
+
+msgid "Hintergrund"
+msgstr "Latar belakang"
+
+msgid "Hintergrundfarbe"
+msgstr "Warna latar belakang"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "Atur ulang ke putih"
+
+msgid "Bild:"
+msgstr "Gambar:"
+
+msgid "Laden …"
+msgstr "Muat …"
+
+msgid "(kein Bild)"
+msgstr "(tidak ada gambar)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "Hapus gambar latar belakang"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "Tips: seret file gambar langsung ke area pratinjau."
+
+msgid "Bild-Position & Zoom"
+msgstr "Posisi gambar & zoom"
+
+msgid "Zoom:"
+msgstr "Zoom:"
+
+msgid "5 mm links"
+msgstr "5 mm kiri"
+
+msgid "5 mm rechts"
+msgstr "5 mm kanan"
+
+msgid "5 mm oben"
+msgstr "5 mm atas"
+
+msgid "5 mm unten"
+msgstr "5 mm bawah"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ Pusatkan"
+
+msgid "Zurücksetzen"
+msgstr "Atur ulang"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "Seret = pindahkan · Roda mouse = zoom"
+
+msgid "Text-Elemente"
+msgstr "Elemen teks"
+
+msgid "+ Hinzufügen"
+msgstr "+ Tambah"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "Tambah elemen teks baru"
+
+msgid "Keine Text-Elemente"
+msgstr "Tidak ada elemen teks"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "Klik = pilih · Klik ganda = edit · Seret = pindahkan"
+
+msgid "Element löschen"
+msgstr "Hapus elemen"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(Tidak ada printer disc ditemukan)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "Tidak ada printer yang kompatibel dengan disc"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "Tidak ada printer yang kompatibel dengan disc terdeteksi."
+
+msgid "Prüfe Status …"
+msgstr "Memeriksa status …"
+
+msgid "Hintergrundbild wählen"
+msgstr "Pilih gambar latar belakang"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "Gambar (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "Semua file"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"Gambar tidak dapat dimuat:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "Siap"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "Dinonaktifkan / dihentikan"
+
+msgid "Status unbekannt"
+msgstr "Status tidak diketahui"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "Tidak dapat dijangkau (batas waktu)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "Kesalahan: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "Tidak ada printer dipilih."
+
+msgid "Disc drucken?"
+msgstr "Cetak disc?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"Printer:    %(name)s\n"
+"Resolusi:   %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "Cetak"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"Kesalahan render:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"Kesalahan cetak:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "Batas waktu: printer tidak merespons (>30 s)."
+
+msgid "Druckauftrag gesendet"
+msgstr "Pekerjaan cetak terkirim"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "Pekerjaan cetak berhasil ditambahkan ke antrean."

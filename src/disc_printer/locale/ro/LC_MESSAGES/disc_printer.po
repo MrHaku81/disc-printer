@@ -1,0 +1,242 @@
+# Romanian translation of disc-printer
+# Copyright (C) 2026 haku
+# This file is distributed under the same license as the disc-printer package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Romanian\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "Hub · neimprimabil"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (imprimabil)"
+
+msgid "Text bearbeiten"
+msgstr "Editați textul"
+
+msgid "Text hinzufügen"
+msgstr "Adăugați text"
+
+msgid "Text:"
+msgstr "Text:"
+
+msgid "Schriftart wählen"
+msgstr "Alegeți fontul"
+
+msgid "Schrift:"
+msgstr "Font:"
+
+msgid "Textfarbe"
+msgstr "Culoarea textului"
+
+msgid "Farbe:"
+msgstr "Culoare:"
+
+msgid "Abbrechen"
+msgstr "Anulați"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Drucken …"
+msgstr "Tipărire …"
+
+msgid "Disc-Vorschau"
+msgstr "Previzualizare disc"
+
+msgid "Drucker"
+msgstr "Imprimantă"
+
+msgid "Drucker:"
+msgstr "Imprimantă:"
+
+msgid "Erkenne Drucker …"
+msgstr "Detectare imprimantă …"
+
+msgid "Drucker neu erkennen"
+msgstr "Detectați din nou imprimanta"
+
+msgid "Initialisierung …"
+msgstr "Inițializare …"
+
+msgid "Disc-Optionen"
+msgstr "Opțiuni disc"
+
+msgid "Hub-Größe:"
+msgstr "Dimensiunea hub-ului:"
+
+msgid "Hintergrund"
+msgstr "Fundal"
+
+msgid "Hintergrundfarbe"
+msgstr "Culoarea fundalului"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "Resetați la alb"
+
+msgid "Bild:"
+msgstr "Imagine:"
+
+msgid "Laden …"
+msgstr "Încărcare …"
+
+msgid "(kein Bild)"
+msgstr "(fără imagine)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "Eliminați imaginea de fundal"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "Sfat: trageți fișierul imagine direct pe previzualizare."
+
+msgid "Bild-Position & Zoom"
+msgstr "Poziția imaginii & zoom"
+
+msgid "Zoom:"
+msgstr "Zoom:"
+
+msgid "5 mm links"
+msgstr "5 mm stânga"
+
+msgid "5 mm rechts"
+msgstr "5 mm dreapta"
+
+msgid "5 mm oben"
+msgstr "5 mm sus"
+
+msgid "5 mm unten"
+msgstr "5 mm jos"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ Centrare"
+
+msgid "Zurücksetzen"
+msgstr "Resetați"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "Trageți = mutați · Rotița mouse-ului = zoom"
+
+msgid "Text-Elemente"
+msgstr "Elemente de text"
+
+msgid "+ Hinzufügen"
+msgstr "+ Adăugați"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "Adăugați un element de text nou"
+
+msgid "Keine Text-Elemente"
+msgstr "Niciun element de text"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "Clic = selectați · Dublu clic = editați · Trageți = mutați"
+
+msgid "Element löschen"
+msgstr "Ștergeți elementul"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(Nu s-a găsit nicio imprimantă de disc)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "Nu s-a găsit nicio imprimantă compatibilă cu discuri"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "Nu s-a detectat nicio imprimantă compatibilă cu discuri."
+
+msgid "Prüfe Status …"
+msgstr "Verificare stare …"
+
+msgid "Hintergrundbild wählen"
+msgstr "Alegeți imaginea de fundal"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "Imagini (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "Toate fișierele"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"Imaginea nu a putut fi încărcată:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "Gata"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "Dezactivat / oprit"
+
+msgid "Status unbekannt"
+msgstr "Stare necunoscută"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "Inaccesibil (timp expirat)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "Eroare: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "Nicio imprimantă selectată."
+
+msgid "Disc drucken?"
+msgstr "Tipăriți discul?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"Imprimantă:  %(name)s\n"
+"Rezoluție:   %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "Tipăriți"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"Eroare de randare:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"Eroare de tipărire:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "Timp expirat: imprimanta nu răspunde (>30 s)."
+
+msgid "Druckauftrag gesendet"
+msgstr "Sarcină de tipărire trimisă"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "Sarcina de tipărire a fost adăugată cu succes în coadă."

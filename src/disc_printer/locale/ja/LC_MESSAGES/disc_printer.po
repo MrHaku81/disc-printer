@@ -1,0 +1,242 @@
+# Japanese translation of disc-printer
+# Copyright (C) 2026 haku
+# This file is distributed under the same license as the disc-printer package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "ハブ · 印刷不可"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (印刷可能)"
+
+msgid "Text bearbeiten"
+msgstr "テキストを編集"
+
+msgid "Text hinzufügen"
+msgstr "テキストを追加"
+
+msgid "Text:"
+msgstr "テキスト:"
+
+msgid "Schriftart wählen"
+msgstr "フォントを選択"
+
+msgid "Schrift:"
+msgstr "フォント:"
+
+msgid "Textfarbe"
+msgstr "テキストの色"
+
+msgid "Farbe:"
+msgstr "色:"
+
+msgid "Abbrechen"
+msgstr "キャンセル"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Drucken …"
+msgstr "印刷 …"
+
+msgid "Disc-Vorschau"
+msgstr "ディスクプレビュー"
+
+msgid "Drucker"
+msgstr "プリンター"
+
+msgid "Drucker:"
+msgstr "プリンター:"
+
+msgid "Erkenne Drucker …"
+msgstr "プリンターを検出中 …"
+
+msgid "Drucker neu erkennen"
+msgstr "プリンターを再検出"
+
+msgid "Initialisierung …"
+msgstr "初期化中 …"
+
+msgid "Disc-Optionen"
+msgstr "ディスクオプション"
+
+msgid "Hub-Größe:"
+msgstr "ハブサイズ:"
+
+msgid "Hintergrund"
+msgstr "背景"
+
+msgid "Hintergrundfarbe"
+msgstr "背景色"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "白にリセット"
+
+msgid "Bild:"
+msgstr "画像:"
+
+msgid "Laden …"
+msgstr "読み込み …"
+
+msgid "(kein Bild)"
+msgstr "(画像なし)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "背景画像を削除"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "ヒント: 画像ファイルをプレビューに直接ドラッグしてください。"
+
+msgid "Bild-Position & Zoom"
+msgstr "画像位置 & ズーム"
+
+msgid "Zoom:"
+msgstr "ズーム:"
+
+msgid "5 mm links"
+msgstr "5 mm 左"
+
+msgid "5 mm rechts"
+msgstr "5 mm 右"
+
+msgid "5 mm oben"
+msgstr "5 mm 上"
+
+msgid "5 mm unten"
+msgstr "5 mm 下"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ 中央揃え"
+
+msgid "Zurücksetzen"
+msgstr "リセット"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "ドラッグ = 移動 · マウスホイール = ズーム"
+
+msgid "Text-Elemente"
+msgstr "テキスト要素"
+
+msgid "+ Hinzufügen"
+msgstr "+ 追加"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "新しいテキスト要素を追加"
+
+msgid "Keine Text-Elemente"
+msgstr "テキスト要素なし"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "クリック = 選択 · ダブルクリック = 編集 · ドラッグ = 移動"
+
+msgid "Element löschen"
+msgstr "要素を削除"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(ディスクプリンターが見つかりません)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "ディスク対応プリンターが見つかりません"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "ディスク対応プリンターが検出されませんでした。"
+
+msgid "Prüfe Status …"
+msgstr "状態を確認中 …"
+
+msgid "Hintergrundbild wählen"
+msgstr "背景画像を選択"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "画像 (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "すべてのファイル"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"画像を読み込めませんでした:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "準備完了"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "無効 / 停止"
+
+msgid "Status unbekannt"
+msgstr "状態不明"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "接続不可 (タイムアウト)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "エラー: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "プリンターが選択されていません。"
+
+msgid "Disc drucken?"
+msgstr "ディスクを印刷しますか？"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"プリンター:  %(name)s\n"
+"解像度:      %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "印刷"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"レンダリングエラー:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"印刷エラー:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "タイムアウト: プリンターが応答しません (>30 秒)。"
+
+msgid "Druckauftrag gesendet"
+msgstr "印刷ジョブを送信しました"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "印刷ジョブが正常にキューに追加されました。"

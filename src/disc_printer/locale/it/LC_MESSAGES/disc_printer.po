@@ -1,0 +1,242 @@
+# Italian translation of disc-printer
+# Copyright (C) 2026 haku
+# This file is distributed under the same license as the disc-printer package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Italian\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "Hub · non stampabile"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (stampabile)"
+
+msgid "Text bearbeiten"
+msgstr "Modifica testo"
+
+msgid "Text hinzufügen"
+msgstr "Aggiungi testo"
+
+msgid "Text:"
+msgstr "Testo:"
+
+msgid "Schriftart wählen"
+msgstr "Scegli carattere"
+
+msgid "Schrift:"
+msgstr "Carattere:"
+
+msgid "Textfarbe"
+msgstr "Colore testo"
+
+msgid "Farbe:"
+msgstr "Colore:"
+
+msgid "Abbrechen"
+msgstr "Annulla"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Drucken …"
+msgstr "Stampa …"
+
+msgid "Disc-Vorschau"
+msgstr "Anteprima disco"
+
+msgid "Drucker"
+msgstr "Stampante"
+
+msgid "Drucker:"
+msgstr "Stampante:"
+
+msgid "Erkenne Drucker …"
+msgstr "Rilevamento stampante …"
+
+msgid "Drucker neu erkennen"
+msgstr "Rileva di nuovo la stampante"
+
+msgid "Initialisierung …"
+msgstr "Inizializzazione …"
+
+msgid "Disc-Optionen"
+msgstr "Opzioni disco"
+
+msgid "Hub-Größe:"
+msgstr "Dimensione hub:"
+
+msgid "Hintergrund"
+msgstr "Sfondo"
+
+msgid "Hintergrundfarbe"
+msgstr "Colore di sfondo"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "Reimposta su bianco"
+
+msgid "Bild:"
+msgstr "Immagine:"
+
+msgid "Laden …"
+msgstr "Carica …"
+
+msgid "(kein Bild)"
+msgstr "(nessuna immagine)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "Rimuovi immagine di sfondo"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "Suggerimento: trascina il file immagine direttamente sull'anteprima."
+
+msgid "Bild-Position & Zoom"
+msgstr "Posizione immagine & zoom"
+
+msgid "Zoom:"
+msgstr "Zoom:"
+
+msgid "5 mm links"
+msgstr "5 mm sinistra"
+
+msgid "5 mm rechts"
+msgstr "5 mm destra"
+
+msgid "5 mm oben"
+msgstr "5 mm su"
+
+msgid "5 mm unten"
+msgstr "5 mm giù"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ Centra"
+
+msgid "Zurücksetzen"
+msgstr "Reimposta"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "Trascina = sposta · Rotella = zoom"
+
+msgid "Text-Elemente"
+msgstr "Elementi di testo"
+
+msgid "+ Hinzufügen"
+msgstr "+ Aggiungi"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "Aggiungi nuovo elemento di testo"
+
+msgid "Keine Text-Elemente"
+msgstr "Nessun elemento di testo"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "Clic = seleziona · Doppio clic = modifica · Trascina = sposta"
+
+msgid "Element löschen"
+msgstr "Elimina elemento"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(Nessuna stampante disco trovata)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "Nessuna stampante compatibile con disco trovata"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "Nessuna stampante compatibile con disco rilevata."
+
+msgid "Prüfe Status …"
+msgstr "Controllo stato …"
+
+msgid "Hintergrundbild wählen"
+msgstr "Scegli immagine di sfondo"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "Immagini (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "Tutti i file"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"Impossibile caricare l'immagine:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "Pronto"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "Disattivato / arrestato"
+
+msgid "Status unbekannt"
+msgstr "Stato sconosciuto"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "Non raggiungibile (timeout)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "Errore: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "Nessuna stampante selezionata."
+
+msgid "Disc drucken?"
+msgstr "Stampare il disco?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"Stampante:   %(name)s\n"
+"Risoluzione: %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "Stampa"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"Errore di rendering:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"Errore di stampa:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "Timeout: la stampante non risponde (>30 s)."
+
+msgid "Druckauftrag gesendet"
+msgstr "Lavoro di stampa inviato"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "Lavoro di stampa accodato con successo."

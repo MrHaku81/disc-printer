@@ -1,0 +1,241 @@
+# Croatian translation of disc-printer
+# Copyright (C) 2026 haku
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: disc-printer 0.1.0\n"
+"Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
+"POT-Creation-Date: 2026-04-24 14:08+0200\n"
+"PO-Revision-Date: 2026-04-24 14:00+0000\n"
+"Last-Translator: Claude AI\n"
+"Language-Team: Croatian\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#, python-format
+msgid "Ø %.0f mm"
+msgstr "Ø %.0f mm"
+
+msgid "Hub · nicht bedruckbar"
+msgstr "Središte · nije za ispis"
+
+#, python-format
+msgid "Ø %.0f mm  (bedruckbar)"
+msgstr "Ø %.0f mm  (za ispis)"
+
+msgid "Text bearbeiten"
+msgstr "Uredi tekst"
+
+msgid "Text hinzufügen"
+msgstr "Dodaj tekst"
+
+msgid "Text:"
+msgstr "Tekst:"
+
+msgid "Schriftart wählen"
+msgstr "Odaberi font"
+
+msgid "Schrift:"
+msgstr "Font:"
+
+msgid "Textfarbe"
+msgstr "Boja teksta"
+
+msgid "Farbe:"
+msgstr "Boja:"
+
+msgid "Abbrechen"
+msgstr "Odustani"
+
+msgid "OK"
+msgstr "U redu"
+
+msgid "Drucken …"
+msgstr "Ispis …"
+
+msgid "Disc-Vorschau"
+msgstr "Pregled diska"
+
+msgid "Drucker"
+msgstr "Pisač"
+
+msgid "Drucker:"
+msgstr "Pisač:"
+
+msgid "Erkenne Drucker …"
+msgstr "Prepoznavanje pisača …"
+
+msgid "Drucker neu erkennen"
+msgstr "Ponovno prepoznaj pisač"
+
+msgid "Initialisierung …"
+msgstr "Inicijalizacija …"
+
+msgid "Disc-Optionen"
+msgstr "Postavke diska"
+
+msgid "Hub-Größe:"
+msgstr "Veličina središta:"
+
+msgid "Hintergrund"
+msgstr "Pozadina"
+
+msgid "Hintergrundfarbe"
+msgstr "Boja pozadine"
+
+msgid "Zurücksetzen auf Weiß"
+msgstr "Vrati na bijelu"
+
+msgid "Bild:"
+msgstr "Slika:"
+
+msgid "Laden …"
+msgstr "Učitaj …"
+
+msgid "(kein Bild)"
+msgstr "(nema slike)"
+
+msgid "Hintergrundbild entfernen"
+msgstr "Ukloni sliku pozadine"
+
+msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
+msgstr "Savjet: povucite datoteku slike izravno na pregled."
+
+msgid "Bild-Position & Zoom"
+msgstr "Položaj slike & zum"
+
+msgid "Zoom:"
+msgstr "Zum:"
+
+msgid "5 mm links"
+msgstr "5 mm lijevo"
+
+msgid "5 mm rechts"
+msgstr "5 mm desno"
+
+msgid "5 mm oben"
+msgstr "5 mm gore"
+
+msgid "5 mm unten"
+msgstr "5 mm dolje"
+
+msgid "⌂ Zentrieren"
+msgstr "⌂ Centriraj"
+
+msgid "Zurücksetzen"
+msgstr "Vrati"
+
+msgid "Bild ziehen = verschieben · Mausrad = Zoom"
+msgstr "Povuci = pomakni · Kotačić miša = zum"
+
+msgid "Text-Elemente"
+msgstr "Tekstualni elementi"
+
+msgid "+ Hinzufügen"
+msgstr "+ Dodaj"
+
+msgid "Neues Text-Element hinzufügen"
+msgstr "Dodaj novi tekstualni element"
+
+msgid "Keine Text-Elemente"
+msgstr "Nema tekstualnih elemenata"
+
+msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
+msgstr "Klik = odaberi · Dvostruki klik = uredi · Povuci = pomakni"
+
+msgid "Element löschen"
+msgstr "Izbriši element"
+
+msgid "(Kein Disc-Drucker gefunden)"
+msgstr "(Nije pronađen pisač za diskove)"
+
+msgid "Kein Disc-fähiger Drucker gefunden"
+msgstr "Nije pronađen pisač kompatibilan s diskovima"
+
+msgid "Kein Disc-fähiger Drucker erkannt."
+msgstr "Nije prepoznat pisač kompatibilan s diskovima."
+
+msgid "Prüfe Status …"
+msgstr "Provjera stanja …"
+
+msgid "Hintergrundbild wählen"
+msgstr "Odaberi sliku pozadine"
+
+msgid "Bilder (PNG, JPG, WEBP …)"
+msgstr "Slike (PNG, JPG, WEBP …)"
+
+msgid "Alle Dateien"
+msgstr "Sve datoteke"
+
+#, python-format
+msgid ""
+"Bild konnte nicht geladen werden:\n"
+"%s"
+msgstr ""
+"Slika se nije mogla učitati:\n"
+"%s"
+
+msgid "Bereit"
+msgstr "Spreman"
+
+msgid "Deaktiviert / gestoppt"
+msgstr "Onemogućeno / zaustavljeno"
+
+msgid "Status unbekannt"
+msgstr "Nepoznato stanje"
+
+msgid "Nicht erreichbar (Timeout)"
+msgstr "Nedostupno (prekoračenje vremena)"
+
+#, python-format
+msgid "Fehler: %s"
+msgstr "Greška: %s"
+
+msgid "Kein Drucker ausgewählt."
+msgstr "Nije odabran pisač."
+
+msgid "Disc drucken?"
+msgstr "Ispisati disk?"
+
+#, python-format
+msgid ""
+"Drucker:    %(name)s\n"
+"Auflösung:  %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+msgstr ""
+"Pisač:      %(name)s\n"
+"Rezolucija: %(px)d×%(px)d px  (300 DPI)\n"
+"\n"
+"%(cmd)s"
+
+msgid "Drucken"
+msgstr "Ispis"
+
+#, python-format
+msgid ""
+"Render-Fehler:\n"
+"%s"
+msgstr ""
+"Greška renderiranja:\n"
+"%s"
+
+#, python-format
+msgid ""
+"Druckfehler:\n"
+"%s"
+msgstr ""
+"Greška ispisa:\n"
+"%s"
+
+msgid "Timeout: Drucker antwortet nicht (>30 s)."
+msgstr "Prekoračenje vremena: pisač ne odgovara (>30 s)."
+
+msgid "Druckauftrag gesendet"
+msgstr "Zadatak ispisa poslan"
+
+msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
+msgstr "Zadatak ispisa uspješno dodan u red čekanja."
