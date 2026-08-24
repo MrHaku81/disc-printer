@@ -14,7 +14,30 @@ that does not require Wine, a browser, or a cloud subscription. If your printer 
 directly onto printable CDs/DVDs/Blu-rays and has a CUPS driver installed, Disc Printer
 should work with it.
 
-**Tested printer:** Canon PIXMA TS700 series
+See [Printer Compatibility](#printer-compatibility) for tested models.
+
+## Printer Compatibility
+
+Disc Printer does not use a hardcoded model list — it detects disc-capable printers by
+scanning the PPD files of all printers configured in CUPS (looking for disc-tray
+capabilities such as `InputSlot=Disc`, `MediaType=Disc`, 120x120mm media). In principle,
+any printer whose CUPS/PPD setup exposes a disc tray should work.
+
+### Tested & verified
+
+| Printer | Detection | Disc printing | Notes |
+|---|---|---|---|
+| Canon PIXMA TS705a ("TS700 series" in CUPS) | ✅ | ✅ | Multi-purpose tray, full-surface color prints |
+
+### Should work (untested)
+
+Canon PIXMA models with a multi-purpose (disc) tray and Epson models with disc print
+support — reports welcome!
+
+**Tested a different model?** Please report it in
+[Issue #1](https://github.com/MrHaku81/disc-printer/issues/1) — model name, whether
+detection worked, and whether the print landed correctly on the disc. Every confirmed
+report gets added here.
 
 ## Features
 
