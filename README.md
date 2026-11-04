@@ -111,27 +111,36 @@ flatpak run de.haku.disc-printer
 > flatpak install flathub org.gnome.Platform//47
 > ```
 
-### Arch Linux / CachyOS / Manjaro
+### From Git (pipx)
+
+PyGObject and pycairo must come from the distribution package — building them
+inside a pip-managed environment is painful and fragile. `pipx` with
+`--system-site-packages` installs Disc Printer into an isolated venv that can
+still see the distro-provided GTK bindings.
+
+#### Arch Linux / CachyOS / Manjaro
 
 ```bash
-sudo pacman -S python-gobject python-cairo cups python-numpy
-pip install --user disc-printer
+sudo pacman -S python-gobject python-cairo cups python-numpy python-pipx
+pipx install --system-site-packages git+https://github.com/MrHaku81/disc-printer.git
 ```
 
-### Debian / Ubuntu / Linux Mint
+#### Debian / Ubuntu / Linux Mint
 
 ```bash
 sudo apt install python3-gi python3-gi-cairo gir1.2-gtk-4.0 \
-                 python3-cairo cups python3-numpy
-pip install --user disc-printer
+                 python3-cairo cups python3-numpy pipx
+pipx install --system-site-packages git+https://github.com/MrHaku81/disc-printer.git
 ```
 
 ### From source
 
 ```bash
-git clone git@github.com:MrHaku81/disc-printer.git
+git clone https://github.com/MrHaku81/disc-printer.git
 cd disc-printer
-pip install -e . --break-system-packages
+python3 -m venv --system-site-packages .venv
+.venv/bin/pip install -e .
+.venv/bin/disc-printer
 ```
 
 ### Running
