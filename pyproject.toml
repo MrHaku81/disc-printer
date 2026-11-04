@@ -26,7 +26,12 @@ packages = ["src/disc_printer"]
 artifacts = ["src/disc_printer/locale/**/*.mo"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/", "Makefile"]
+include = ["src/", "Makefile", "hatch_build.py"]
+
+# Custom build hook: compile .po -> .mo at build time (see hatch_build.py).
+# Runs for both wheel and sdist targets so translations are present either way.
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
 
 [tool.hatch.envs.default]
 features = ["enhanced"]
