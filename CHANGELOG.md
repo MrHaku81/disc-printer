@@ -96,6 +96,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     if `_draw_image_elem` hasn't set it yet)
   - Added `try/except` around `_draw_img_handles` with error logging
 
+## [0.1.1] – 2026-11-04
+
+### Fixed
+
+- README documented a `pip install --user disc-printer` that never existed
+  (the package was never published to PyPI), and translations were missing in
+  installs from Git (`.mo` files are gitignored). Both fixed: README now
+  documents `pipx install --system-site-packages git+https://...`, and a
+  custom Hatch build hook compiles `.po` → `.mo` at wheel-build time.
+
 ## [0.1.0] – 2026-04-24
 
 ### Added
@@ -137,5 +147,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `window.py`: `_apply_loaded_design()` aktualisiert auch `images`-Liste und
   `_img_rows`
 
-[Unreleased]: https://github.com/example/disc-printer/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/example/disc-printer/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/example/disc-printer/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/example/disc-printer/releases/tag/v0.1.0
