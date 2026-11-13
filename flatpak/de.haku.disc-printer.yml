@@ -1,11 +1,11 @@
 id: de.haku.disc-printer
 runtime: org.gnome.Platform
-runtime-version: '47'
+runtime-version: '51'
 sdk: org.gnome.Sdk
 command: disc-printer
 
-# The GNOME Platform 47 already provides:
-#   - Python 3.12, pycairo, PyGObject (gi), GTK4, Cairo, Pango, libcups.so.2
+# The GNOME Platform 51 already provides:
+#   - Python 3.14, pycairo, PyGObject (gi), GTK4, Cairo, Pango, libcups.so.2
 
 finish-args:
   - --socket=wayland
@@ -21,16 +21,16 @@ modules:
 
   # ── 1. numpy ──────────────────────────────────────────────────────────────
   # Not in the GNOME Platform; needed for brightness/contrast adjustment.
-  # Pre-built manylinux wheel for CPython 3.12 / x86_64.
+  # Pre-built manylinux wheel for CPython 3.14 / x86_64.
   - name: python-numpy
     buildsystem: simple
     build-commands:
       - pip3 install --no-index --find-links=. --prefix=/app
-          numpy-2.2.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+          numpy-2.5.4-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
     sources:
       - type: file
-        url: https://files.pythonhosted.org/packages/8c/3d/1e1db36cfd41f895d266b103df00ca5b3cbe965184df824dec5c08c6b803/numpy-2.2.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-        sha256: fd83c01228a688733f1ded5201c678f0c53ecc1006ffbc404db9f7a899ac6249
+        url: https://files.pythonhosted.org/packages/16/d5/928078d2b28f26829b138b4a6c3980045022fb409f570657a224ae60ef4e/numpy-2.5.4-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+        sha256: d549420b8858885cea8838a727842249218b9c1da24dd517e25c9c7a948310a3
 
   # ── 2. CUPS client tools ──────────────────────────────────────────────────
   # The Platform already has libcups.so.2; we only need to build and install
@@ -82,8 +82,8 @@ modules:
       # Compile gettext translation catalogues (.po → .mo)
       - make compile-mo
       # Install Python package into the runtime's site-packages
-      - install -d /app/lib/python3.12/site-packages
-      - cp -r src/disc_printer /app/lib/python3.12/site-packages/
+      - install -d /app/lib/python3.14/site-packages
+      - cp -r src/disc_printer /app/lib/python3.14/site-packages/
       # Entry-point script
       - |
         install -d /app/bin
@@ -103,8 +103,8 @@ modules:
           /app/share/icons/hicolor/scalable/apps/de.haku.disc-printer.svg
     sources:
       - type: archive
-        url: https://github.com/MrHaku81/disc-printer/archive/refs/tags/v0.1.0.tar.gz
-        sha256: f641f7ef656346e7695881e82d4ddf9feecdefa706eae208d23e1c8dd7cf0311
+        url: https://github.com/MrHaku81/disc-printer/archive/refs/tags/v0.1.2.tar.gz
+        sha256: 6b65ac2d95cdb6d7a91c0aedc46a5c5ff39bb13320552c82973d96453f6ffaa3
         strip-components: 1
       - type: file
         path: de.haku.disc-printer.desktop
