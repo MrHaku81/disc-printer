@@ -16,7 +16,7 @@ from ..i18n import _
 from .. import i18n as _i18n
 from .. import settings as _settings
 from .. import file_format as _fmt
-from ..printer import DiscPrinter
+from ..printer import DiscPrinter, lp_error_message
 from ..detection import detect_disc_printers
 from ..model import TextElement, ImageElement, DesignState
 from ..image_utils import pixbuf_to_cairo, write_print_png
@@ -1767,7 +1767,13 @@ class MainWindow(Gtk.ApplicationWindow):
             else:
                 err = (r.stderr or r.stdout).strip()
                 log.error(f"lp Fehler (rc={r.returncode}): {err}")
-                GLib.idle_add(self._show_error, _("Druckfehler:\n%s") % err)
+                if printer.temporary:
+                    log.error(
+                        f"{printer.name} ist ein temporäres (treiberloses) Ziel "
+                        f"— CUPS hat vermutlich keine temporäre Queue angelegt "
+                        f"(CUPS 2.4.20: OpenPrinting/cups#1751)"
+                    )
+                GLib.idle_add(self._show_error, lp_error_message(printer, err))
 
         except subprocess.TimeoutExpired:
             log.error("lp Timeout (>30 s)")

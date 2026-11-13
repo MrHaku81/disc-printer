@@ -39,6 +39,20 @@ support — reports welcome!
 detection worked, and whether the print landed correctly on the disc. Every confirmed
 report gets added here.
 
+### Driverless printers (no permanent CUPS queue)
+
+Network printers that CUPS only offers as driverless destinations (listed by
+`lpstat -e`, but not by `lpstat -p`) are detected as well: their disc support is queried
+directly from the printer via IPP (`ippfind`/`ipptool`, see [Requirements](#requirements)).
+
+Printing to such a printer needs a *temporary* queue, which CUPS creates on demand.
+**CUPS 2.4.20 has a bug here:** creating the temporary queue fails
+(`Bad device URI "://"` in the CUPS error log), so printing fails
+([OpenPrinting/cups#1751](https://github.com/OpenPrinting/cups/issues/1751), fixed on
+the 2.4.x branch, not yet released). Disc Printer then shows an explanatory message.
+Until a CUPS release with the fix is available, set the printer up as a permanent queue
+(e.g. in your desktop's printer settings); it is then detected and printed to as usual.
+
 ## Features
 
 ### Canvas & layers

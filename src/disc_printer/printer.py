@@ -1,3 +1,6 @@
+from .i18n import _
+
+
 class DiscPrinter:
     def __init__(self, name: str, ppd_path: str,
                  input_slot: str | None,
@@ -27,3 +30,24 @@ class DiscPrinter:
     @property
     def lp_command_str(self) -> str:
         return f"lp -d {self.name} {' '.join(self.lp_options)} <datei>"
+
+
+def lp_error_message(printer: DiscPrinter, lp_error: str) -> str:
+    """
+    Text für die GUI, wenn `lp` fehlschlägt.
+
+    Feste Queues: die lp-Meldung wie bisher.  Temporäre (treiberlose) Ziele:
+    eine verständliche Erklärung statt z. B. "lp: No such file or directory"
+    — CUPS 2.4.20 kann temporäre Queues wegen eines Fehlers in cupsd nicht
+    anlegen (OpenPrinting/cups#1751, behoben im Zweig 2.4.x).
+    """
+    if not printer.temporary:
+        return _("Druckfehler:\n%s") % lp_error
+    # TRANSLATORS: Shown when printing to a driverless printer without a
+    # permanent CUPS queue fails. "CUPS 2.4.20" is a version number.
+    return _(
+        "Der treiberlose Drucker konnte nicht angesprochen werden: CUPS hat "
+        "keine temporäre Warteschlange angelegt.\n\n"
+        "Bei CUPS 2.4.20 ist das ein bekannter Fehler. Abhilfe: den Drucker "
+        "in den Druckereinstellungen fest einrichten."
+    )
