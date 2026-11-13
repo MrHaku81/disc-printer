@@ -34,6 +34,16 @@
     <category>Publishing</category>
   </categories>
   <releases>
+    <release version="0.1.2" date="2026-11-13">
+      <description>
+        <p>Detects driverless network printers that have no permanent CUPS queue and checks their disc support via IPP. Shows an understandable message when printing to such a printer fails because of a bug in CUPS 2.4.20, and fixes a crash of the confirmation shown after a successful print.</p>
+      </description>
+    </release>
+    <release version="0.1.1" date="2026-11-04">
+      <description>
+        <p>Translations now work in installations from Git, and the README documents the correct installation via pipx.</p>
+      </description>
+    </release>
     <release version="0.1.0" date="2026-04-25">
       <description>
         <p>Initial release with full layer editing, undo/redo, and 34-language support.</p>

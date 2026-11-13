@@ -96,6 +96,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     if `_draw_image_elem` hasn't set it yet)
   - Added `try/except` around `_draw_img_handles` with error logging
 
+## [0.1.2] – 2026-11-13
+
+### Added
+
+#### Treiberlose Drucker ohne feste CUPS-Queue (#2)
+- `detection.py`: Die Druckersuche vereinigt `lpstat -p` mit `lpstat -l -e` und
+  findet so auch temporäre Ziele, die CUPS erst beim Drucken anlegt (Instanzen
+  `name/instanz` → Basisname; ohne `-e`-Unterstützung weiter nur `-p`)
+- `detection.py`: Disc-Fähigkeit temporärer Ziele wird direkt beim Drucker per
+  IPP abgefragt (`media-source-supported`, `media-type-supported`,
+  `media-supported`): ein gemeinsamer `ippfind`-Suchlauf, danach `ipptool`
+  parallel für alle verbliebenen Ziele; Werte im PPD-Format wie bei festen Queues
+- `detection.py`: Temporäre Ziele, die auf dasselbe Gerät zeigen wie eine feste
+  Queue (Vergleich über den Hostnamen), werden ausgeblendet und im Log vermerkt
+- `window.py`: Statusanzeige für temporäre Ziele: „Im Netzwerk verfügbar
+  (treiberlos)" bzw. „Nicht mehr im Netzwerk gefunden (treiberlos)" statt
+  „Status unbekannt"
+- `detection.py`: Einmalige Log-Warnung, wenn `ippfind`/`ipptool` fehlen
+  (Debian/Ubuntu: `cups-ipp-utils`, Arch: `cups`); README-Abhängigkeiten ergänzt
+- Übersetzungen der neuen Texte in 33 Sprachen
+
+### Changed
+- Übersetzungsvorlage `disc_printer.pot` neu erzeugt: Sie enthielt seit 0.1.0
+  47 Texte der Oberfläche nicht. Diese stehen jetzt in allen `.po`-Dateien,
+  sind aber noch unübersetzt (Anzeige auf Deutsch)
+
+### Fixed
+- `window.py`/`printer.py`: Druck auf ein temporäres Ziel zeigte nur die rohe
+  lp-Meldung („No such file or directory"). Jetzt erscheint eine verständliche
+  Erklärung mit Abhilfe (Drucker fest einrichten). Ursache ist ein Fehler in
+  cupsd 2.4.20 beim Anlegen temporärer Queues (OpenPrinting/cups#1751, im Zweig
+  2.4.x behoben, noch kein Release); README-Abschnitt „Driverless printers"
+- `window.py`: Die Erfolgsmeldung nach dem Druck stürzte mit `AttributeError`
+  ab (`set_heading`/`set_body` gehören zu `Adw.AlertDialog`); jetzt
+  `Gtk.AlertDialog.set_message`/`set_detail`. Fehler bestand seit 0.1.0
+
 ## [0.1.1] – 2026-11-04
 
 ### Fixed
@@ -147,6 +183,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `window.py`: `_apply_loaded_design()` aktualisiert auch `images`-Liste und
   `_img_rows`
 
-[Unreleased]: https://github.com/example/disc-printer/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/example/disc-printer/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/example/disc-printer/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/example/disc-printer/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/example/disc-printer/releases/tag/v0.1.0
