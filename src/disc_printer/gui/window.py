@@ -1791,8 +1791,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def _on_print_success(self, job_info: str) -> bool:
         dlg = Gtk.AlertDialog()
-        dlg.set_heading(_("Druckauftrag gesendet"))
-        dlg.set_body(
+        dlg.set_message(_("Druckauftrag gesendet"))
+        dlg.set_detail(
             job_info or _("Druckauftrag erfolgreich in Warteschlange eingereiht.")
         )
         dlg.set_buttons([_("OK")])

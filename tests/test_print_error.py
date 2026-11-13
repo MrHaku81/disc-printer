@@ -86,5 +86,45 @@ class PrintThreadTests(unittest.TestCase):
                                      "request id is X-1 (1 file(s))")
 
 
+class PrintSuccessDialogTests(unittest.TestCase):
+    """_on_print_success ohne Fenster: echter Gtk.AlertDialog, show() gemockt."""
+
+    @classmethod
+    def setUpClass(cls):
+        from disc_printer.gui import window
+        cls.window = window
+
+    def _call(self, job_info):
+        w = self.window
+        fake_self = mock.Mock()
+        calls = []
+
+        def fake_show(dlg, parent):
+            calls.append((dlg, parent))
+
+        with mock.patch.object(w.Gtk.AlertDialog, "show", fake_show):
+            ret = w.MainWindow._on_print_success(fake_self, job_info)
+        self.assertEqual(len(calls), 1)
+        dlg, parent = calls[0]
+        self.assertIs(parent, fake_self)
+        self.assertEqual(ret, w.GLib.SOURCE_REMOVE)
+        return dlg
+
+    def test_no_exception_and_texts_set(self):
+        dlg = self._call("request id is Canon_TS700_series-12 (1 file(s))")
+        self.assertIsInstance(dlg, self.window.Gtk.AlertDialog)
+        self.assertEqual(dlg.get_message(),
+                         self.window._("Druckauftrag gesendet"))
+        self.assertEqual(dlg.get_detail(),
+                         "request id is Canon_TS700_series-12 (1 file(s))")
+        self.assertEqual(list(dlg.get_buttons()), [self.window._("OK")])
+        self.assertEqual(dlg.get_default_button(), 0)
+
+    def test_empty_job_info_uses_fallback_text(self):
+        dlg = self._call("")
+        self.assertEqual(dlg.get_detail(), self.window._(
+            "Druckauftrag erfolgreich in Warteschlange eingereiht."))
+
+
 if __name__ == "__main__":
     unittest.main()
