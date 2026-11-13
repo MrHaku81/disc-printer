@@ -7,7 +7,95 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.1.2] – 2026-11-13
+
 ### Added
+
+#### Treiberlose Drucker ohne feste CUPS-Queue (#2)
+- `detection.py`: Die Druckersuche vereinigt `lpstat -p` mit `lpstat -l -e` und
+  findet so auch temporäre Ziele, die CUPS erst beim Drucken anlegt (Instanzen
+  `name/instanz` → Basisname; ohne `-e`-Unterstützung weiter nur `-p`)
+- `detection.py`: Disc-Fähigkeit temporärer Ziele wird direkt beim Drucker per
+  IPP abgefragt (`media-source-supported`, `media-type-supported`,
+  `media-supported`): ein gemeinsamer `ippfind`-Suchlauf, danach `ipptool`
+  parallel für alle verbliebenen Ziele; Werte im PPD-Format wie bei festen Queues
+- `detection.py`: Temporäre Ziele, die auf dasselbe Gerät zeigen wie eine feste
+  Queue (Vergleich über den Hostnamen), werden ausgeblendet und im Log vermerkt
+- `window.py`: Statusanzeige für temporäre Ziele: „Im Netzwerk verfügbar
+  (treiberlos)" bzw. „Nicht mehr im Netzwerk gefunden (treiberlos)" statt
+  „Status unbekannt"
+- `detection.py`: Einmalige Log-Warnung, wenn `ippfind`/`ipptool` fehlen
+  (Debian/Ubuntu: `cups-ipp-utils`, Arch: `cups`); README-Abhängigkeiten ergänzt
+- Übersetzungen der neuen Texte in 33 Sprachen
+
+### Changed
+- Übersetzungsvorlage `disc_printer.pot` erneuert: Sie enthielt seit 0.1.0
+  47 Texte der Oberfläche nicht. Diese sind jetzt in allen 33 Sprachen
+  übersetzt. Die Übersetzungen wurden maschinell erstellt; Korrekturen sind
+  willkommen
+
+### Fixed
+- `window.py`/`printer.py`: Druck auf ein temporäres Ziel zeigte nur die rohe
+  lp-Meldung („No such file or directory"). Jetzt erscheint eine verständliche
+  Erklärung mit Abhilfe (Drucker fest einrichten). Ursache ist ein Fehler in
+  cupsd 2.4.20 beim Anlegen temporärer Queues (OpenPrinting/cups#1751, im Zweig
+  2.4.x behoben, noch kein Release); README-Abschnitt „Driverless printers"
+- `window.py`: Die Erfolgsmeldung nach dem Druck stürzte mit `AttributeError`
+  ab (`set_heading`/`set_body` gehören zu `Adw.AlertDialog`); jetzt
+  `Gtk.AlertDialog.set_message`/`set_detail`. Fehler bestand seit 0.1.0
+
+## [0.1.1] – 2026-11-04
+
+### Fixed
+
+- README documented a `pip install --user disc-printer` that never existed
+  (the package was never published to PyPI), and translations were missing in
+  installs from Git (`.mo` files are gitignored). Both fixed: README now
+  documents `pipx install --system-site-packages git+https://...`, and a
+  custom Hatch build hook compiles `.po` → `.mo` at wheel-build time.
+
+### Changed
+
+- Flatpak-Bundle und Prüfsumme im Manifest neu erzeugt, damit das Bundle den
+  CUPS-HTTP-Fallback aus 0.1.0 enthält
+- README: neuer Abschnitt „Printer Compatibility" mit getesteten Modellen
+  (Canon PIXMA TS705a) und der Bitte um Rückmeldungen in Issue #1
+
+
+## [0.1.0] – 2026-04-24
+
+### Added
+
+#### Bild-Elemente mit vollem Transformations-Support (2026-04-24 19:18)
+- `model.py`: neues `ImageElement` mit den Feldern `surface`, `x`, `y`, `scale_x`,
+  `scale_y`, `rotation` (Grad), `opacity`, `z`, `flip_h`, `flip_v`
+- `model.py`: `DesignState.images` (Liste), `selected_image` und `all_sorted()`
+  (sortiert `ImageElement` + `TextElement` gemeinsam nach z-Wert)
+- `canvas.py`: `ImageElement`-Rendering via Cairo (Rotation, Skalierung, Flip,
+  Opazität, bilinearer Filter)
+- `canvas.py`: 9-Handle-System für das selektierte Bild:
+  4 Eckpunkte = proportionale Skalierung, 4 Seitenmittelpunkte = Achsenskalierung,
+  1 Rotationskreis über der Oberkante
+- `canvas.py`: Drag-Modi `move` / `scale` / `rotate` für `ImageElement`
+- `canvas.py`: Mausrad zoomt das aktuell selektierte Bild (Strg nicht nötig)
+- `window.py`: Panel „Bild-Elemente" mit Thumbnail, Opazitäts-Slider, z-Order-Buttons
+  (↑/↓), Löschen-Button
+- `window.py`: Spiegeln-Buttons „↔ H spiegeln" / „↕ V spiegeln" (eingeblendet wenn
+  ein Bild selektiert ist)
+- `file_format.py`: Format-Version 2 – `ImageElement`s werden als `img_0.png` …
+  `img_N.png` in die ZIP-Datei eingebettet; `flip_h`/`flip_v` im JSON gespeichert;
+  Hintergrundbild als separater `bg_image`-Schlüssel (`bg.png`)
+
+#### Design Speichern & Laden (2026-04-24 18:46)
+- `file_format.py`: neue Datei mit `save()` und `load()` für das `.discprint`-Format
+  (ZIP-Datei: `design.json` + eingebettete PNG-Bilder); Rückwärtskompatibilität mit v1
+- `file_format.py`: `DEFAULT_DIR = ~/Dokumente/DiscPrinter/` (wird beim Start
+  automatisch angelegt)
+- `window.py`: „Speichern"- und „Öffnen"-Buttons in der `HeaderBar`
+- `window.py`: `Gtk.FileDialog` mit `.discprint`-Filter und Standardpfad `DEFAULT_DIR`
+- `window.py`: `_apply_loaded_design()` lädt den kompletten Design-Zustand in die
+  laufende GUI (in-place Update, kein Neustart nötig)
 
 #### Flatpak-Paket (2026-04-25)
 - `flatpak/de.haku.disc-printer.yml`: Manifest für GNOME Platform 47;
@@ -17,13 +105,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Integration, AppStream-Metadaten, App-Icon
 - `flatpak/disc-printer.flatpak`: Fertig gebautes Single-File-Bundle (13 MB)
 - `flatpak/de.haku.disc-printer.flatpakref`: Referenzdatei für Flatpak-Install
-
-### Fixed
-
-#### Gettext-Shadowing in _on_detection_done (2026-04-25)
-- `window.py`: Loop-Variable `_` in `for _ in range(n):` durch `_i` ersetzt,
-  da `_` die gettext-Funktion überschrieb und `_("...")` im Rumpf abstürzte
-  (TypeError: 'int' object is not callable) wenn keine Disc-Drucker gefunden
 
 #### Helligkeit & Kontrast pro Bild-Element (2026-04-25)
 - `model.py`: `ImageElement` erhält `brightness` (float, default 1.0) und
@@ -86,95 +167,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `window.py`: Duplizieren erstellt Kopie mit +3 mm Versatz, nächstem freiem z-Wert,
   `locked=False` und `visible=True`; `ImageElement` teilt die Surface (kein Neu-Laden)
 
-### Changed
-- Canvas drag-and-drop now creates `ImageElement` instead of setting legacy background image
-- Background section hint text updated to clarify its limitations (position & zoom only)
-
-### Fixed
-- Selection handles not visible after clicking on an image element:
-  - Added robust `_draw_hw` fallback in `_draw` step 7 (recomputes from surface dimensions
-    if `_draw_image_elem` hasn't set it yet)
-  - Added `try/except` around `_draw_img_handles` with error logging
-
-## [0.1.2] – 2026-11-13
-
-### Added
-
-#### Treiberlose Drucker ohne feste CUPS-Queue (#2)
-- `detection.py`: Die Druckersuche vereinigt `lpstat -p` mit `lpstat -l -e` und
-  findet so auch temporäre Ziele, die CUPS erst beim Drucken anlegt (Instanzen
-  `name/instanz` → Basisname; ohne `-e`-Unterstützung weiter nur `-p`)
-- `detection.py`: Disc-Fähigkeit temporärer Ziele wird direkt beim Drucker per
-  IPP abgefragt (`media-source-supported`, `media-type-supported`,
-  `media-supported`): ein gemeinsamer `ippfind`-Suchlauf, danach `ipptool`
-  parallel für alle verbliebenen Ziele; Werte im PPD-Format wie bei festen Queues
-- `detection.py`: Temporäre Ziele, die auf dasselbe Gerät zeigen wie eine feste
-  Queue (Vergleich über den Hostnamen), werden ausgeblendet und im Log vermerkt
-- `window.py`: Statusanzeige für temporäre Ziele: „Im Netzwerk verfügbar
-  (treiberlos)" bzw. „Nicht mehr im Netzwerk gefunden (treiberlos)" statt
-  „Status unbekannt"
-- `detection.py`: Einmalige Log-Warnung, wenn `ippfind`/`ipptool` fehlen
-  (Debian/Ubuntu: `cups-ipp-utils`, Arch: `cups`); README-Abhängigkeiten ergänzt
-- Übersetzungen der neuen Texte in 33 Sprachen
-
-### Changed
-- Übersetzungsvorlage `disc_printer.pot` neu erzeugt: Sie enthielt seit 0.1.0
-  47 Texte der Oberfläche nicht. Diese stehen jetzt in allen `.po`-Dateien,
-  sind aber noch unübersetzt (Anzeige auf Deutsch)
-
-### Fixed
-- `window.py`/`printer.py`: Druck auf ein temporäres Ziel zeigte nur die rohe
-  lp-Meldung („No such file or directory"). Jetzt erscheint eine verständliche
-  Erklärung mit Abhilfe (Drucker fest einrichten). Ursache ist ein Fehler in
-  cupsd 2.4.20 beim Anlegen temporärer Queues (OpenPrinting/cups#1751, im Zweig
-  2.4.x behoben, noch kein Release); README-Abschnitt „Driverless printers"
-- `window.py`: Die Erfolgsmeldung nach dem Druck stürzte mit `AttributeError`
-  ab (`set_heading`/`set_body` gehören zu `Adw.AlertDialog`); jetzt
-  `Gtk.AlertDialog.set_message`/`set_detail`. Fehler bestand seit 0.1.0
-
-## [0.1.1] – 2026-11-04
-
-### Fixed
-
-- README documented a `pip install --user disc-printer` that never existed
-  (the package was never published to PyPI), and translations were missing in
-  installs from Git (`.mo` files are gitignored). Both fixed: README now
-  documents `pipx install --system-site-packages git+https://...`, and a
-  custom Hatch build hook compiles `.po` → `.mo` at wheel-build time.
-
-## [0.1.0] – 2026-04-24
-
-### Added
-
-#### Bild-Elemente mit vollem Transformations-Support (2026-04-24 19:18)
-- `model.py`: neues `ImageElement` mit den Feldern `surface`, `x`, `y`, `scale_x`,
-  `scale_y`, `rotation` (Grad), `opacity`, `z`, `flip_h`, `flip_v`
-- `model.py`: `DesignState.images` (Liste), `selected_image` und `all_sorted()`
-  (sortiert `ImageElement` + `TextElement` gemeinsam nach z-Wert)
-- `canvas.py`: `ImageElement`-Rendering via Cairo (Rotation, Skalierung, Flip,
-  Opazität, bilinearer Filter)
-- `canvas.py`: 9-Handle-System für das selektierte Bild:
-  4 Eckpunkte = proportionale Skalierung, 4 Seitenmittelpunkte = Achsenskalierung,
-  1 Rotationskreis über der Oberkante
-- `canvas.py`: Drag-Modi `move` / `scale` / `rotate` für `ImageElement`
-- `canvas.py`: Mausrad zoomt das aktuell selektierte Bild (Strg nicht nötig)
-- `window.py`: Panel „Bild-Elemente" mit Thumbnail, Opazitäts-Slider, z-Order-Buttons
-  (↑/↓), Löschen-Button
-- `window.py`: Spiegeln-Buttons „↔ H spiegeln" / „↕ V spiegeln" (eingeblendet wenn
-  ein Bild selektiert ist)
-- `file_format.py`: Format-Version 2 – `ImageElement`s werden als `img_0.png` …
-  `img_N.png` in die ZIP-Datei eingebettet; `flip_h`/`flip_v` im JSON gespeichert;
-  Hintergrundbild als separater `bg_image`-Schlüssel (`bg.png`)
-
-#### Design Speichern & Laden (2026-04-24 18:46)
-- `file_format.py`: neue Datei mit `save()` und `load()` für das `.discprint`-Format
-  (ZIP-Datei: `design.json` + eingebettete PNG-Bilder); Rückwärtskompatibilität mit v1
-- `file_format.py`: `DEFAULT_DIR = ~/Dokumente/DiscPrinter/` (wird beim Start
-  automatisch angelegt)
-- `window.py`: „Speichern"- und „Öffnen"-Buttons in der `HeaderBar`
-- `window.py`: `Gtk.FileDialog` mit `.discprint`-Filter und Standardpfad `DEFAULT_DIR`
-- `window.py`: `_apply_loaded_design()` lädt den kompletten Design-Zustand in die
-  laufende GUI (in-place Update, kein Neustart nötig)
+#### CUPS-HTTP-Fallback für die Flatpak-Sandbox (2026-04-25)
+- `detection.py`: `_fetch_ppd_via_cups_http()` holt die PPD über die CUPS-HTTP-API
+  am Unix-Socket `/run/cups/cups.sock` (im Flatpak per `--socket=cups`
+  verfügbar), weil `lpoptions -l` in der Sandbox `/etc/cups/ppd/` nicht lesen
+  kann; Erkennungsreihenfolge: PPD-Datei → lpoptions → CUPS-HTTP-API
 
 ### Changed
 - `model.py`: `TextElement` erhält `z`-Parameter für die Ebenensortierung
@@ -182,8 +179,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   sortiert gerendert (Bilder vor Text bei gleichem z)
 - `window.py`: `_apply_loaded_design()` aktualisiert auch `images`-Liste und
   `_img_rows`
+- Canvas drag-and-drop now creates `ImageElement` instead of setting legacy background image
+- Background section hint text updated to clarify its limitations (position & zoom only)
 
-[Unreleased]: https://github.com/example/disc-printer/compare/v0.1.2...HEAD
-[0.1.2]: https://github.com/example/disc-printer/compare/v0.1.1...v0.1.2
-[0.1.1]: https://github.com/example/disc-printer/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/example/disc-printer/releases/tag/v0.1.0
+### Fixed
+
+- Selection handles not visible after clicking on an image element:
+  - Added robust `_draw_hw` fallback in `_draw` step 7 (recomputes from surface dimensions
+    if `_draw_image_elem` hasn't set it yet)
+  - Added `try/except` around `_draw_img_handles` with error logging
+
+#### Gettext-Shadowing in _on_detection_done (2026-04-25)
+- `window.py`: Loop-Variable `_` in `for _ in range(n):` durch `_i` ersetzt,
+  da `_` die gettext-Funktion überschrieb und `_("...")` im Rumpf abstürzte
+  (TypeError: 'int' object is not callable) wenn keine Disc-Drucker gefunden
+
+
+[Unreleased]: https://github.com/MrHaku81/disc-printer/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/MrHaku81/disc-printer/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/MrHaku81/disc-printer/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/MrHaku81/disc-printer/releases/tag/v0.1.0
