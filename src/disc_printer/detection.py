@@ -1,9 +1,14 @@
 import http.client
 import os
 import re
+import shutil
 import socket
 import subprocess
+import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from typing import NamedTuple
+from urllib.parse import unquote, urlsplit
 
 from ._log import log
 from .printer import DiscPrinter
@@ -231,10 +236,313 @@ def _query_via_cups_http(name: str) -> tuple[str | None, str | None, str] | None
     return slot, mtype, msize or "120x120mm"
 
 
+# ── IPP-Fallback (treiberlose / temporäre Ziele) ─────────────────────────────
+
+# Zeile der ipptool-Ausgabe (-t -v):  "        name (typ) = wert1,wert2"
+_IPPTOOL_ATTR_RE = re.compile(r'^\s+([\w-]+) \([^)]*\) = (.*)$')
+
+# dnssd://<Instanzname>.<_ipp|_ipps>._tcp.<domain>/?uuid=…
+_DNSSD_HOST_RE = re.compile(r'^(?P<name>.+)\.(?P<regtype>_ipps?\._tcp)\.(?P<domain>.+?)\.?$')
+
+_IPP_ATTRS = ("media-source-supported", "media-type-supported", "media-supported")
+
+
+def _ppdize(keyword: str) -> str:
+    """
+    IPP-Keyword → PPD-Choice-Name, genauso wie CUPS es für treiberlose
+    Warteschlangen erzeugt (pwg_ppdize_name): "disc" → "Disc",
+    "photographic-glossy" → "PhotographicGlossy".  Damit sind die Werte
+    identisch zu denen einer dauerhaft angelegten treiberlosen Queue.
+    """
+    if not keyword:
+        return keyword
+    out = [keyword[0].upper()]
+    i = 1
+    while i < len(keyword):
+        c = keyword[i]
+        if c == "-" and i + 1 < len(keyword) and keyword[i + 1].isalnum():
+            out.append(keyword[i + 1].upper())
+            i += 2
+            continue
+        out.append(c)
+        i += 1
+    return "".join(out)
+
+
+def _posix_regex_escape(text: str) -> str:
+    return re.sub(r'([.^$|?*+()\[\]{}\\])', r'\\\1', text)
+
+
+def _ipptool_cmd(device_uri: str) -> list[str] | None:
+    """Baut den Befehl für Get-Printer-Attributes; dnssd:// via ippfind."""
+    query = ["ipptool", "-T", "8", "-t", "-v"]
+    scheme = device_uri.split(":", 1)[0].lower()
+    if scheme in ("ipp", "ipps"):
+        return query + [device_uri, "get-printer-attributes.test"]
+    if scheme == "dnssd":
+        m = _DNSSD_HOST_RE.match(unquote(urlsplit(device_uri).netloc))
+        if not m:
+            return None
+        return [
+            "ippfind", "-T", "3", m.group("regtype"),
+            "--name", f"^{_posix_regex_escape(m.group('name'))}$",
+            "-p",   # aufgelöste ipp(s)://host:port/… URI mit ausgeben
+            "-x", *query, "{}", "get-printer-attributes.test", ";",
+        ]
+    return None
+
+
+# Zeile von `ippfind -p`: aufgelöste URI am Zeilenanfang (ipptool rückt ein)
+_RESOLVED_URI_RE = re.compile(r'^(ipps?://\S+)$')
+
+_IPP_PACKAGE_HINT = "Debian/Ubuntu: cups-ipp-utils, Arch: cups"
+_ipp_tools_warned = False
+
+
+class _IppInfo(NamedTuple):
+    resolved_uri: str | None          # ipp(s)://host:port/… (None wenn unbekannt)
+    attrs: dict[str, list[str]]
+
+
+# Ergebnis je device_uri, wird pro Erkennungslauf geleert. Die Abfragen
+# laufen vorab parallel; die Kaskade (_detect_caps) liest nur noch hieraus.
+_ipp_cache: dict[str, _IppInfo | None] = {}
+
+
+def _check_ipp_tools(cmd: list[str]) -> bool:
+    """True wenn alle benötigten Werkzeuge da sind; warnt sonst einmalig."""
+    global _ipp_tools_warned
+    needed = ["ipptool"] + (["ippfind"] if "ippfind" in cmd else [])
+    missing = [t for t in needed if shutil.which(t) is None]
+    if not missing:
+        return True
+    if not _ipp_tools_warned:
+        _ipp_tools_warned = True
+        log.warning(
+            f"{' und '.join(missing)} nicht gefunden — treiberlose Drucker "
+            f"ohne feste CUPS-Queue werden nicht als disc-fähig erkannt. "
+            f"Fehlendes Paket installieren ({_IPP_PACKAGE_HINT})."
+        )
+    return False
+
+
+def _ipp_lookup(
+    device_uri: str, resolved_uri: str | None = None,
+) -> _IppInfo | None:
+    """
+    Get-Printer-Attributes beim Drucker (gecacht je device_uri).
+
+    Mit resolved_uri (aus dem gemeinsamen ippfind-Suchlauf) wird ipptool
+    direkt aufgerufen; sonst wie bisher ippfind + ipptool je Ziel.
+    """
+    if device_uri in _ipp_cache:
+        return _ipp_cache[device_uri]
+    info = _ipp_lookup_uncached(resolved_uri or device_uri)
+    _ipp_cache[device_uri] = info
+    return info
+
+
+def _ipp_lookup_uncached(device_uri: str) -> _IppInfo | None:
+    cmd = _ipptool_cmd(device_uri)
+    if cmd is None:
+        log.debug(f"    IPP: URI nicht unterstützt: {device_uri!r}")
+        return None
+    if not _check_ipp_tools(cmd):
+        return None
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+    except FileNotFoundError:
+        _check_ipp_tools(cmd)
+        log.debug(f"    IPP: {cmd[0]} nicht gefunden")
+        return None
+    except subprocess.TimeoutExpired:
+        log.debug(f"    IPP: Timeout für {device_uri!r}")
+        return None
+    except Exception as e:
+        log.debug(f"    IPP: Fehler für {device_uri!r}: {e}")
+        return None
+
+    resolved = device_uri if cmd[0] == "ipptool" else None
+    attrs: dict[str, list[str]] = {}
+    for line in r.stdout.splitlines():
+        m = _IPPTOOL_ATTR_RE.match(line)
+        if m and m.group(1) in _IPP_ATTRS and m.group(1) not in attrs:
+            attrs[m.group(1)] = [v.strip() for v in m.group(2).split(",")]
+            continue
+        m = _RESOLVED_URI_RE.match(line)
+        if m and resolved is None:
+            resolved = m.group(1)
+    log.debug(f"    IPP: aufgelöst zu {resolved!r}")
+    return _IppInfo(resolved, attrs)
+
+
+def _caps_from_ipp(
+    attrs: dict[str, list[str]],
+) -> tuple[str | None, str | None, str] | None:
+    slot  = next((v for v in attrs.get("media-source-supported", [])
+                  if _matches(v, _SLOT_KEYS)), None)
+    mtype = next((v for v in attrs.get("media-type-supported", [])
+                  if _matches(v, _TYPE_KEYS)), None)
+    msize = next((v for v in attrs.get("media-supported", [])
+                  if _matches(v, _SIZE_KEYS) or "120x120" in v), None)
+
+    log.debug(f"    IPP: source={slot!r} type={mtype!r} media={msize!r}")
+    if slot is None and mtype is None:
+        return None
+    # InputSlot/MediaType im PPD-Format; media= akzeptiert PWG-Namen direkt
+    return (
+        _ppdize(slot) if slot else None,
+        _ppdize(mtype) if mtype else None,
+        msize or "120x120mm",
+    )
+
+
+def _query_via_ipp(
+    device_uri: str,
+) -> tuple[str | None, str | None, str] | None:
+    """
+    Fragt die Disc-Fähigkeiten direkt beim Drucker per IPP ab.
+
+    Für temporäre Ziele (nur in `lpstat -e`) existiert noch keine
+    CUPS-Warteschlange und damit keine PPD — lpoptions und die CUPS-HTTP-API
+    liefern dann nichts.  Die IPP-Attribute media-source-supported,
+    media-type-supported und media-supported sind die Quelle, aus der CUPS
+    später selbst die PPD der temporären Queue erzeugt.
+    """
+    info = _ipp_lookup(device_uri)
+    if info is None:
+        return None
+    return _caps_from_ipp(info.attrs)
+
+
+# ── Dubletten: temporäres Ziel ↔ feste Queue ──────────────────────────────────
+
+_NETWORK_SCHEMES = frozenset({"ipp", "ipps", "http", "https", "socket", "lpd"})
+
+
+def _device_keys(uri: str | None) -> set[tuple[str, str]]:
+    """
+    Vergleichsschlüssel für ein Gerät, ohne Netzwerkauflösung:
+      ("host", "e1f4f9000000.local")      aus ipp://, ipps://, socket:// …
+      ("dnssd", "canon ts700 series")     Dienstname aus dnssd://
+    """
+    if not uri:
+        return set()
+    try:
+        parts = urlsplit(uri)
+    except ValueError:
+        return set()
+    scheme = parts.scheme.lower()
+    if scheme == "dnssd":
+        m = _DNSSD_HOST_RE.match(unquote(parts.netloc))
+        return {("dnssd", m.group("name").lower())} if m else set()
+    if scheme not in _NETWORK_SCHEMES:
+        return set()     # usb://Canon/… o. ä.: "Host" ist kein Netzwerkname
+    try:
+        host = (parts.hostname or "").rstrip(".").lower()
+    except ValueError:
+        return set()
+    if not host or host in ("localhost", "127.0.0.1", "::1"):
+        return set()
+    return {("host", host)}
+
+
+def _find_permanent_twin(
+    dest: "_Dest",
+    permanent: dict[tuple[str, str], str],
+    resolved_uri: str | None = None,
+) -> str | None:
+    """
+    Name der festen Queue, die auf dasselbe Gerät zeigt wie das temporäre
+    Ziel — oder None, wenn keine passt bzw. kein Vergleich möglich ist
+    (dann wird das Ziel angezeigt: lieber doppelt als verschwunden).
+    resolved_uri stammt aus dem gemeinsamen ippfind-Suchlauf.
+    """
+    if not permanent or not dest.device_uri:
+        return None
+    keys = _device_keys(dest.device_uri) | _device_keys(resolved_uri)
+    for k in sorted(keys):
+        if k in permanent:
+            return permanent[k]
+    return None
+
+
+def _dnssd_service(uri: str | None) -> tuple[str, str] | None:
+    """dnssd://Name._ipps._tcp.local/… → ("_ipps._tcp", "name")."""
+    if not uri or not uri.lower().startswith("dnssd:"):
+        return None
+    m = _DNSSD_HOST_RE.match(unquote(urlsplit(uri).netloc))
+    return (m.group("regtype").lower(), m.group("name").lower()) if m else None
+
+
+def _browse_ipp_services() -> dict[tuple[str, str], str] | None:
+    """
+    EIN ippfind-Suchlauf über _ipp._tcp und _ipps._tcp.
+
+    Rückgabe: {(regtype, dienstname_klein): aufgelöste ipp(s)://-URI}
+    oder None, wenn ippfind fehlt bzw. der Suchlauf fehlschlägt.
+    ({service_regtype} kennt ippfind 2.4.20 nicht → aus dem URI-Schema.)
+    """
+    cmd = ["ippfind", "-T", "3", "_ipp._tcp", "_ipps._tcp",
+           "-x", "printf", "%s\\t%s\\n", "{service_name}", "{}", ";"]
+    if not _check_ipp_tools(cmd):
+        return None
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+    except Exception as e:
+        log.debug(f"    ippfind-Suchlauf fehlgeschlagen: {e}")
+        return None
+    services: dict[tuple[str, str], str] = {}
+    for line in r.stdout.splitlines():
+        name, sep, uri = line.rpartition("\t")
+        scheme = uri.split(":", 1)[0].lower()
+        if not sep or not name or scheme not in ("ipp", "ipps"):
+            continue
+        services.setdefault((f"_{scheme}._tcp", name.lower()), uri)
+    log.debug(f"  ippfind-Suchlauf: {len(services)} Dienst(e)")
+    return services
+
+
+def _resolve_temporary(dests: list["_Dest"]) -> dict[str, str]:
+    """device_uri → aufgelöste ipp(s)-URI für temporäre Ziele (sofern möglich)."""
+    resolved: dict[str, str] = {}
+    need_browse = False
+    for d in dests:
+        if not d.device_uri:
+            continue
+        if d.device_uri.split(":", 1)[0].lower() in ("ipp", "ipps"):
+            resolved[d.device_uri] = d.device_uri
+        elif _dnssd_service(d.device_uri):
+            need_browse = True
+    if not need_browse:
+        return resolved
+    services = _browse_ipp_services() or {}
+    for d in dests:
+        key = _dnssd_service(d.device_uri)
+        if key and key in services:
+            resolved[d.device_uri] = services[key]
+        elif key:
+            log.debug(f"  {d.name}: im ippfind-Suchlauf nicht gefunden")
+    return resolved
+
+
+def _prefetch_ipp(dests: list["_Dest"], resolved: dict[str, str]) -> None:
+    """IPP-Abfragen der verbliebenen temporären Ziele parallel vorab."""
+    jobs = [d for d in dests if d.device_uri]
+    if not jobs:
+        return
+    with ThreadPoolExecutor(max_workers=min(8, len(jobs))) as pool:
+        list(pool.map(
+            lambda d: _ipp_lookup(d.device_uri, resolved.get(d.device_uri)),
+            jobs,
+        ))
+
+
 # ── Orchestrierung ────────────────────────────────────────────────────────────
 
 def _detect_caps(
     name: str,
+    device_uri: str | None = None,
 ) -> tuple[tuple[str | None, str | None, str] | None, str]:
     """
     Erkennt Disc-Fähigkeiten eines Druckers.
@@ -247,10 +555,12 @@ def _detect_caps(
                                  → lpoptions-Fallback
       4. lpoptions liefert kein Ergebnis (z. B. Flatpak-Sandbox ohne
          /etc/cups-Zugriff)    → PPD via CUPS HTTP-API (Unix-Socket)
+      5. Nur für temporäre Ziele (device_uri gesetzt): noch keine Queue,
+         also auch keine PPD    → IPP-Attribute direkt vom Drucker
 
     Rückgabe: (caps | None, Quelle)
       caps   = (input_slot, media_type, page_size) oder None
-      Quelle = "ppd" | "lpoptions" | "cups-http"
+      Quelle = "ppd" | "lpoptions" | "cups-http" | "ipp"
     """
     ppd_path = _find_ppd(name)
 
@@ -274,32 +584,122 @@ def _detect_caps(
         return result, "lpoptions"
 
     log.debug(f"    lpoptions kein Ergebnis → versuche CUPS HTTP-API")
-    return _query_via_cups_http(name), "cups-http"
+    result = _query_via_cups_http(name)
+    if result is not None or not device_uri:
+        return result, "cups-http"
+
+    log.debug(f"    CUPS-HTTP kein Ergebnis → IPP-Abfrage {device_uri!r}")
+    return _query_via_ipp(device_uri), "ipp"
 
 
-# ── lpstat ────────────────────────────────────────────────────────────────────
+# ── lpstat ───────────────────────────────────────────────────────────────────
 
-def _lpstat_names() -> list[str]:
+class _Dest(NamedTuple):
+    name: str
+    temporary: bool = False         # nur via `lpstat -e` gefunden
+    device_uri: str | None = None   # aus `lpstat -l -e` (falls verfügbar)
+
+
+def _run_lpstat(args: list[str], *, check: bool = False) -> str | None:
+    """Führt lpstat aus; None bei Fehler (bzw. Exit-Code ≠ 0 wenn check)."""
     env = {**os.environ, "LANG": "C", "LC_ALL": "C"}
     try:
         r = subprocess.run(
-            ["lpstat", "-p"], capture_output=True, text=True,
+            ["lpstat", *args], capture_output=True, text=True,
             timeout=6, env=env,
         )
-        names: list[str] = []
-        for line in r.stdout.splitlines():
-            if line.startswith("printer "):
-                p = line.split()
-                if len(p) >= 2:
-                    names.append(p[1])
-        return names
     except FileNotFoundError:
         log.error("lpstat nicht gefunden — ist CUPS installiert?")
+        return None
     except subprocess.TimeoutExpired:
-        log.error("lpstat Timeout")
+        log.error(f"lpstat {' '.join(args)}: Timeout")
+        return None
     except Exception as e:
-        log.error(f"lpstat Fehler: {e}")
-    return []
+        log.error(f"lpstat {' '.join(args)}: Fehler: {e}")
+        return None
+    if check and r.returncode != 0:
+        log.warning(
+            f"lpstat {' '.join(args)} fehlgeschlagen (rc={r.returncode}): "
+            f"{r.stderr.strip()}"
+        )
+        return None
+    return r.stdout
+
+
+def _parse_lpstat_p(out: str) -> list[str]:
+    """`lpstat -p` → Queue-Namen ("printer <name> is …")."""
+    names: list[str] = []
+    for line in out.splitlines():
+        if line.startswith("printer "):
+            p = line.split()
+            if len(p) >= 2:
+                names.append(p[1])
+    return names
+
+
+def _parse_lpstat_e(out: str) -> list[tuple[str, str | None]]:
+    """
+    `lpstat -e` bzw. `lpstat -l -e` → [(name, device_uri | None)].
+
+    Kurzform: eine Zeile pro Ziel ("name" oder "name/instanz").
+    Langform: "name typ printer-uri device-uri".
+    Instanzen ("name/instanz") werden auf den Basisnamen reduziert: sie
+    teilen sich Queue und Gerät, unterscheiden sich nur in Default-Optionen,
+    und disc-printer setzt alle relevanten Optionen ohnehin explizit.
+    """
+    result: list[tuple[str, str | None]] = []
+    seen: set[str] = set()
+    for line in out.splitlines():
+        tokens = line.split()
+        if not tokens:
+            continue
+        name = tokens[0].split("/", 1)[0]
+        if not name or name in seen:
+            continue
+        seen.add(name)
+        uri = tokens[3] if len(tokens) >= 4 and tokens[3] != "none" else None
+        result.append((name, uri))
+    return result
+
+
+def _merge_destinations(
+    p_names: list[str],
+    e_entries: list[tuple[str, str | None]],
+) -> list[_Dest]:
+    """
+    Vereinigt `lpstat -p` und `lpstat -e` ohne Duplikate.
+
+    Reihenfolge: zuerst die Queues aus -p (bisheriges Verhalten), danach
+    Ziele, die nur -e kennt — das sind die temporären/treiberlosen.
+    """
+    dests: list[_Dest] = []
+    seen: set[str] = set()
+    e_uris = dict(e_entries)
+    for name in p_names:
+        if name not in seen:
+            seen.add(name)
+            dests.append(_Dest(name, device_uri=e_uris.get(name)))
+    for name, uri in e_entries:
+        if name not in seen:
+            seen.add(name)
+            dests.append(_Dest(name, temporary=True, device_uri=uri))
+    return dests
+
+
+def _lpstat_destinations() -> list[_Dest]:
+    p_out = _run_lpstat(["-p"])
+    p_names = _parse_lpstat_p(p_out) if p_out is not None else []
+
+    # -e fehlt in alten CUPS-Versionen (< 2.2) → dann nur -p wie bisher
+    e_out = _run_lpstat(["-l", "-e"], check=True)
+    if e_out is None:
+        log.info("lpstat -e nicht verfügbar → nur dauerhafte Queues (lpstat -p)")
+        return _merge_destinations(p_names, [])
+    return _merge_destinations(p_names, _parse_lpstat_e(e_out))
+
+
+def _lpstat_names() -> list[str]:
+    return [d.name for d in _lpstat_destinations()]
 
 
 # ── Öffentliche API ───────────────────────────────────────────────────────────
@@ -314,17 +714,49 @@ def detect_disc_printers() -> list[DiscPrinter]:
     kompatible Geräte an.
     """
     log.info("=== Druckererkennung gestartet ===")
-    names = _lpstat_names()
-    log.info(f"CUPS-Drucker gefunden: {names or '(keine)'}")
+    t0 = time.monotonic()
+    dests = _lpstat_destinations()
+    log.info(f"CUPS-Drucker gefunden: {[d.name for d in dests] or '(keine)'}")
+    temp = [d.name for d in dests if d.temporary]
+    if temp:
+        log.info(f"  davon temporär/treiberlos (nur lpstat -e): {temp}")
+
+    _ipp_cache.clear()
+    permanent: dict[tuple[str, str], str] = {}
+    for d in dests:
+        if not d.temporary:
+            for k in _device_keys(d.device_uri):
+                permanent.setdefault(k, d.name)
+
+    # Temporäre Ziele: erst EIN Suchlauf + Zwillinge aussortieren, dann nur
+    # für die übrigen ipptool — parallel.
+    temps = [d for d in dests if d.temporary]
+    hidden: set[str] = set()
+    if temps:
+        resolved = _resolve_temporary(temps)
+        for d in temps:
+            twin = _find_permanent_twin(d, permanent, resolved.get(d.device_uri or ""))
+            if twin is not None:
+                hidden.add(d.name)
+                log.info(
+                    f"  ⊘ {d.name}: ausgeblendet — feste Queue {twin!r} "
+                    f"zeigt auf dasselbe Gerät"
+                )
+        _prefetch_ipp([d for d in temps if d.name not in hidden], resolved)
 
     found: list[DiscPrinter] = []
-    for name in names:
+    for dest in dests:
+        name = dest.name
+        if name in hidden:
+            continue
         log.info(f"  Prüfe {name!r} …")
-        result, source = _detect_caps(name)
+        result, source = _detect_caps(
+            name, dest.device_uri if dest.temporary else None)
         if result:
             slot, mtype, msize = result
             ppd_path = str(_find_ppd(name) or f"/etc/cups/ppd/{name}.ppd")
-            dp = DiscPrinter(name, ppd_path, slot, mtype, msize)
+            dp = DiscPrinter(name, ppd_path, slot, mtype, msize,
+                             temporary=dest.temporary)
             found.append(dp)
             log.info(
                 f"  ✓ {name} [{source}]: "
@@ -333,5 +765,8 @@ def detect_disc_printers() -> list[DiscPrinter]:
         else:
             log.info(f"  ✗ {name}: kein Disc-Druck erkannt")
 
-    log.info(f"Disc-fähige Drucker: {len(found)}")
+    log.info(
+        f"Disc-fähige Drucker: {len(found)}  "
+        f"(Dauer {time.monotonic() - t0:.1f} s)"
+    )
     return found

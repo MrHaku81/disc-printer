@@ -85,10 +85,16 @@ Romanian, Russian, Serbian, Slovak, Spanish, Swedish, Thai, Turkish, Ukrainian, 
 | GTK 4 + PyGObject | `python-gobject` / `python3-gi python3-gi-cairo gir1.2-gtk-4.0` |
 | pycairo | `python-cairo` / `python3-cairo` |
 | CUPS | `cups` / `cups` |
+| `ippfind`, `ipptool` *(recommended)* | part of `cups` / `cups-ipp-utils` |
 | numpy *(recommended)* | `python-numpy` / `python3-numpy` |
 
 > numpy is optional but required for brightness/contrast adjustment. Without it those
 > sliders have no effect at runtime.
+
+> `ippfind` and `ipptool` are needed to detect disc support on driverless network
+> printers that have no permanent CUPS queue (CUPS creates a temporary queue only when
+> printing). Without them such printers are not offered; printers with a configured
+> queue are unaffected. A warning is written to the log if the tools are missing.
 
 ## Installation
 

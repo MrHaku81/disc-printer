@@ -527,8 +527,8 @@ class MainWindow(Gtk.ApplicationWindow):
             f"{' '.join(p.lp_options)} &lt;datei&gt;</tt></small>"
         )
         self._set_led("gray", _("Prüfe Status …"))
-        threading.Thread(target=self._status_thread, args=(p.name,),
-                         daemon=True).start()
+        threading.Thread(target=self._status_thread,
+                         args=(p.name, p.temporary), daemon=True).start()
 
     def _on_hub_toggled(self, btn: Gtk.CheckButton) -> None:
         if not btn.get_active() or self._block_hub_signal:
@@ -1648,7 +1648,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     # ── Drucker-Status ────────────────────────────────────────────────────────
 
-    def _status_thread(self, name: str) -> None:
+    def _status_thread(self, name: str, temporary: bool = False) -> None:
         env = {**os.environ, "LANG": "C", "LC_ALL": "C"}
         try:
             r = subprocess.run(
@@ -1656,7 +1656,11 @@ class MainWindow(Gtk.ApplicationWindow):
                 capture_output=True, text=True, timeout=4, env=env,
             )
             out = r.stdout.lower()
-            if "idle" in out or "ready" in out:
+            if temporary and not out.strip():
+                # Treiberloses Ziel ohne (aktuell angelegte) Queue: lpstat -p
+                # kennt es nicht. Stattdessen prüfen, ob es noch angeboten wird.
+                self._temp_status(name, env)
+            elif "idle" in out or "ready" in out:
                 GLib.idle_add(self._set_led, "green", _("Bereit"))
                 log.info(f"Drucker {name}: bereit")
             elif "disabled" in out or "stopped" in out:
@@ -1670,6 +1674,23 @@ class MainWindow(Gtk.ApplicationWindow):
         except Exception as e:
             GLib.idle_add(self._set_led, "red", _("Fehler: %s") % e)
             log.error(f"Drucker {name}: Status-Fehler: {e}")
+
+    def _temp_status(self, name: str, env: dict[str, str]) -> None:
+        r = subprocess.run(
+            ["lpstat", "-e"], capture_output=True, text=True, timeout=4, env=env,
+        )
+        names = {ln.split("/", 1)[0] for ln in r.stdout.split()}
+        if name in names:
+            # TRANSLATORS: Printer status for a driverless network printer
+            # without a permanent CUPS queue (created temporarily on printing)
+            GLib.idle_add(self._set_led, "green",
+                          _("Im Netzwerk verfügbar (treiberlos)"))
+            log.info(f"Drucker {name}: treiberlos, im Netzwerk verfügbar")
+        else:
+            # TRANSLATORS: Driverless network printer is no longer announced
+            GLib.idle_add(self._set_led, "red",
+                          _("Nicht mehr im Netzwerk gefunden (treiberlos)"))
+            log.warning(f"Drucker {name}: treiberlos, nicht mehr gefunden")
 
     def _set_led(self, color: str, text: str) -> bool:
         _C = {"green": "#2ec27e", "red": "#e01b24",
