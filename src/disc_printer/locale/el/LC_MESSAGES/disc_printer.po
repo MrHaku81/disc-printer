@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: disc-printer 0.1.0\n"
 "Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
-"POT-Creation-Date: 2026-11-13 09:21+0100\n"
+"POT-Creation-Date: 2026-11-13 21:11+0100\n"
 "PO-Revision-Date: 2026-04-24 14:00+0000\n"
 "Last-Translator: Claude AI\n"
 "Language-Team: Greek\n"
@@ -15,28 +15,41 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. TRANSLATORS: Radio button label showing hub diameter, e.g. "Ø 50 mm"
-#: src/disc_printer/gui/canvas.py:599 src/disc_printer/gui/canvas.py:606
-#: src/disc_printer/gui/window.py:259 src/disc_printer/gui/window.py:260
+#. TRANSLATORS: Hub diameter inside the disc preview, two lines (millimetres,
+#. then inches). Keep both placeholders and the line break.
+#: src/disc_printer/gui/canvas.py:603
 #, python-format
-msgid "Ø %.0f mm"
-msgstr "Ø %.0f mm"
+msgid ""
+"Ø %(mm).0f mm\n"
+"%(inch).2f in"
+msgstr ""
+"Ø %(mm).0f mm\n"
+"%(inch).2f in"
 
-#: src/disc_printer/gui/canvas.py:600
+#: src/disc_printer/gui/canvas.py:609
 msgid "Hub · nicht bedruckbar"
 msgstr "Κέντρο · μη εκτυπώσιμο"
 
-#: src/disc_printer/gui/canvas.py:604
+#. TRANSLATORS: Printable diameter in the disc preview, e.g.
+#. "Ø 118 mm / 4.65 in (printable)". Keep both placeholders.
+#: src/disc_printer/gui/canvas.py:615
 #, python-format
-msgid "Ø %.0f mm  (bedruckbar)"
-msgstr "Ø %.0f mm  (εκτυπώσιμο)"
+msgid "Ø %(mm).0f mm / %(inch).2f in (bedruckbar)"
+msgstr "Ø %(mm).0f mm / %(inch).2f in (εκτυπώσιμο)"
 
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:460
-#: src/disc_printer/gui/window.py:1618
+#. TRANSLATORS: Disc or hub diameter, e.g. "Ø 120 mm / 4.72 in".
+#. Keep both placeholders; the order may be changed.
+#: src/disc_printer/gui/canvas.py:620 src/disc_printer/gui/window.py:261
+#, python-format
+msgid "Ø %(mm).0f mm / %(inch).2f in"
+msgstr "Ø %(mm).0f mm / %(inch).2f in"
+
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:467
+#: src/disc_printer/gui/window.py:1625
 msgid "Text bearbeiten"
 msgstr "Επεξεργασία κειμένου"
 
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:1564
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:1571
 msgid "Text hinzufügen"
 msgstr "Προσθήκη κειμένου"
 
@@ -56,215 +69,215 @@ msgstr "Γραμματοσειρά:"
 msgid "Textfarbe"
 msgstr "Χρώμα κειμένου"
 
-#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:280
+#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:287
 msgid "Farbe:"
 msgstr "Χρώμα:"
 
-#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:1720
+#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:1727
 msgid "Abbrechen"
 msgstr "Ακύρωση"
 
-#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:1798
+#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:1805
 msgid "OK"
 msgstr "OK"
 
-#: src/disc_printer/gui/window.py:68
+#: src/disc_printer/gui/window.py:69
 msgid "Design öffnen …"
 msgstr "Άνοιγμα σχεδίου …"
 
-#: src/disc_printer/gui/window.py:73
+#: src/disc_printer/gui/window.py:74
 msgid "Design speichern …"
 msgstr "Αποθήκευση σχεδίου …"
 
-#: src/disc_printer/gui/window.py:78 src/disc_printer/gui/window.py:1814
+#: src/disc_printer/gui/window.py:79 src/disc_printer/gui/window.py:1821
 msgid "Rückgängig"
 msgstr "Αναίρεση"
 
-#: src/disc_printer/gui/window.py:84 src/disc_printer/gui/window.py:1817
+#: src/disc_printer/gui/window.py:85 src/disc_printer/gui/window.py:1824
 msgid "Wiederherstellen"
 msgstr "Επανάληψη"
 
-#: src/disc_printer/gui/window.py:90
+#: src/disc_printer/gui/window.py:91
 msgid "Drucken …"
 msgstr "Εκτύπωση …"
 
-#: src/disc_printer/gui/window.py:116
+#: src/disc_printer/gui/window.py:117
 msgid "Disc-Vorschau"
 msgstr "Προεπισκόπηση δίσκου"
 
-#: src/disc_printer/gui/window.py:165
+#: src/disc_printer/gui/window.py:166
 msgid "Sprache:"
 msgstr "Γλώσσα:"
 
-#: src/disc_printer/gui/window.py:205
+#: src/disc_printer/gui/window.py:206
 msgid "Drucker"
 msgstr "Εκτυπωτής"
 
-#: src/disc_printer/gui/window.py:212
+#: src/disc_printer/gui/window.py:213
 msgid "Drucker:"
 msgstr "Εκτυπωτής:"
 
-#: src/disc_printer/gui/window.py:216 src/disc_printer/gui/window.py:483
+#: src/disc_printer/gui/window.py:217 src/disc_printer/gui/window.py:490
 msgid "Erkenne Drucker …"
 msgstr "Αναγνώριση εκτυπωτή …"
 
-#: src/disc_printer/gui/window.py:224
+#: src/disc_printer/gui/window.py:225
 msgid "Drucker neu erkennen"
 msgstr "Εκ νέου αναγνώριση εκτυπωτή"
 
-#: src/disc_printer/gui/window.py:232
+#: src/disc_printer/gui/window.py:233
 msgid "Initialisierung …"
 msgstr "Αρχικοποίηση …"
 
-#: src/disc_printer/gui/window.py:251
+#: src/disc_printer/gui/window.py:252
 msgid "Disc-Optionen"
 msgstr "Επιλογές δίσκου"
 
-#: src/disc_printer/gui/window.py:256
+#: src/disc_printer/gui/window.py:257
 msgid "Hub-Größe:"
 msgstr "Μέγεθος κέντρου:"
 
-#: src/disc_printer/gui/window.py:275
+#: src/disc_printer/gui/window.py:282
 msgid "Hintergrund"
 msgstr "Φόντο"
 
-#: src/disc_printer/gui/window.py:281 src/disc_printer/gui/window.py:1361
+#: src/disc_printer/gui/window.py:288 src/disc_printer/gui/window.py:1368
 msgid "Hintergrundfarbe"
 msgstr "Χρώμα φόντου"
 
-#: src/disc_printer/gui/window.py:289
+#: src/disc_printer/gui/window.py:296
 msgid "Zurücksetzen auf Weiß"
 msgstr "Επαναφορά σε λευκό"
 
-#: src/disc_printer/gui/window.py:296
+#: src/disc_printer/gui/window.py:303
 msgid "Bild:"
 msgstr "Εικόνα:"
 
-#: src/disc_printer/gui/window.py:297
+#: src/disc_printer/gui/window.py:304
 msgid "Laden …"
 msgstr "Φόρτωση …"
 
-#: src/disc_printer/gui/window.py:305 src/disc_printer/gui/window.py:666
-#: src/disc_printer/gui/window.py:1432 src/disc_printer/gui/window.py:1461
-#: src/disc_printer/gui/window.py:1484
+#: src/disc_printer/gui/window.py:312 src/disc_printer/gui/window.py:673
+#: src/disc_printer/gui/window.py:1439 src/disc_printer/gui/window.py:1468
+#: src/disc_printer/gui/window.py:1491
 msgid "(kein Bild)"
 msgstr "(καμία εικόνα)"
 
-#: src/disc_printer/gui/window.py:310 src/disc_printer/gui/window.py:1491
+#: src/disc_printer/gui/window.py:317 src/disc_printer/gui/window.py:1498
 msgid "Hintergrundbild entfernen"
 msgstr "Κατάργηση εικόνας φόντου"
 
-#: src/disc_printer/gui/window.py:318
+#: src/disc_printer/gui/window.py:325
 msgid "Hintergrundbild: nur Position &amp; Zoom, kein Drehen/Spiegeln."
 msgstr "Εικόνα φόντου: μόνο θέση &amp; ζουμ, χωρίς περιστροφή/αναστροφή."
 
 #. TRANSLATORS: Section title; "&" must stay as "&amp;" in Pango markup
-#: src/disc_printer/gui/window.py:330
+#: src/disc_printer/gui/window.py:337
 msgid "Bild-Position & Zoom"
 msgstr "Θέση εικόνας & ζουμ"
 
-#: src/disc_printer/gui/window.py:335
+#: src/disc_printer/gui/window.py:342
 msgid "Zoom:"
 msgstr "Ζουμ:"
 
-#: src/disc_printer/gui/window.py:353
+#: src/disc_printer/gui/window.py:360
 msgid "5 mm links"
 msgstr "5 mm αριστερά"
 
-#: src/disc_printer/gui/window.py:354
+#: src/disc_printer/gui/window.py:361
 msgid "5 mm rechts"
 msgstr "5 mm δεξιά"
 
-#: src/disc_printer/gui/window.py:355
+#: src/disc_printer/gui/window.py:362
 msgid "5 mm oben"
 msgstr "5 mm πάνω"
 
-#: src/disc_printer/gui/window.py:356
+#: src/disc_printer/gui/window.py:363
 msgid "5 mm unten"
 msgstr "5 mm κάτω"
 
-#: src/disc_printer/gui/window.py:363
+#: src/disc_printer/gui/window.py:370
 msgid "⌂ Zentrieren"
 msgstr "⌂ Κεντράρισμα"
 
-#: src/disc_printer/gui/window.py:364
+#: src/disc_printer/gui/window.py:371
 msgid "Zurücksetzen"
 msgstr "Επαναφορά"
 
-#: src/disc_printer/gui/window.py:372
+#: src/disc_printer/gui/window.py:379
 msgid "Bild ziehen = verschieben · Mausrad = Zoom"
 msgstr "Σύρσιμο = μετακίνηση · Τροχός ποντικιού = ζουμ"
 
-#: src/disc_printer/gui/window.py:386
+#: src/disc_printer/gui/window.py:393
 msgid "Text-Elemente"
 msgstr "Στοιχεία κειμένου"
 
-#: src/disc_printer/gui/window.py:389 src/disc_printer/gui/window.py:684
+#: src/disc_printer/gui/window.py:396 src/disc_printer/gui/window.py:691
 msgid "+ Hinzufügen"
 msgstr "+ Προσθήκη"
 
-#: src/disc_printer/gui/window.py:390
+#: src/disc_printer/gui/window.py:397
 msgid "Neues Text-Element hinzufügen"
 msgstr "Προσθήκη νέου στοιχείου κειμένου"
 
-#: src/disc_printer/gui/window.py:399
+#: src/disc_printer/gui/window.py:406
 msgid "Keine Text-Elemente"
 msgstr "Κανένα στοιχείο κειμένου"
 
-#: src/disc_printer/gui/window.py:410
+#: src/disc_printer/gui/window.py:417
 msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
 msgstr "Κλικ = επιλογή · Διπλό κλικ = επεξεργασία · Σύρσιμο = μετακίνηση"
 
-#: src/disc_printer/gui/window.py:437 src/disc_printer/gui/window.py:753
+#: src/disc_printer/gui/window.py:444 src/disc_printer/gui/window.py:760
 msgid "Sichtbarkeit umschalten"
 msgstr "Εναλλαγή ορατότητας"
 
-#: src/disc_printer/gui/window.py:446 src/disc_printer/gui/window.py:762
+#: src/disc_printer/gui/window.py:453 src/disc_printer/gui/window.py:769
 msgid "Sperren / Entsperren"
 msgstr "Κλείδωμα / Ξεκλείδωμα"
 
-#: src/disc_printer/gui/window.py:454 src/disc_printer/gui/window.py:770
+#: src/disc_printer/gui/window.py:461 src/disc_printer/gui/window.py:777
 msgid "Element duplizieren"
 msgstr "Διπλασιασμός στοιχείου"
 
-#: src/disc_printer/gui/window.py:467 src/disc_printer/gui/window.py:788
+#: src/disc_printer/gui/window.py:474 src/disc_printer/gui/window.py:795
 msgid "Element löschen"
 msgstr "Διαγραφή στοιχείου"
 
-#: src/disc_printer/gui/window.py:496
+#: src/disc_printer/gui/window.py:503
 msgid "(Kein Disc-Drucker gefunden)"
 msgstr "(Δεν βρέθηκε εκτυπωτής δίσκου)"
 
-#: src/disc_printer/gui/window.py:498
+#: src/disc_printer/gui/window.py:505
 msgid "Kein Disc-fähiger Drucker gefunden"
 msgstr "Δεν βρέθηκε εκτυπωτής συμβατός με δίσκους"
 
-#: src/disc_printer/gui/window.py:500
+#: src/disc_printer/gui/window.py:507
 msgid "Kein Disc-fähiger Drucker erkannt."
 msgstr "Δεν αναγνωρίστηκε εκτυπωτής συμβατός με δίσκους."
 
-#: src/disc_printer/gui/window.py:529
+#: src/disc_printer/gui/window.py:536
 msgid "Prüfe Status …"
 msgstr "Έλεγχος κατάστασης …"
 
-#: src/disc_printer/gui/window.py:550
+#: src/disc_printer/gui/window.py:557
 msgid "Hub-Größe"
 msgstr "Μέγεθος κέντρου"
 
-#: src/disc_printer/gui/window.py:558
+#: src/disc_printer/gui/window.py:565
 msgid "Design speichern"
 msgstr "Αποθήκευση σχεδίου"
 
-#: src/disc_printer/gui/window.py:560 src/disc_printer/gui/window.py:592
+#: src/disc_printer/gui/window.py:567 src/disc_printer/gui/window.py:599
 msgid "DiscPrint-Design (*.discprint)"
 msgstr "Σχέδιο DiscPrint (*.discprint)"
 
-#: src/disc_printer/gui/window.py:563 src/disc_printer/gui/window.py:595
-#: src/disc_printer/gui/window.py:862 src/disc_printer/gui/window.py:1380
+#: src/disc_printer/gui/window.py:570 src/disc_printer/gui/window.py:602
+#: src/disc_printer/gui/window.py:869 src/disc_printer/gui/window.py:1387
 msgid "Alle Dateien"
 msgstr "Όλα τα αρχεία"
 
-#: src/disc_printer/gui/window.py:587
+#: src/disc_printer/gui/window.py:594
 #, python-format
 msgid ""
 "Design konnte nicht gespeichert werden:\n"
@@ -273,11 +286,11 @@ msgstr ""
 "Το σχέδιο δεν ήταν δυνατό να αποθηκευτεί:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:590
+#: src/disc_printer/gui/window.py:597
 msgid "Design öffnen"
 msgstr "Άνοιγμα σχεδίου"
 
-#: src/disc_printer/gui/window.py:617
+#: src/disc_printer/gui/window.py:624
 #, python-format
 msgid ""
 "Design konnte nicht geöffnet werden:\n"
@@ -286,65 +299,65 @@ msgstr ""
 "Το σχέδιο δεν ήταν δυνατό να ανοίξει:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:662 src/disc_printer/gui/window.py:1425
-#: src/disc_printer/gui/window.py:1474
+#: src/disc_printer/gui/window.py:669 src/disc_printer/gui/window.py:1432
+#: src/disc_printer/gui/window.py:1481
 msgid "(aus Datei geladen)"
 msgstr "(φορτώθηκε από αρχείο)"
 
-#: src/disc_printer/gui/window.py:681
+#: src/disc_printer/gui/window.py:688
 msgid "Bild-Elemente"
 msgstr "Στοιχεία εικόνας"
 
-#: src/disc_printer/gui/window.py:685
+#: src/disc_printer/gui/window.py:692
 msgid "Bild-Element hinzufügen"
 msgstr "Προσθήκη στοιχείου εικόνας"
 
-#: src/disc_printer/gui/window.py:692
+#: src/disc_printer/gui/window.py:699
 msgid "H spiegeln"
 msgstr "Αναστρ. οριζ."
 
-#: src/disc_printer/gui/window.py:696
+#: src/disc_printer/gui/window.py:703
 msgid "V spiegeln"
 msgstr "Αναστρ. κατακ."
 
-#: src/disc_printer/gui/window.py:706
+#: src/disc_printer/gui/window.py:713
 msgid "Keine Bild-Elemente"
 msgstr "Κανένα στοιχείο εικόνας"
 
-#: src/disc_printer/gui/window.py:776
+#: src/disc_printer/gui/window.py:783
 msgid "Ebene nach oben"
 msgstr "Μετακίνηση επιπέδου πάνω"
 
-#: src/disc_printer/gui/window.py:782
+#: src/disc_printer/gui/window.py:789
 msgid "Ebene nach unten"
 msgstr "Μετακίνηση επιπέδου κάτω"
 
-#: src/disc_printer/gui/window.py:807
+#: src/disc_printer/gui/window.py:814
 msgid "Zurücksetzen auf 100 %"
 msgstr "Επαναφορά σε 100%"
 
-#: src/disc_printer/gui/window.py:815
+#: src/disc_printer/gui/window.py:822
 msgid "Opazität:"
 msgstr "Αδιαφάνεια:"
 
-#: src/disc_printer/gui/window.py:828
+#: src/disc_printer/gui/window.py:835
 msgid "Helligkeit:"
 msgstr "Φωτεινότητα:"
 
-#: src/disc_printer/gui/window.py:834
+#: src/disc_printer/gui/window.py:841
 msgid "Kontrast:"
 msgstr "Αντίθεση:"
 
-#: src/disc_printer/gui/window.py:855 src/disc_printer/gui/window.py:910
+#: src/disc_printer/gui/window.py:862 src/disc_printer/gui/window.py:917
 msgid "Bild hinzufügen"
 msgstr "Προσθήκη εικόνας"
 
 #. TRANSLATORS: File filter label in the image chooser dialog
-#: src/disc_printer/gui/window.py:857 src/disc_printer/gui/window.py:1375
+#: src/disc_printer/gui/window.py:864 src/disc_printer/gui/window.py:1382
 msgid "Bilder (PNG, JPG, WEBP …)"
 msgstr "Εικόνες (PNG, JPG, WEBP …)"
 
-#: src/disc_printer/gui/window.py:913 src/disc_printer/gui/window.py:1452
+#: src/disc_printer/gui/window.py:920 src/disc_printer/gui/window.py:1459
 #, python-format
 msgid ""
 "Bild konnte nicht geladen werden:\n"
@@ -353,108 +366,108 @@ msgstr ""
 "Η εικόνα δεν ήταν δυνατό να φορτωθεί:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:948
+#: src/disc_printer/gui/window.py:955
 msgid "Opazität"
 msgstr "Αδιαφάνεια"
 
-#: src/disc_printer/gui/window.py:987
+#: src/disc_printer/gui/window.py:994
 msgid "Helligkeit"
 msgstr "Φωτεινότητα"
 
-#: src/disc_printer/gui/window.py:1026
+#: src/disc_printer/gui/window.py:1033
 msgid "Kontrast"
 msgstr "Αντίθεση"
 
-#: src/disc_printer/gui/window.py:1058
+#: src/disc_printer/gui/window.py:1065
 msgid "Helligkeit zurücksetzen"
 msgstr "Επαναφορά φωτεινότητας"
 
-#: src/disc_printer/gui/window.py:1087
+#: src/disc_printer/gui/window.py:1094
 msgid "Kontrast zurücksetzen"
 msgstr "Επαναφορά αντίθεσης"
 
-#: src/disc_printer/gui/window.py:1104
+#: src/disc_printer/gui/window.py:1111
 msgid "Ebene"
 msgstr "Επίπεδο"
 
-#: src/disc_printer/gui/window.py:1132
+#: src/disc_printer/gui/window.py:1139
 msgid "Bild löschen"
 msgstr "Διαγραφή εικόνας"
 
-#: src/disc_printer/gui/window.py:1161
+#: src/disc_printer/gui/window.py:1168
 msgid "H-Spiegeln"
 msgstr "Οριζόντια αναστροφή"
 
-#: src/disc_printer/gui/window.py:1175
+#: src/disc_printer/gui/window.py:1182
 msgid "V-Spiegeln"
 msgstr "Κατακόρυφη αναστροφή"
 
-#: src/disc_printer/gui/window.py:1194 src/disc_printer/gui/window.py:1273
+#: src/disc_printer/gui/window.py:1201 src/disc_printer/gui/window.py:1280
 msgid "Sichtbarkeit"
 msgstr "Ορατότητα"
 
-#: src/disc_printer/gui/window.py:1213 src/disc_printer/gui/window.py:1292
+#: src/disc_printer/gui/window.py:1220 src/disc_printer/gui/window.py:1299
 msgid "Sperren"
 msgstr "Κλείδωμα"
 
-#: src/disc_printer/gui/window.py:1256
+#: src/disc_printer/gui/window.py:1263
 msgid "Bild duplizieren"
 msgstr "Διπλασιασμός εικόνας"
 
-#: src/disc_printer/gui/window.py:1331
+#: src/disc_printer/gui/window.py:1338
 msgid "Text duplizieren"
 msgstr "Διπλασιασμός κειμένου"
 
-#: src/disc_printer/gui/window.py:1372
+#: src/disc_printer/gui/window.py:1379
 msgid "Hintergrundbild wählen"
 msgstr "Επιλογή εικόνας φόντου"
 
-#: src/disc_printer/gui/window.py:1449
+#: src/disc_printer/gui/window.py:1456
 msgid "Hintergrundbild laden"
 msgstr "Φόρτωση εικόνας φόντου"
 
-#: src/disc_printer/gui/window.py:1646
+#: src/disc_printer/gui/window.py:1653
 msgid "Text löschen"
 msgstr "Διαγραφή κειμένου"
 
-#: src/disc_printer/gui/window.py:1664
+#: src/disc_printer/gui/window.py:1671
 msgid "Bereit"
 msgstr "Έτοιμο"
 
-#: src/disc_printer/gui/window.py:1667
+#: src/disc_printer/gui/window.py:1674
 msgid "Deaktiviert / gestoppt"
 msgstr "Απενεργοποιημένο / σταματημένο"
 
-#: src/disc_printer/gui/window.py:1670
+#: src/disc_printer/gui/window.py:1677
 msgid "Status unbekannt"
 msgstr "Άγνωστη κατάσταση"
 
-#: src/disc_printer/gui/window.py:1672
+#: src/disc_printer/gui/window.py:1679
 msgid "Nicht erreichbar (Timeout)"
 msgstr "Μη προσβάσιμο (λήξη χρόνου)"
 
-#: src/disc_printer/gui/window.py:1675
+#: src/disc_printer/gui/window.py:1682
 #, python-format
 msgid "Fehler: %s"
 msgstr "Σφάλμα: %s"
 
-#: src/disc_printer/gui/window.py:1687
+#: src/disc_printer/gui/window.py:1694
 msgid "Im Netzwerk verfügbar (treiberlos)"
 msgstr "Διαθέσιμος στο δίκτυο (χωρίς πρόγραμμα οδήγησης)"
 
-#: src/disc_printer/gui/window.py:1692
+#: src/disc_printer/gui/window.py:1699
 msgid "Nicht mehr im Netzwerk gefunden (treiberlos)"
 msgstr "Δεν εντοπίζεται πλέον στο δίκτυο (χωρίς πρόγραμμα οδήγησης)"
 
-#: src/disc_printer/gui/window.py:1707
+#: src/disc_printer/gui/window.py:1714
 msgid "Kein Drucker ausgewählt."
 msgstr "Δεν έχει επιλεγεί εκτυπωτής."
 
-#: src/disc_printer/gui/window.py:1712
+#: src/disc_printer/gui/window.py:1719
 msgid "Disc drucken?"
 msgstr "Εκτύπωση δίσκου;"
 
-#: src/disc_printer/gui/window.py:1716
+#: src/disc_printer/gui/window.py:1723
 #, python-format
 msgid ""
 "Drucker:    %(name)s\n"
@@ -467,11 +480,11 @@ msgstr ""
 "\n"
 "%(cmd)s"
 
-#: src/disc_printer/gui/window.py:1720
+#: src/disc_printer/gui/window.py:1727
 msgid "Drucken"
 msgstr "Εκτύπωση"
 
-#: src/disc_printer/gui/window.py:1745
+#: src/disc_printer/gui/window.py:1752
 #, python-format
 msgid ""
 "Render-Fehler:\n"
@@ -480,11 +493,11 @@ msgstr ""
 "Σφάλμα απόδοσης:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:1781
+#: src/disc_printer/gui/window.py:1788
 msgid "Timeout: Drucker antwortet nicht (>30 s)."
 msgstr "Λήξη χρόνου: ο εκτυπωτής δεν αποκρίνεται (>30 s)."
 
-#: src/disc_printer/gui/window.py:1784 src/disc_printer/printer.py:45
+#: src/disc_printer/gui/window.py:1791 src/disc_printer/printer.py:45
 #, python-format
 msgid ""
 "Druckfehler:\n"
@@ -493,27 +506,27 @@ msgstr ""
 "Σφάλμα εκτύπωσης:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:1794
+#: src/disc_printer/gui/window.py:1801
 msgid "Druckauftrag gesendet"
 msgstr "Εργασία εκτύπωσης εστάλη"
 
-#: src/disc_printer/gui/window.py:1796
+#: src/disc_printer/gui/window.py:1803
 msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
 msgstr "Η εργασία εκτύπωσης προστέθηκε επιτυχώς στην ουρά."
 
-#: src/disc_printer/gui/window.py:1867 src/disc_printer/gui/window.py:1892
+#: src/disc_printer/gui/window.py:1874 src/disc_printer/gui/window.py:1899
 msgid "Bewegen"
 msgstr "Μετακίνηση"
 
-#: src/disc_printer/gui/window.py:1869
+#: src/disc_printer/gui/window.py:1876
 msgid "Drehen"
 msgstr "Περιστροφή"
 
-#: src/disc_printer/gui/window.py:1871
+#: src/disc_printer/gui/window.py:1878
 msgid "Skalieren"
 msgstr "Κλιμάκωση"
 
-#: src/disc_printer/gui/window.py:1921
+#: src/disc_printer/gui/window.py:1928
 msgid "Zoom"
 msgstr "Ζουμ"
 
@@ -530,6 +543,14 @@ msgstr ""
 "\n"
 "Στο CUPS 2.4.20 πρόκειται για γνωστό σφάλμα. Λύση: ρυθμίστε τον εκτυπωτή "
 "μόνιμα στις ρυθμίσεις εκτυπωτών."
+
+#, python-format
+#~ msgid "Ø %.0f mm"
+#~ msgstr "Ø %.0f mm"
+
+#, python-format
+#~ msgid "Ø %.0f mm  (bedruckbar)"
+#~ msgstr "Ø %.0f mm  (εκτυπώσιμο)"
 
 #~ msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
 #~ msgstr "Συμβουλή: σύρετε το αρχείο εικόνας απευθείας στην προεπισκόπηση."

@@ -20,6 +20,7 @@ from ..printer import DiscPrinter, lp_error_message
 from ..detection import detect_disc_printers
 from ..model import TextElement, ImageElement, DesignState
 from ..image_utils import pixbuf_to_cairo, write_print_png
+from ..units import format_dimension
 from .canvas import DiscCanvas
 from .dialogs import TextEditDialog
 
@@ -255,15 +256,21 @@ class MainWindow(Gtk.ApplicationWindow):
         hub_row.set_margin_start(4)
         hub_row.append(Gtk.Label(label=_("Hub-Größe:"), xalign=0.0))
 
-        # TRANSLATORS: Radio button label showing hub diameter, e.g. "Ø 50 mm"
-        self._r50 = Gtk.CheckButton(label=_("Ø %.0f mm") % HUB_LARGE_MM)
-        self._r33 = Gtk.CheckButton(label=_("Ø %.0f mm") % HUB_SMALL_MM)
+        # TRANSLATORS: Disc or hub diameter, e.g. "Ø 120 mm / 4.72 in".
+        # Keep both placeholders; the order may be changed.
+        dim = _("Ø %(mm).0f mm / %(inch).2f in")
+        self._r50 = Gtk.CheckButton(label=format_dimension(dim, HUB_LARGE_MM))
+        self._r33 = Gtk.CheckButton(label=format_dimension(dim, HUB_SMALL_MM))
         self._r33.set_group(self._r50)
         self._r50.set_active(True)
         self._r50.connect("toggled", self._on_hub_toggled)
         self._r33.connect("toggled", self._on_hub_toggled)
-        hub_row.append(self._r50)
-        hub_row.append(self._r33)
+        # Untereinander: mit Zoll-Angabe wären zwei Buttons nebeneinander breiter
+        # als die Seitenleiste.
+        hub_choices = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        hub_choices.append(self._r50)
+        hub_choices.append(self._r33)
+        hub_row.append(hub_choices)
         box.append(hub_row)
         return box
 

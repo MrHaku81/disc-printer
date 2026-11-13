@@ -11,6 +11,7 @@ from ..constants import (
     DISC_MM, PRINTABLE_MM, HUB_LARGE_MM, PREVIEW_PX, PRINT_PPM, PRINT_PX,
 )
 from ..i18n import _
+from ..units import format_dimension
 from ..model import TextElement, ImageElement, DesignState
 from ..image_utils import boost_cairo_surface, is_image_path
 
@@ -596,14 +597,28 @@ class DiscCanvas(Gtk.DrawingArea):
             cr.show_text(text)
             cr.restore()
 
-        label(_("Ø %.0f mm") % self._hub_mm,   cy + fp * 0.35)
-        label(_("Hub · nicht bedruckbar"),       cy + fp * 1.55, fp * 0.72, 0.40)
+        # Im Hub zweizeilig: einzeilig wäre „Ø 33 mm / 1.30 in“ breiter als der 33-mm-Hub.
+        # TRANSLATORS: Hub diameter inside the disc preview, two lines (millimetres,
+        # then inches). Keep both placeholders and the line break.
+        hub_lines = format_dimension(_("Ø %(mm).0f mm\n%(inch).2f in"),
+                                     self._hub_mm).split("\n")
+        y = cy + fp * 0.35 - fp * 0.6 * (len(hub_lines) - 1)
+        for i, line in enumerate(hub_lines):
+            label(line, y, fp if i == 0 else fp * 0.82)
+            y += fp * 1.2
+        label(_("Hub · nicht bedruckbar"),       y + fp * 0.05, fp * 0.72, 0.40)
 
         py = cy + r_hub + fp * 2.5
         if py + fp < cy + r_disc - fp * 0.5:
-            label(_("Ø %.0f mm  (bedruckbar)") % PRINTABLE_MM, py, fp * 0.78)
+            # TRANSLATORS: Printable diameter in the disc preview, e.g.
+            # "Ø 118 mm / 4.65 in (printable)". Keep both placeholders.
+            label(format_dimension(_("Ø %(mm).0f mm / %(inch).2f in (bedruckbar)"),
+                                   PRINTABLE_MM), py, fp * 0.78)
 
-        label(_("Ø %.0f mm") % DISC_MM, cy - r_disc + fp * 1.8, fp * 0.82)
+        # TRANSLATORS: Disc or hub diameter, e.g. "Ø 120 mm / 4.72 in".
+        # Keep both placeholders; the order may be changed.
+        label(format_dimension(_("Ø %(mm).0f mm / %(inch).2f in"), DISC_MM),
+              cy - r_disc + fp * 1.8, fp * 0.82)
 
     # ── Hit-Testing ───────────────────────────────────────────────────────────
 

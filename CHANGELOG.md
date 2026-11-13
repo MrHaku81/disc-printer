@@ -29,6 +29,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (Debian/Ubuntu: `cups-ipp-utils`, Arch: `cups`); README-Abhängigkeiten ergänzt
 - Übersetzungen der neuen Texte in 33 Sprachen
 
+#### Disc-Maße in Millimetern und Zoll
+- `canvas.py`/`window.py`: Vorschau und Hub-Auswahl zeigen die Maße in allen
+  Sprachen in beiden Einheiten, z. B. „Ø 120 mm / 4.72 in", „Ø 118 mm / 4.65 in
+  (bedruckbar)"; im Hub der Vorschau steht der Zoll-Wert in einer zweiten Zeile,
+  damit die Beschriftung in den 33-mm-Hub passt
+- `units.py`: Umrechnung an einer Stelle; übersetzbare Texte mit benannten
+  Platzhaltern (`%(mm)`, `%(inch)`), damit Übersetzer die Reihenfolge ändern können
+
 ### Changed
 - Übersetzungsvorlage `disc_printer.pot` erneuert: Sie enthielt seit 0.1.0
   47 Texte der Oberfläche nicht. Diese sind jetzt in allen 33 Sprachen
@@ -44,6 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `window.py`: Die Erfolgsmeldung nach dem Druck stürzte mit `AttributeError`
   ab (`set_heading`/`set_body` gehören zu `Adw.AlertDialog`); jetzt
   `Gtk.AlertDialog.set_message`/`set_detail`. Fehler bestand seit 0.1.0
+- Spanische Übersetzung: „Posición e zoom de la imagen" → „Posición y zoom de
+  la imagen"
 
 ## [0.1.1] – 2026-11-04
 
