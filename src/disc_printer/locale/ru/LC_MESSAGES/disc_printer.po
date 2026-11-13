@@ -24,8 +24,8 @@ msgid ""
 "Ø %(mm).0f mm\n"
 "%(inch).2f in"
 msgstr ""
-"Ø %(mm).0f mm\n"
-"%(inch).2f in"
+"Ø %(mm).0f мм\n"
+"%(inch).2f дюйм."
 
 #: src/disc_printer/gui/canvas.py:609
 msgid "Hub · nicht bedruckbar"
@@ -36,14 +36,14 @@ msgstr "Втулка · не для печати"
 #: src/disc_printer/gui/canvas.py:615
 #, python-format
 msgid "Ø %(mm).0f mm / %(inch).2f in (bedruckbar)"
-msgstr "Ø %(mm).0f mm / %(inch).2f in (для печати)"
+msgstr "Ø %(mm).0f мм / %(inch).2f дюйм. (для печати)"
 
 #. TRANSLATORS: Disc or hub diameter, e.g. "Ø 120 mm / 4.72 in".
 #. Keep both placeholders; the order may be changed.
 #: src/disc_printer/gui/canvas.py:620 src/disc_printer/gui/window.py:261
 #, python-format
 msgid "Ø %(mm).0f mm / %(inch).2f in"
-msgstr "Ø %(mm).0f mm / %(inch).2f in"
+msgstr "Ø %(mm).0f мм / %(inch).2f дюйм."
 
 #: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:467
 #: src/disc_printer/gui/window.py:1625

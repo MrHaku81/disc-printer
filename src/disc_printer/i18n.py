@@ -28,8 +28,11 @@ import gettext
 import os
 from pathlib import Path
 
-_DOMAIN     = "disc_printer"
-_LOCALE_DIR = Path(__file__).parent / "locale"
+from ._log import log
+
+_DOMAIN      = "disc_printer"
+_LOCALE_DIR  = Path(__file__).parent / "locale"
+_SOURCE_LANG = "de"   # Originaltexte, braucht keine .mo
 
 # Native Bezeichnungen für die Sprachauswahl
 LANG_NAMES: dict[str, str] = {
@@ -71,6 +74,7 @@ LANG_NAMES: dict[str, str] = {
 
 _t: gettext.NullTranslations = gettext.NullTranslations()
 _current_lang: str | None    = None
+_missing_warned: set[str]    = set()
 
 
 # ── Öffentliche API ────────────────────────────────────────────────────────────
@@ -94,8 +98,22 @@ def switch_language(lang: str | None) -> None:
             )
             return
         except FileNotFoundError:
-            pass
+            if lang != _SOURCE_LANG:
+                _warn_missing_translation(lang)
     _t = gettext.NullTranslations()
+
+
+def _warn_missing_translation(lang: str) -> None:
+    """Fehlende .mo einmalig je Sprache melden (Fallback bleibt Deutsch)."""
+    if lang in _missing_warned:
+        return
+    _missing_warned.add(lang)
+    mo = _LOCALE_DIR / lang / "LC_MESSAGES" / f"{_DOMAIN}.mo"
+    log.warning(
+        f"Übersetzung für Sprache '{lang}' nicht gefunden ({mo}) — "
+        f"Oberfläche bleibt auf Deutsch. Beim Start aus dem Quellcode "
+        f"zuerst `make compile-mo` ausführen."
+    )
 
 
 def available_languages() -> list[str]:

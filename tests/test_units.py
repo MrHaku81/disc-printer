@@ -53,6 +53,19 @@ class FormatTests(unittest.TestCase):
                          "1.30 in / 33 mm")
 
 
+# Sprachen mit eigener Schreibweise der Einheiten (wie in den „5 mm …"-Tooltips);
+# alle anderen verwenden „mm"/„in".
+NATIVE_UNITS = {
+    "ar": ("مم", "بوصة"),
+    "fa": ("میلی‌متر", "اینچ"),
+    "he": ('מ"מ', "אינץ'"),
+    "hi": ("मिमी", "इंच"),
+    "ru": ("мм", "дюйм."),
+    "th": ("มม.", "นิ้ว"),
+    "uk": ("мм", "дюйм."),
+}
+
+
 @unittest.skipUnless(shutil.which("msgfmt"), "msgfmt nicht installiert")
 class CatalogTests(unittest.TestCase):
     """Jede Sprache zeigt mm UND Zoll, kein Platzhalter fällt weg."""
@@ -76,8 +89,9 @@ class CatalogTests(unittest.TestCase):
                         translated = tr.gettext(template)
                         self.assertNotIn("bedruckbar", translated)
                         text = format_dimension(translated, mm)
-                        for part in want + ("mm", " in"):
-                            self.assertIn(part, text)
+                        mm_unit, in_unit = NATIVE_UNITS.get(lang, ("mm", "in"))
+                        self.assertIn(f"{want[0]} {mm_unit}", text)
+                        self.assertIn(f"{want[1]} {in_unit}", text)
                         if template == DIM_TWO_LINES:
                             self.assertEqual(len(text.split("\n")), 2)
 

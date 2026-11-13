@@ -23,8 +23,8 @@ msgid ""
 "Ø %(mm).0f mm\n"
 "%(inch).2f in"
 msgstr ""
-"Ø %(mm).0f mm\n"
-"%(inch).2f in"
+"Ø %(mm).0f मिमी\n"
+"%(inch).2f इंच"
 
 #: src/disc_printer/gui/canvas.py:609
 msgid "Hub · nicht bedruckbar"
@@ -35,14 +35,14 @@ msgstr "हब · मुद्रण योग्य नहीं"
 #: src/disc_printer/gui/canvas.py:615
 #, python-format
 msgid "Ø %(mm).0f mm / %(inch).2f in (bedruckbar)"
-msgstr "Ø %(mm).0f mm / %(inch).2f in (मुद्रण योग्य)"
+msgstr "Ø %(mm).0f मिमी / %(inch).2f इंच (मुद्रण योग्य)"
 
 #. TRANSLATORS: Disc or hub diameter, e.g. "Ø 120 mm / 4.72 in".
 #. Keep both placeholders; the order may be changed.
 #: src/disc_printer/gui/canvas.py:620 src/disc_printer/gui/window.py:261
 #, python-format
 msgid "Ø %(mm).0f mm / %(inch).2f in"
-msgstr "Ø %(mm).0f mm / %(inch).2f in"
+msgstr "Ø %(mm).0f मिमी / %(inch).2f इंच"
 
 #: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:467
 #: src/disc_printer/gui/window.py:1625
