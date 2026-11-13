@@ -114,22 +114,21 @@ Romanian, Russian, Serbian, Slovak, Spanish, Swedish, Thai, Turkish, Ukrainian, 
 
 ### Flatpak (any distro)
 
-Download the pre-built bundle from the [releases page](https://github.com/MrHaku81/disc-printer/releases)
-or directly from the repository:
+Download `disc-printer.flatpak` from the
+[latest release](https://github.com/MrHaku81/disc-printer/releases/latest), then:
 
 ```bash
 # Install the bundle
-flatpak install --user disc-printer.flatpak
+flatpak install --user ./disc-printer.flatpak
 
 # Run
 flatpak run de.haku.disc-printer
 ```
 
 > The Flatpak bundle includes numpy, the CUPS client tools (`lp`, `lpstat`, `lpoptions`),
-> and all Python dependencies. You only need the GNOME Platform 47 runtime:
-> ```bash
-> flatpak install flathub org.gnome.Platform//47
-> ```
+> and all Python dependencies. It runs on the GNOME Platform 51 runtime, which Flatpak
+> downloads from Flathub automatically on the first install (a few hundred MB). Coming
+> from an older version, `flatpak uninstall --unused` removes the previous runtime.
 
 ### From Git (pipx)
 
