@@ -135,6 +135,17 @@ def get_current_lang() -> str | None:
     return _current_lang
 
 
+def effective_lang() -> str:
+    """Tatsächlich angezeigte Sprache.
+
+    Deutsch-Fallback ist "de": ohne Sprache (None) und wenn die .mo der
+    gewählten Sprache fehlt (Oberfläche bleibt dann deutsch).
+    """
+    if not _current_lang or type(_t) is gettext.NullTranslations:
+        return _SOURCE_LANG
+    return _current_lang
+
+
 # ── Initialisierung beim Import ────────────────────────────────────────────────
 
 def _detect_system_lang(available: list[str]) -> str | None:

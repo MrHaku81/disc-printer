@@ -95,5 +95,12 @@ class OpenClosePromptGuiTests(BroadwayCase):
         self.run_scenario("close_prompt")
 
 
+
+class LanguageSelectorGuiTests(BroadwayCase):
+    def test_selector_matches_actual_language(self):
+        # Sprachwechsel (auch zurück auf Deutsch), Neues Design, Öffnen
+        self.run_scenario("lang_selector")
+
+
 if __name__ == "__main__":
     unittest.main()

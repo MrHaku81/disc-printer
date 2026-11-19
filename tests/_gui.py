@@ -61,8 +61,12 @@ class BroadwayCase(unittest.TestCase):
         """Szenario ausführen; gibt die Logdatei des Laufs zurück."""
         work = Path(tempfile.mkdtemp(dir=self._tmp.name))
         log = work / "app.log"
+        # Feste Systemsprache: unabhängig vom Rechner, und "C" ergibt den
+        # Deutsch-Fallback (keine Sprache gewählt), den Fall des Sprachfeld-Fehlers.
         env = {k: v for k, v in os.environ.items()
-               if k not in ("DISPLAY", "WAYLAND_DISPLAY")}
+               if k not in ("DISPLAY", "WAYLAND_DISPLAY", "LANGUAGE", "LC_ALL",
+                            "LC_MESSAGES")}
+        env["LANG"] = "C.UTF-8"
         env.update(GDK_BACKEND="broadway", BROADWAY_DISPLAY=":5",
                    XDG_RUNTIME_DIR=str(self.run_dir), HOME=str(self.home),
                    XDG_STATE_HOME=str(self.home / "state"),

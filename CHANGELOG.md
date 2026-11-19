@@ -105,6 +105,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+#### Sprach-Auswahlfeld
+- Das Feld zeigte nach dem Zurückwechseln auf Deutsch „العربية“
+  (ersten Listeneintrag), obwohl die Oberfläche deutsch war (schon in 0.1.2).
+  Deutsch ist intern der Fallback ohne Sprache; das Feld suchte diesen Wert
+  nicht in der Liste und fiel auf Eintrag 0 zurück. Dasselbe beim ersten Start
+  ohne Einstellung, wenn die Systemsprache nicht übersetzt ist. Fehlt die
+  Übersetzungsdatei einer Sprache (Start aus dem Quellcode ohne
+  `make compile-mo`), zeigte das Feld diese Sprache, die Oberfläche blieb aber
+  deutsch. In die Einstellungen wurde nie eine falsche Sprache geschrieben.
+  Jetzt zeigt das Feld immer die tatsächlich angezeigte Sprache.
+- Tests: Feld, aktive Übersetzung und sichtbare Beschriftung werden nach
+  Sprachwechsel, Neues Design und Öffnen verglichen; die GUI-Tests laufen mit
+  fester Systemsprache
+
 #### Start ohne Anzeige (#2)
 - Kann GTK keine Anzeige öffnen, endet die App mit einer einzeiligen Meldung
   auf stderr und Exit-Code 1 statt mit Traceback, GTK-Warnungen und

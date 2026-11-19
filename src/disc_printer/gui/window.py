@@ -189,15 +189,18 @@ class MainWindow(Gtk.ApplicationWindow):
         lbl = Gtk.Label(label=_("Sprache:"), xalign=0.0)
         lbl.set_size_request(70, -1)
         row.append(lbl)
+        self._lang_label = lbl
 
         langs         = _i18n.available_languages()
         display_names = [_i18n.LANG_NAMES.get(l, l) for l in langs]
 
         dd = Gtk.DropDown.new_from_strings(display_names)
         dd.set_hexpand(True)
+        self._lang_dd = dd
 
-        current = _i18n.get_current_lang()
-        dd.set_selected(langs.index(current) if current in langs else 0)
+        # Deutsch-Fallback (None) ist "de", nicht der erste Listeneintrag
+        current = _i18n.effective_lang()
+        dd.set_selected(langs.index(current) if current in langs else Gtk.INVALID_LIST_POSITION)
 
         dd.connect("notify::selected",
                    lambda d, _p, ls=langs: self._on_language_changed(d, ls))
@@ -209,7 +212,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if idx >= len(langs):
             return
         lang = langs[idx]
-        if lang == (_i18n.get_current_lang() or "de"):
+        if lang == _i18n.effective_lang():
             return
 
         s = _settings.load()

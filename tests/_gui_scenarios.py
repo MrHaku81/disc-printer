@@ -55,6 +55,14 @@ def fresh_fp() -> str:
     return design_fingerprint(DesignState(), HUB_LARGE_MM)
 
 
+class FakeOpenDialog:
+    def __init__(self, path):
+        self._path = path
+
+    def open_finish(self, _result):
+        return Gio.File.new_for_path(str(self._path))
+
+
 class FakeSaveDialog:
     def __init__(self, path):
         self._path = path
@@ -103,6 +111,7 @@ def make_dirty(win) -> dict:
 # ── Szenarien ────────────────────────────────────────────────────────────────
 
 def scenario_reset(win):
+    check_lang(win, "Start")
     info = make_dirty(win)
     lang_before = i18n.get_current_lang()
     selected_before = win._selected
@@ -145,6 +154,7 @@ def scenario_reset(win):
     # Unverändert
     assert win._selected is selected_before and win._dropdown.get_selected() == dd_before
     assert i18n.get_current_lang() == lang_before
+    check_lang(win, "nach Neues Design")            # Feld, nicht nur interner Wert
     assert not win._has_unsaved_changes()
 
 
@@ -613,6 +623,93 @@ def scenario_img_slider_undo(win):
     pump(700)
     assert labels(win)[n:] == [L["op"], L["br"]], labels(win)[n:]
     assert win._img_gestures == {}
+
+
+# ── Sprach-Auswahlfeld = tatsächliche Sprache ────────────────────────────────
+
+def _compile_locales(codes):
+    """Eigene .mo im Arbeitsordner: unabhängig von `make compile-mo`."""
+    import shutil, subprocess
+    src = Path(i18n.__file__).parent / "locale"
+    dst = WORK / "locale"
+    dst.mkdir()
+    shutil.copy(src / "LINGUAS", dst / "LINGUAS")
+    for c in codes:
+        out = dst / c / "LC_MESSAGES"
+        out.mkdir(parents=True)
+        subprocess.run(["msgfmt", "-o", str(out / "disc_printer.mo"),
+                        str(src / c / "LC_MESSAGES" / "disc_printer.po")], check=True)
+    return dst
+
+
+def _expected_ui(code, msgid):
+    import gettext
+    if code == "de":
+        return msgid
+    return gettext.translation("disc_printer", localedir=str(i18n._LOCALE_DIR),
+                               languages=[code]).gettext(msgid)
+
+
+def _main_window(app):
+    wins = [x for x in app.get_windows() if isinstance(x, w.MainWindow) and x.get_visible()]
+    assert len(wins) == 1, f"erwartet genau ein Hauptfenster: {wins}"
+    return wins[0]
+
+
+def check_lang(win, step):
+    """Auswahlfeld, aktive Übersetzung und sichtbare Beschriftung stimmen überein."""
+    langs = i18n.available_languages()
+    dd = win._lang_dd
+    idx = dd.get_selected()
+    assert idx < len(langs), f"{step}: Feld ohne Auswahl ({idx})"
+    shown = langs[idx]
+    actual = i18n.effective_lang()
+    assert shown == actual, f"{step}: Feld zeigt {shown}, Oberfläche ist {actual}"
+    # tatsächlich angezeigter Text, unabhängig von i18n ermittelt
+    assert win._lang_label.get_label() == _expected_ui(actual, "Sprache:"), \
+        f"{step}: Beschriftung {win._lang_label.get_label()!r} passt nicht zu {actual}"
+    assert dd.get_model().get_string(idx) == i18n.LANG_NAMES[actual]
+
+
+def scenario_lang_selector(win):
+    app = win.get_application()
+    i18n._LOCALE_DIR = _compile_locales(["fr", "en", "ar"])
+    i18n.switch_language(None)                      # Start ohne Sprache: Deutsch
+    w.MainWindow(app).present(); win.close(); pump(50)   # Feld neu aufbauen
+    win = _main_window(app)
+    check_lang(win, "Start ohne Sprache")
+    settings_file = Path(os.environ["HOME"]) / ".config" / "disc-printer" / "settings.json"
+
+    for code in ("fr", "en", "de", "ar", "de"):     # zurück auf Deutsch = Fehlerfall
+        win._lang_dd.set_selected(i18n.available_languages().index(code))
+        pump(100)
+        win = _main_window(app)
+        check_lang(win, f"Wechsel -> {code}")
+        import json
+        assert json.loads(settings_file.read_text())["language"] == code
+    assert i18n.get_current_lang() is None          # interner Deutsch-Fallback
+
+    # Neues Design (mit Rückfrage, Verwerfen)
+    win._add_image_from_path(png("a.png"))
+    with PromptSpy() as spy:
+        win._on_new_clicked(None)
+        spy.answer(0); check_lang(win, "Neues Design -> Abbrechen")
+        spy.answer(1); check_lang(win, "Neues Design -> Verwerfen")
+    assert win._state.images == []
+
+    # Öffnen einer gespeicherten Datei
+    from disc_printer import file_format
+    st = DesignState(); st.elements.append(TextElement("x", "Sans", 20, False, False, (0, 0, 0, 1)))
+    f = WORK / "l.discprint"
+    file_format.save(f, st, HUB_SMALL_MM)
+    win._on_open_dialog_done(FakeOpenDialog(f), None)
+    assert win._state.elements and win._state.elements[0].text == "x"
+    check_lang(win, "Öffnen")
+
+    # .mo fehlt: Oberfläche bleibt deutsch, Feld muss Deutsch zeigen
+    i18n.switch_language("bg")
+    assert i18n.effective_lang() == "de" and i18n._("Sprache:") == "Sprache:"
+    i18n.switch_language(None)
 
 
 # ── Undo-Audit: jede Designaktion genau ein Eintrag, Undo/Redo exakt ─────────
