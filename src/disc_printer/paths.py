@@ -1,4 +1,4 @@
-"""Speicherort für .discprint-Designs.
+"""Speicherorte: .discprint-Designs und Logdatei.
 
 Der Ordner liegt im Dokumente-Verzeichnis des Systems (XDG, über GLib), nicht
 fest unter ~/Dokumente. Er ist unabhängig von der App-Sprache.
@@ -8,6 +8,7 @@ Tests ohne echtes Home-Verzeichnis und ohne echte user-dirs.dirs laufen.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from ._log import log
@@ -15,6 +16,11 @@ from ._log import log
 APP_SUBDIR = "DiscPrinter"
 # Bis 0.1.2 fest verdrahtet; wird nur noch gelesen, nie neu angelegt.
 LEGACY_DOCUMENTS_NAME = "Dokumente"
+
+LOG_SUBDIR = "disc-printer"
+LOG_NAME   = "disc-printer.log"
+# Pfad der Logdatei überschreiben; gesetzt, aber leer: kein Datei-Log (Tests).
+LOG_ENV    = "DISC_PRINTER_LOG_FILE"
 
 _UNSET = object()
 
@@ -92,3 +98,43 @@ def ensure_design_dir(home: Path | None = None, documents=_UNSET) -> Path:
     except OSError as e:
         log.warning(f"Cannot create design folder {target}: {e}")
         return open_dialog_folder(home, docs)
+
+
+# ── Logdatei ──────────────────────────────────────────────────────────────────
+
+def _system_state_dir(glib=None) -> Path | None:
+    """XDG-State-Ordner laut GLib.
+
+    GLib.get_user_state_dir() gibt es erst ab GLib 2.72. Davor gilt die
+    XDG-Regel von Hand: $XDG_STATE_HOME, wenn absolut, sonst None
+    (der Aufrufer nimmt dann ~/.local/state).
+    """
+    if glib is None:
+        from gi.repository import GLib as glib
+    getter = getattr(glib, "get_user_state_dir", None)
+    if getter is not None:
+        d = getter()
+        return Path(d) if d else None
+    env = os.environ.get("XDG_STATE_HOME")
+    return Path(env) if env and os.path.isabs(env) else None
+
+
+def state_dir(home: Path | None = None, state=_UNSET) -> Path:
+    """XDG-State-Ordner, Rückfall ~/.local/state. Legt nichts an."""
+    home = Path.home() if home is None else Path(home)
+    st = _system_state_dir() if state is _UNSET else state
+    return Path(st) if st else home / ".local" / "state"
+
+
+def log_file(home: Path | None = None, state=_UNSET,
+             environ: dict[str, str] | None = None) -> Path | None:
+    """Pfad der Logdatei, oder None, wenn das Datei-Log abgeschaltet ist.
+
+    <XDG-State>/disc-printer/disc-printer.log; $DISC_PRINTER_LOG_FILE
+    überschreibt den Pfad (leer: kein Datei-Log). Legt nichts an.
+    """
+    env = os.environ if environ is None else environ
+    if LOG_ENV in env:
+        value = env[LOG_ENV]
+        return Path(value).expanduser() if value else None
+    return state_dir(home, state) / LOG_SUBDIR / LOG_NAME

@@ -2,6 +2,11 @@
 
 Kein echtes CUPS: subprocess.run wird in disc_printer.detection gemockt.
 """
+
+import os
+# Kein Datei-Log in Tests: nie in die echte Logdatei im Home schreiben.
+os.environ["DISC_PRINTER_LOG_FILE"] = ""
+
 import subprocess
 import unittest
 from unittest import mock

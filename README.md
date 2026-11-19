@@ -205,6 +205,21 @@ make compile-mo                      # needs msgfmt (GNU gettext)
 PYTHONPATH=src python3 -m disc_printer
 ```
 
+### Log file
+
+For bug reports, please attach the log file:
+
+| Installation | Log file |
+|---|---|
+| AUR, pipx, from source | `~/.local/state/disc-printer/disc-printer.log` |
+| Flatpak | `~/.var/app/de.haku.disc-printer/.local/state/disc-printer/disc-printer.log` |
+
+If `XDG_STATE_HOME` is set, the native path is `$XDG_STATE_HOME/disc-printer/disc-printer.log`.
+The file is created on the first log entry. Version 0.1.2 and earlier wrote
+`~/disc-printer.log`; that file is no longer written and can be deleted.
+`DISC_PRINTER_LOG_FILE=/path/to/file` writes the log elsewhere; set but empty, it turns
+the log file off.
+
 ## How it works
 
 1. **Printer detection** — on startup, Disc Printer queries CUPS for all installed
@@ -228,15 +243,15 @@ src/disc_printer/
 │   ├── canvas.py      # Cairo drawing area, handles, drag/rotate/scale
 │   ├── dialogs.py     # Text-edit dialog
 │   └── window.py      # Main GTK4 window, panel, undo/redo wiring, main()
-├── constants.py       # Disc/hub sizes, print resolution, app ID, log file path
+├── constants.py       # Disc/hub sizes, print resolution, app ID
 ├── detection.py       # Printer discovery (lpstat, PPD, lpoptions, CUPS HTTP, IPP)
 ├── file_format.py     # .discprint save / load (ZIP + JSON)
 ├── history.py         # Command-pattern undo/redo stack
 ├── i18n.py            # gettext localisation
 ├── image_utils.py     # Pixbuf → Cairo, print colour boost, print PNG export
-├── _log.py            # Logging to ~/disc-printer.log and the console
+├── _log.py            # Logging to the log file (opened on first use) and the console
 ├── model.py           # DesignState, ImageElement, TextElement
-├── paths.py           # Design folder (XDG documents dir, legacy ~/Dokumente)
+├── paths.py           # Design folder (XDG documents dir, legacy ~/Dokumente), log file path
 ├── printer.py         # DiscPrinter dataclass + lp options
 ├── settings.py        # User settings (~/.config/disc-printer/settings.json)
 ├── units.py           # mm / inch conversion for displayed dimensions
@@ -244,7 +259,7 @@ src/disc_printer/
                        # disc_printer.pot template, LINGUAS;
                        # German is the source language
 tests/                 # unit tests (detection, print errors, i18n, units,
-                       # design folder, start without display)
+                       # design folder, log file, start without display)
 ```
 
 ## License

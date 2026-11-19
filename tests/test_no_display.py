@@ -6,9 +6,13 @@ activate-Handler, danach "exit=0" im Log.
 Die In-Prozess-Tests mocken log, damit nichts in die echte Logdatei im Home
 geschrieben wird; der End-to-End-Test läuft mit temporärem HOME.
 """
+
+import os
+# Kein Datei-Log in Tests: nie in die echte Logdatei im Home schreiben.
+os.environ["DISC_PRINTER_LOG_FILE"] = ""
+
 import io
 import logging
-import os
 import subprocess
 import sys
 import tempfile
@@ -97,12 +101,17 @@ class FileOnlyFilterTests(unittest.TestCase):
 class EndToEndTests(unittest.TestCase):
     def test_real_start_without_display(self):
         with tempfile.TemporaryDirectory() as home:
+            # Standardpfad prüfen: Umlenkung entfernen, State-Ordner im Temp-Home
             env = {k: v for k, v in os.environ.items()
-                   if k not in ("DISPLAY", "WAYLAND_DISPLAY", "GDK_BACKEND")}
-            env.update(HOME=home, PYTHONPATH=SRC)
+                   if k not in ("DISPLAY", "WAYLAND_DISPLAY", "GDK_BACKEND",
+                                "DISC_PRINTER_LOG_FILE")}
+            env.update(HOME=home, PYTHONPATH=SRC,
+                       XDG_STATE_HOME=str(Path(home) / "state"))
             r = subprocess.run([sys.executable, "-m", "disc_printer"], env=env,
                                capture_output=True, text=True, timeout=60)
-            logtext = (Path(home) / "disc-printer.log").read_text(encoding="utf-8")
+            logfile = Path(home) / "state" / "disc-printer" / "disc-printer.log"
+            logtext = logfile.read_text(encoding="utf-8")
+            self.assertFalse((Path(home) / "disc-printer.log").exists())
         self.assertEqual(r.returncode, 1)
         self.assertEqual(r.stdout, "")
         self.assertEqual(r.stderr.count("\n"), 1, r.stderr)

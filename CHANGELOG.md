@@ -30,6 +30,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Fehlerberichte gedacht und werden nicht übersetzt. Texte der Oberfläche sind
   unverändert
 
+#### Logdatei im XDG-State-Ordner
+- Die Logdatei liegt nicht mehr lose im Home, sondern unter
+  `~/.local/state/disc-printer/disc-printer.log` (bzw.
+  `$XDG_STATE_HOME/disc-printer/`), im Flatpak unter
+  `~/.var/app/de.haku.disc-printer/.local/state/disc-printer/disc-printer.log`.
+  Ermittelt über `GLib.get_user_state_dir()` in `paths.py`; bei GLib < 2.72
+  Rückfall nach XDG-Regel (`$XDG_STATE_HOME`, sonst `~/.local/state`)
+- Die Datei wird erst beim ersten Log-Eintrag geöffnet, nicht schon beim Import;
+  der Ordner wird bei Bedarf angelegt. Ist sie nicht schreibbar, läuft die App
+  ohne Datei-Log weiter und meldet das einmal auf stderr
+- `DISC_PRINTER_LOG_FILE` lenkt den Pfad um (leer: kein Datei-Log). Die Tests
+  nutzen das und schreiben nicht mehr ins Home
+- Die alte `~/disc-printer.log` (bis 0.1.2) wird nicht mehr geschrieben, aber
+  auch nicht angerührt; sie kann von Hand gelöscht werden
+- README: neuer Abschnitt „Log file“ für Fehlerberichte
+
 #### README
 - Abschnitt „Project layout“ mit dem tatsächlichen Inhalt von
   `src/disc_printer` abgeglichen (u. a. `paths.py`, `constants.py`,

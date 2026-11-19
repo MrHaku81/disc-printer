@@ -3,6 +3,11 @@
 Kein echtes CUPS und kein Druck: subprocess.run, GLib.idle_add und das
 Schreiben der PNG werden gemockt.
 """
+
+import os
+# Kein Datei-Log in Tests: nie in die echte Logdatei im Home schreiben.
+os.environ["DISC_PRINTER_LOG_FILE"] = ""
+
 import subprocess
 import unittest
 from unittest import mock

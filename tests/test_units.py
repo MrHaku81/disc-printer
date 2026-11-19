@@ -1,6 +1,9 @@
+import os
+# Kein Datei-Log in Tests: nie in die echte Logdatei im Home schreiben.
+os.environ["DISC_PRINTER_LOG_FILE"] = ""
+
 import gettext
 import glob
-import os
 import shutil
 import subprocess
 import tempfile

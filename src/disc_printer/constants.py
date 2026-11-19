@@ -1,5 +1,3 @@
-from pathlib import Path
-
 DISC_MM      = 120.0
 PRINTABLE_MM = 118.0
 HUB_LARGE_MM = 50.0
@@ -14,4 +12,3 @@ _PRINT_SAT      = 1.20   # Sättigungsboost für Druckausgabe
 _PRINT_CONTRAST = 1.10   # Kontrastboost für Druckausgabe
 
 APP_ID   = "de.haku.disc-printer"
-LOG_FILE = Path.home() / "disc-printer.log"

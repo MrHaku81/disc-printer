@@ -3,7 +3,11 @@
 Hermetisch: jedes Home-Verzeichnis ist ein TemporaryDirectory, der
 Dokumente-Ordner wird übergeben statt über GLib/user-dirs.dirs ermittelt.
 """
+
 import os
+# Kein Datei-Log in Tests: nie in die echte Logdatei im Home schreiben.
+os.environ["DISC_PRINTER_LOG_FILE"] = ""
+
 import tempfile
 import unittest
 from pathlib import Path
@@ -117,7 +121,7 @@ class DialogFolderTests(_HomeCase):
     def test_save_mkdir_failure_falls_back(self):
         docs = self.home / "Documents"
         docs.mkdir()
-        # log mocken: sonst landet die Warnung in der echten ~/disc-printer.log
+        # log mocken, um die Warnung zu prüfen
         with mock.patch.object(Path, "mkdir", side_effect=PermissionError("ro")), \
              mock.patch.object(paths, "log") as log:
             self.assertEqual(paths.ensure_design_dir(self.home, docs), docs)

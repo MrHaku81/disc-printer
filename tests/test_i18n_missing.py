@@ -1,3 +1,7 @@
+import os
+# Kein Datei-Log in Tests: nie in die echte Logdatei im Home schreiben.
+os.environ["DISC_PRINTER_LOG_FILE"] = ""
+
 import tempfile
 import unittest
 from pathlib import Path
