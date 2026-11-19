@@ -10,6 +10,16 @@ class _TimeFmt(logging.Formatter):
         return datetime.fromtimestamp(record.created).strftime("%Y-%m-%d %H:%M:%S")
 
 
+# log.error(..., extra=FILE_ONLY) writes only to the log file, not to the
+# console; used when a message is already printed to the terminal in a
+# different form.
+FILE_ONLY = {"console": False}
+
+
+def _console_filter(record: logging.LogRecord) -> bool:
+    return getattr(record, "console", True)
+
+
 def _setup() -> logging.Logger:
     logger = logging.getLogger("disc_printer")
     if logger.handlers:
@@ -21,6 +31,8 @@ def _setup() -> logging.Logger:
         logging.StreamHandler(sys.stdout),
     ):
         h.setFormatter(fmt)
+        if isinstance(h, logging.StreamHandler) and not isinstance(h, logging.FileHandler):
+            h.addFilter(_console_filter)
         logger.addHandler(h)
     return logger
 

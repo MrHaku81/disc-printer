@@ -9,7 +9,7 @@ from pathlib import Path
 import cairo
 from gi.repository import Gtk, GLib, Gdk, Gio, GdkPixbuf
 
-from .._log import log
+from .._log import log, FILE_ONLY
 from ..constants import APP_ID, PRINT_PX, HUB_LARGE_MM, HUB_SMALL_MM
 from ..history import History, Command
 from ..i18n import _
@@ -1948,7 +1948,32 @@ class DiscPrinterApp(Gtk.Application):
         MainWindow(self).present()
 
 
+def _no_display_message() -> str:
+    """One-line explanation for a failed GTK initialisation."""
+    wl, x11 = os.environ.get("WAYLAND_DISPLAY"), os.environ.get("DISPLAY")
+    if not wl and not x11:
+        detail = "neither WAYLAND_DISPLAY nor DISPLAY is set"
+    else:
+        shown = ", ".join(f"{k}={v}" for k, v in
+                          (("WAYLAND_DISPLAY", wl), ("DISPLAY", x11)) if v)
+        detail = f"{shown} is not reachable"
+    return (f"disc-printer: cannot open a display ({detail}); "
+            f"start it from a graphical session")
+
+
+def _display_available() -> bool:
+    # The PyGObject override already ran gtk_init_check() on import. Under
+    # GTK 4 a second init_check() returns True even after that first attempt
+    # failed, so the default display is the reliable signal.
+    return bool(Gtk.init_check()) and Gdk.Display.get_default() is not None
+
+
 def main() -> None:
+    if not _display_available():
+        msg = _no_display_message()
+        log.error(f"GTK initialisation failed: {msg}", extra=FILE_ONLY)
+        print(msg, file=sys.stderr)
+        sys.exit(1)
     app  = DiscPrinterApp()
     code = app.run(sys.argv)
     log.info(f"=== Disc Printer exited (exit={code}) ===")
