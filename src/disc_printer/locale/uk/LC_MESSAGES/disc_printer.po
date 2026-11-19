@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: disc-printer 0.1.0\n"
 "Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
-"POT-Creation-Date: 2026-11-19 19:50+0100\n"
+"POT-Creation-Date: 2026-11-19 20:07+0100\n"
 "PO-Revision-Date: 2026-04-24 14:00+0000\n"
 "Last-Translator: Claude AI\n"
 "Language-Team: Ukrainian\n"
@@ -40,17 +40,17 @@ msgstr "Ø %(mm).0f мм / %(inch).2f дюйм. (для друку)"
 
 #. TRANSLATORS: Disc or hub diameter, e.g. "Ø 120 mm / 4.72 in".
 #. Keep both placeholders; the order may be changed.
-#: src/disc_printer/gui/canvas.py:620 src/disc_printer/gui/window.py:267
+#: src/disc_printer/gui/canvas.py:620 src/disc_printer/gui/window.py:281
 #, python-format
 msgid "Ø %(mm).0f mm / %(inch).2f in"
 msgstr "Ø %(mm).0f мм / %(inch).2f дюйм."
 
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:473
-#: src/disc_printer/gui/window.py:1677
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:487
+#: src/disc_printer/gui/window.py:1830
 msgid "Text bearbeiten"
 msgstr "Редагувати текст"
 
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:1623
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:1776
 msgid "Text hinzufügen"
 msgstr "Додати текст"
 
@@ -70,221 +70,222 @@ msgstr "Шрифт:"
 msgid "Textfarbe"
 msgstr "Колір тексту"
 
-#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:293
+#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:307
 msgid "Farbe:"
 msgstr "Колір:"
 
-#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:718
-#: src/disc_printer/gui/window.py:1779
+#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:755
+#: src/disc_printer/gui/window.py:1932
 msgid "Abbrechen"
 msgstr "Скасувати"
 
-#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:1857
+#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:2010
 msgid "OK"
 msgstr "OK"
 
-#: src/disc_printer/gui/window.py:70
+#: src/disc_printer/gui/window.py:84
 msgid "Neues Design"
 msgstr "Новий дизайн"
 
-#: src/disc_printer/gui/window.py:75
+#: src/disc_printer/gui/window.py:89
 msgid "Design öffnen …"
 msgstr "Відкрити дизайн …"
 
-#: src/disc_printer/gui/window.py:80
+#: src/disc_printer/gui/window.py:94
 msgid "Design speichern …"
 msgstr "Зберегти дизайн …"
 
-#: src/disc_printer/gui/window.py:85 src/disc_printer/gui/window.py:1873
+#: src/disc_printer/gui/window.py:99 src/disc_printer/gui/window.py:2026
 msgid "Rückgängig"
 msgstr "Скасувати"
 
-#: src/disc_printer/gui/window.py:91 src/disc_printer/gui/window.py:1876
+#: src/disc_printer/gui/window.py:105 src/disc_printer/gui/window.py:2029
 msgid "Wiederherstellen"
 msgstr "Повторити"
 
-#: src/disc_printer/gui/window.py:97
+#: src/disc_printer/gui/window.py:111
 msgid "Drucken …"
 msgstr "Друк …"
 
-#: src/disc_printer/gui/window.py:123
+#: src/disc_printer/gui/window.py:137
 msgid "Disc-Vorschau"
 msgstr "Перегляд диска"
 
-#: src/disc_printer/gui/window.py:172
+#: src/disc_printer/gui/window.py:186
 msgid "Sprache:"
 msgstr "Мова:"
 
-#: src/disc_printer/gui/window.py:212
+#: src/disc_printer/gui/window.py:226
 msgid "Drucker"
 msgstr "Принтер"
 
-#: src/disc_printer/gui/window.py:219
+#: src/disc_printer/gui/window.py:233
 msgid "Drucker:"
 msgstr "Принтер:"
 
-#: src/disc_printer/gui/window.py:223 src/disc_printer/gui/window.py:496
+#: src/disc_printer/gui/window.py:237 src/disc_printer/gui/window.py:510
 msgid "Erkenne Drucker …"
 msgstr "Розпізнавання принтера …"
 
-#: src/disc_printer/gui/window.py:231
+#: src/disc_printer/gui/window.py:245
 msgid "Drucker neu erkennen"
 msgstr "Розпізнати принтер знову"
 
-#: src/disc_printer/gui/window.py:239
+#: src/disc_printer/gui/window.py:253
 msgid "Initialisierung …"
 msgstr "Ініціалізація …"
 
-#: src/disc_printer/gui/window.py:258
+#: src/disc_printer/gui/window.py:272
 msgid "Disc-Optionen"
 msgstr "Параметри диска"
 
-#: src/disc_printer/gui/window.py:263
+#: src/disc_printer/gui/window.py:277
 msgid "Hub-Größe:"
 msgstr "Розмір втулки:"
 
-#: src/disc_printer/gui/window.py:288
+#: src/disc_printer/gui/window.py:302 src/disc_printer/gui/window.py:1637
+#: src/disc_printer/gui/window.py:1717 src/disc_printer/gui/window.py:1732
 msgid "Hintergrund"
 msgstr "Фон"
 
-#: src/disc_printer/gui/window.py:294 src/disc_printer/gui/window.py:1420
+#: src/disc_printer/gui/window.py:308 src/disc_printer/gui/window.py:1473
 msgid "Hintergrundfarbe"
 msgstr "Колір фону"
 
-#: src/disc_printer/gui/window.py:302
+#: src/disc_printer/gui/window.py:316
 msgid "Zurücksetzen auf Weiß"
 msgstr "Скинути до білого"
 
-#: src/disc_printer/gui/window.py:309
+#: src/disc_printer/gui/window.py:323
 msgid "Bild:"
 msgstr "Зображення:"
 
-#: src/disc_printer/gui/window.py:310
+#: src/disc_printer/gui/window.py:324
 msgid "Laden …"
 msgstr "Завантажити …"
 
-#: src/disc_printer/gui/window.py:318 src/disc_printer/gui/window.py:689
-#: src/disc_printer/gui/window.py:1491 src/disc_printer/gui/window.py:1520
-#: src/disc_printer/gui/window.py:1543
+#: src/disc_printer/gui/window.py:332 src/disc_printer/gui/window.py:718
+#: src/disc_printer/gui/window.py:1544 src/disc_printer/gui/window.py:1573
+#: src/disc_printer/gui/window.py:1596
 msgid "(kein Bild)"
 msgstr "(немає зображення)"
 
-#: src/disc_printer/gui/window.py:323 src/disc_printer/gui/window.py:1550
+#: src/disc_printer/gui/window.py:337 src/disc_printer/gui/window.py:1603
 msgid "Hintergrundbild entfernen"
 msgstr "Видалити фонове зображення"
 
-#: src/disc_printer/gui/window.py:331
+#: src/disc_printer/gui/window.py:345
 msgid "Hintergrundbild: nur Position &amp; Zoom, kein Drehen/Spiegeln."
 msgstr "Фонове зображення: лише положення та масштаб, без обертання/відбиття."
 
 #. TRANSLATORS: Section title; "&" must stay as "&amp;" in Pango markup
-#: src/disc_printer/gui/window.py:343
+#: src/disc_printer/gui/window.py:357
 msgid "Bild-Position & Zoom"
 msgstr "Положення зображення та масштаб"
 
-#: src/disc_printer/gui/window.py:348
+#: src/disc_printer/gui/window.py:362
 msgid "Zoom:"
 msgstr "Масштаб:"
 
-#: src/disc_printer/gui/window.py:366
+#: src/disc_printer/gui/window.py:380
 msgid "5 mm links"
 msgstr "5 мм ліворуч"
 
-#: src/disc_printer/gui/window.py:367
+#: src/disc_printer/gui/window.py:381
 msgid "5 mm rechts"
 msgstr "5 мм праворуч"
 
-#: src/disc_printer/gui/window.py:368
+#: src/disc_printer/gui/window.py:382
 msgid "5 mm oben"
 msgstr "5 мм вгору"
 
-#: src/disc_printer/gui/window.py:369
+#: src/disc_printer/gui/window.py:383
 msgid "5 mm unten"
 msgstr "5 мм вниз"
 
-#: src/disc_printer/gui/window.py:376
+#: src/disc_printer/gui/window.py:390
 msgid "⌂ Zentrieren"
 msgstr "⌂ По центру"
 
-#: src/disc_printer/gui/window.py:377
+#: src/disc_printer/gui/window.py:391 src/disc_printer/gui/window.py:1732
 msgid "Zurücksetzen"
 msgstr "Скинути"
 
-#: src/disc_printer/gui/window.py:385
+#: src/disc_printer/gui/window.py:399
 msgid "Bild ziehen = verschieben · Mausrad = Zoom"
 msgstr "Перетягнути = перемістити · Коліщатко миші = масштаб"
 
-#: src/disc_printer/gui/window.py:399
+#: src/disc_printer/gui/window.py:413
 msgid "Text-Elemente"
 msgstr "Текстові елементи"
 
-#: src/disc_printer/gui/window.py:402 src/disc_printer/gui/window.py:743
+#: src/disc_printer/gui/window.py:416 src/disc_printer/gui/window.py:793
 msgid "+ Hinzufügen"
 msgstr "+ Додати"
 
-#: src/disc_printer/gui/window.py:403
+#: src/disc_printer/gui/window.py:417
 msgid "Neues Text-Element hinzufügen"
 msgstr "Додати новий текстовий елемент"
 
-#: src/disc_printer/gui/window.py:412
+#: src/disc_printer/gui/window.py:426
 msgid "Keine Text-Elemente"
 msgstr "Немає текстових елементів"
 
-#: src/disc_printer/gui/window.py:423
+#: src/disc_printer/gui/window.py:437
 msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
 msgstr ""
 "Клік = вибрати · Подвійний клік = редагувати · Перетягнути = перемістити"
 
-#: src/disc_printer/gui/window.py:450 src/disc_printer/gui/window.py:812
+#: src/disc_printer/gui/window.py:464 src/disc_printer/gui/window.py:862
 msgid "Sichtbarkeit umschalten"
 msgstr "Перемкнути видимість"
 
-#: src/disc_printer/gui/window.py:459 src/disc_printer/gui/window.py:821
+#: src/disc_printer/gui/window.py:473 src/disc_printer/gui/window.py:871
 msgid "Sperren / Entsperren"
 msgstr "Заблокувати / Розблокувати"
 
-#: src/disc_printer/gui/window.py:467 src/disc_printer/gui/window.py:829
+#: src/disc_printer/gui/window.py:481 src/disc_printer/gui/window.py:879
 msgid "Element duplizieren"
 msgstr "Дублювати елемент"
 
-#: src/disc_printer/gui/window.py:480 src/disc_printer/gui/window.py:847
+#: src/disc_printer/gui/window.py:494 src/disc_printer/gui/window.py:897
 msgid "Element löschen"
 msgstr "Видалити елемент"
 
-#: src/disc_printer/gui/window.py:509
+#: src/disc_printer/gui/window.py:527
 msgid "(Kein Disc-Drucker gefunden)"
 msgstr "(Принтер для дисків не знайдено)"
 
-#: src/disc_printer/gui/window.py:511
+#: src/disc_printer/gui/window.py:529
 msgid "Kein Disc-fähiger Drucker gefunden"
 msgstr "Принтер, сумісний з дисками, не знайдено"
 
-#: src/disc_printer/gui/window.py:513
+#: src/disc_printer/gui/window.py:531
 msgid "Kein Disc-fähiger Drucker erkannt."
 msgstr "Принтер, сумісний з дисками, не розпізнано."
 
-#: src/disc_printer/gui/window.py:542
+#: src/disc_printer/gui/window.py:564
 msgid "Prüfe Status …"
 msgstr "Перевірка стану …"
 
-#: src/disc_printer/gui/window.py:563
+#: src/disc_printer/gui/window.py:585
 msgid "Hub-Größe"
 msgstr "Розмір втулки"
 
-#: src/disc_printer/gui/window.py:575
+#: src/disc_printer/gui/window.py:597
 msgid "Design speichern"
 msgstr "Зберегти дизайн"
 
-#: src/disc_printer/gui/window.py:577 src/disc_printer/gui/window.py:614
+#: src/disc_printer/gui/window.py:599 src/disc_printer/gui/window.py:638
 msgid "DiscPrint-Design (*.discprint)"
 msgstr "Дизайн DiscPrint (*.discprint)"
 
-#: src/disc_printer/gui/window.py:580 src/disc_printer/gui/window.py:617
-#: src/disc_printer/gui/window.py:921 src/disc_printer/gui/window.py:1439
+#: src/disc_printer/gui/window.py:602 src/disc_printer/gui/window.py:641
+#: src/disc_printer/gui/window.py:971 src/disc_printer/gui/window.py:1492
 msgid "Alle Dateien"
 msgstr "Усі файли"
 
-#: src/disc_printer/gui/window.py:605
+#: src/disc_printer/gui/window.py:626
 #, python-format
 msgid ""
 "Design konnte nicht gespeichert werden:\n"
@@ -293,11 +294,11 @@ msgstr ""
 "Не вдалося зберегти дизайн:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:612
+#: src/disc_printer/gui/window.py:636
 msgid "Design öffnen"
 msgstr "Відкрити дизайн"
 
-#: src/disc_printer/gui/window.py:639
+#: src/disc_printer/gui/window.py:662
 #, python-format
 msgid ""
 "Design konnte nicht geöffnet werden:\n"
@@ -306,81 +307,81 @@ msgstr ""
 "Не вдалося відкрити дизайн:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:685 src/disc_printer/gui/window.py:1484
-#: src/disc_printer/gui/window.py:1533
+#: src/disc_printer/gui/window.py:714 src/disc_printer/gui/window.py:1537
+#: src/disc_printer/gui/window.py:1586
 msgid "(aus Datei geladen)"
 msgstr "(завантажено з файлу)"
 
-#: src/disc_printer/gui/window.py:716
+#: src/disc_printer/gui/window.py:753
 msgid "Ungespeicherte Änderungen verwerfen?"
 msgstr "Відкинути незбережені зміни?"
 
-#: src/disc_printer/gui/window.py:717
+#: src/disc_printer/gui/window.py:754
 msgid "Das aktuelle Design wurde seit dem letzten Speichern geändert."
 msgstr "Поточний дизайн змінено після останнього збереження."
 
-#: src/disc_printer/gui/window.py:718
+#: src/disc_printer/gui/window.py:755
 msgid "Speichern …"
 msgstr "Зберегти …"
 
-#: src/disc_printer/gui/window.py:718
+#: src/disc_printer/gui/window.py:755
 msgid "Verwerfen"
 msgstr "Відкинути"
 
-#: src/disc_printer/gui/window.py:740
+#: src/disc_printer/gui/window.py:790
 msgid "Bild-Elemente"
 msgstr "Елементи зображень"
 
-#: src/disc_printer/gui/window.py:744
+#: src/disc_printer/gui/window.py:794
 msgid "Bild-Element hinzufügen"
 msgstr "Додати елемент зображення"
 
-#: src/disc_printer/gui/window.py:751
+#: src/disc_printer/gui/window.py:801
 msgid "H spiegeln"
 msgstr "Відбити гор."
 
-#: src/disc_printer/gui/window.py:755
+#: src/disc_printer/gui/window.py:805
 msgid "V spiegeln"
 msgstr "Відбити верт."
 
-#: src/disc_printer/gui/window.py:765
+#: src/disc_printer/gui/window.py:815
 msgid "Keine Bild-Elemente"
 msgstr "Немає елементів зображень"
 
-#: src/disc_printer/gui/window.py:835
+#: src/disc_printer/gui/window.py:885
 msgid "Ebene nach oben"
 msgstr "Перемістити шар вгору"
 
-#: src/disc_printer/gui/window.py:841
+#: src/disc_printer/gui/window.py:891
 msgid "Ebene nach unten"
 msgstr "Перемістити шар вниз"
 
-#: src/disc_printer/gui/window.py:866
+#: src/disc_printer/gui/window.py:916
 msgid "Zurücksetzen auf 100 %"
 msgstr "Скинути до 100 %"
 
-#: src/disc_printer/gui/window.py:874
+#: src/disc_printer/gui/window.py:924
 msgid "Opazität:"
 msgstr "Непрозорість:"
 
-#: src/disc_printer/gui/window.py:887
+#: src/disc_printer/gui/window.py:937
 msgid "Helligkeit:"
 msgstr "Яскравість:"
 
-#: src/disc_printer/gui/window.py:893
+#: src/disc_printer/gui/window.py:943
 msgid "Kontrast:"
 msgstr "Контраст:"
 
-#: src/disc_printer/gui/window.py:914 src/disc_printer/gui/window.py:969
+#: src/disc_printer/gui/window.py:964 src/disc_printer/gui/window.py:1019
 msgid "Bild hinzufügen"
 msgstr "Додати зображення"
 
 #. TRANSLATORS: File filter label in the image chooser dialog
-#: src/disc_printer/gui/window.py:916 src/disc_printer/gui/window.py:1434
+#: src/disc_printer/gui/window.py:966 src/disc_printer/gui/window.py:1487
 msgid "Bilder (PNG, JPG, WEBP …)"
 msgstr "Зображення (PNG, JPG, WEBP …)"
 
-#: src/disc_printer/gui/window.py:972 src/disc_printer/gui/window.py:1511
+#: src/disc_printer/gui/window.py:1022 src/disc_printer/gui/window.py:1564
 #, python-format
 msgid ""
 "Bild konnte nicht geladen werden:\n"
@@ -389,108 +390,117 @@ msgstr ""
 "Не вдалося завантажити зображення:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:1007
+#: src/disc_printer/gui/window.py:1058
 msgid "Opazität"
 msgstr "Непрозорість"
 
-#: src/disc_printer/gui/window.py:1046
+#: src/disc_printer/gui/window.py:1098
 msgid "Helligkeit"
 msgstr "Яскравість"
 
-#: src/disc_printer/gui/window.py:1085
+#: src/disc_printer/gui/window.py:1138
 msgid "Kontrast"
 msgstr "Контраст"
 
-#: src/disc_printer/gui/window.py:1117
+#: src/disc_printer/gui/window.py:1170
 msgid "Helligkeit zurücksetzen"
 msgstr "Скидання яскравості"
 
-#: src/disc_printer/gui/window.py:1146
+#: src/disc_printer/gui/window.py:1199
 msgid "Kontrast zurücksetzen"
 msgstr "Скидання контрасту"
 
-#: src/disc_printer/gui/window.py:1163
+#: src/disc_printer/gui/window.py:1216
 msgid "Ebene"
 msgstr "Шар"
 
-#: src/disc_printer/gui/window.py:1191
+#: src/disc_printer/gui/window.py:1244
 msgid "Bild löschen"
 msgstr "Видалення зображення"
 
-#: src/disc_printer/gui/window.py:1220
+#: src/disc_printer/gui/window.py:1273
 msgid "H-Spiegeln"
 msgstr "Відбиття по горизонталі"
 
-#: src/disc_printer/gui/window.py:1234
+#: src/disc_printer/gui/window.py:1287
 msgid "V-Spiegeln"
 msgstr "Відбиття по вертикалі"
 
-#: src/disc_printer/gui/window.py:1253 src/disc_printer/gui/window.py:1332
+#: src/disc_printer/gui/window.py:1306 src/disc_printer/gui/window.py:1385
 msgid "Sichtbarkeit"
 msgstr "Видимість"
 
-#: src/disc_printer/gui/window.py:1272 src/disc_printer/gui/window.py:1351
+#: src/disc_printer/gui/window.py:1325 src/disc_printer/gui/window.py:1404
 msgid "Sperren"
 msgstr "Блокування"
 
-#: src/disc_printer/gui/window.py:1315
+#: src/disc_printer/gui/window.py:1368
 msgid "Bild duplizieren"
 msgstr "Дублювання зображення"
 
-#: src/disc_printer/gui/window.py:1390
+#: src/disc_printer/gui/window.py:1443
 msgid "Text duplizieren"
 msgstr "Дублювання тексту"
 
-#: src/disc_printer/gui/window.py:1431
+#: src/disc_printer/gui/window.py:1484
 msgid "Hintergrundbild wählen"
 msgstr "Вибрати фонове зображення"
 
-#: src/disc_printer/gui/window.py:1508
+#: src/disc_printer/gui/window.py:1561
 msgid "Hintergrundbild laden"
 msgstr "Завантаження фонового зображення"
 
-#: src/disc_printer/gui/window.py:1705
+#: src/disc_printer/gui/window.py:1637 src/disc_printer/gui/window.py:2140
+msgid "Zoom"
+msgstr "Масштаб"
+
+#: src/disc_printer/gui/window.py:1717 src/disc_printer/gui/window.py:2084
+#: src/disc_printer/gui/window.py:2109
+msgid "Bewegen"
+msgstr "Переміщення"
+
+#: src/disc_printer/gui/window.py:1858
 msgid "Text löschen"
 msgstr "Видалення тексту"
 
-#: src/disc_printer/gui/window.py:1723
+#: src/disc_printer/gui/window.py:1876
 msgid "Bereit"
 msgstr "Готово"
 
-#: src/disc_printer/gui/window.py:1726
+#: src/disc_printer/gui/window.py:1879
 msgid "Deaktiviert / gestoppt"
 msgstr "Вимкнено / зупинено"
 
-#: src/disc_printer/gui/window.py:1729
+#: src/disc_printer/gui/window.py:1882
 msgid "Status unbekannt"
 msgstr "Стан невідомий"
 
-#: src/disc_printer/gui/window.py:1731
+#: src/disc_printer/gui/window.py:1884
 msgid "Nicht erreichbar (Timeout)"
 msgstr "Недоступно (час вичерпано)"
 
-#: src/disc_printer/gui/window.py:1734
+#: src/disc_printer/gui/window.py:1887
 #, python-format
 msgid "Fehler: %s"
 msgstr "Помилка: %s"
 
-#: src/disc_printer/gui/window.py:1746
+#: src/disc_printer/gui/window.py:1899
 msgid "Im Netzwerk verfügbar (treiberlos)"
 msgstr "Доступний у мережі (без драйвера)"
 
-#: src/disc_printer/gui/window.py:1751
+#: src/disc_printer/gui/window.py:1904
 msgid "Nicht mehr im Netzwerk gefunden (treiberlos)"
 msgstr "Більше не знайдено в мережі (без драйвера)"
 
-#: src/disc_printer/gui/window.py:1766
+#: src/disc_printer/gui/window.py:1919
 msgid "Kein Drucker ausgewählt."
 msgstr "Принтер не вибрано."
 
-#: src/disc_printer/gui/window.py:1771
+#: src/disc_printer/gui/window.py:1924
 msgid "Disc drucken?"
 msgstr "Друкувати диск?"
 
-#: src/disc_printer/gui/window.py:1775
+#: src/disc_printer/gui/window.py:1928
 #, python-format
 msgid ""
 "Drucker:    %(name)s\n"
@@ -503,11 +513,11 @@ msgstr ""
 "\n"
 "%(cmd)s"
 
-#: src/disc_printer/gui/window.py:1779
+#: src/disc_printer/gui/window.py:1932
 msgid "Drucken"
 msgstr "Друк"
 
-#: src/disc_printer/gui/window.py:1804
+#: src/disc_printer/gui/window.py:1957
 #, python-format
 msgid ""
 "Render-Fehler:\n"
@@ -516,11 +526,11 @@ msgstr ""
 "Помилка рендерингу:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:1840
+#: src/disc_printer/gui/window.py:1993
 msgid "Timeout: Drucker antwortet nicht (>30 s)."
 msgstr "Час вичерпано: принтер не відповідає (>30 с)."
 
-#: src/disc_printer/gui/window.py:1843 src/disc_printer/printer.py:45
+#: src/disc_printer/gui/window.py:1996 src/disc_printer/printer.py:45
 #, python-format
 msgid ""
 "Druckfehler:\n"
@@ -529,29 +539,21 @@ msgstr ""
 "Помилка друку:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:1853
+#: src/disc_printer/gui/window.py:2006
 msgid "Druckauftrag gesendet"
 msgstr "Завдання друку надіслано"
 
-#: src/disc_printer/gui/window.py:1855
+#: src/disc_printer/gui/window.py:2008
 msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
 msgstr "Завдання друку успішно додано до черги."
 
-#: src/disc_printer/gui/window.py:1926 src/disc_printer/gui/window.py:1951
-msgid "Bewegen"
-msgstr "Переміщення"
-
-#: src/disc_printer/gui/window.py:1928
+#: src/disc_printer/gui/window.py:2086
 msgid "Drehen"
 msgstr "Обертання"
 
-#: src/disc_printer/gui/window.py:1930
+#: src/disc_printer/gui/window.py:2088
 msgid "Skalieren"
 msgstr "Масштабування"
-
-#: src/disc_printer/gui/window.py:1980
-msgid "Zoom"
-msgstr "Масштаб"
 
 #: src/disc_printer/printer.py:49
 msgid ""
@@ -566,15 +568,3 @@ msgstr ""
 "\n"
 "У CUPS 2.4.20 це відома помилка. Рішення: налаштуйте принтер на постійній "
 "основі в налаштуваннях принтерів."
-
-#, python-format
-#~ msgid "Ø %.0f mm"
-#~ msgstr "Ø %.0f мм"
-
-#, python-format
-#~ msgid "Ø %.0f mm  (bedruckbar)"
-#~ msgstr "Ø %.0f мм  (для друку)"
-
-#~ msgid "Tipp: Bilddatei direkt auf die Vorschau ziehen."
-#~ msgstr ""
-#~ "Порада: перетягніть файл зображення безпосередньо на область перегляду."
