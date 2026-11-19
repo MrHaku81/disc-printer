@@ -107,9 +107,11 @@ Romanian, Russian, Serbian, Slovak, Spanish, Swedish, Thai, Turkish, Ukrainian, 
 | `ippfind`, `ipptool` *(recommended)* | part of `cups` / `cups-ipp-utils` |
 | Pillow *(optional)* | `python-pillow` / `python3-pil` |
 
-> numpy is currently required: the canvas module imports it unconditionally, so Disc
-> Printer does not start without it. It is used for brightness/contrast adjustment and
-> for the colour boost applied to the print output.
+> numpy is required. It is used for brightness/contrast adjustment and for the colour
+> boost applied to the print output. It is a regular package dependency: `pip`/`pipx`
+> install it automatically if it is missing (or reuse the distro package via
+> `--system-site-packages`). Only when running directly from the source tree without
+> installing does it have to come from the distribution.
 
 > Pillow embeds an sRGB colour profile in the print PNG (written with low compression).
 > Without Pillow the PNG is written by Cairo instead — same pixels, lossless, but without
@@ -156,12 +158,13 @@ yay -S disc-printer
 PyGObject and pycairo must come from the distribution package — building them
 inside a pip-managed environment is painful and fragile. `pipx` with
 `--system-site-packages` installs Disc Printer into an isolated venv that can
-still see the distro-provided GTK bindings.
+still see the distro-provided GTK bindings. numpy is installed automatically
+(from PyPI, unless the distro package is already present).
 
 #### Arch Linux / CachyOS / Manjaro
 
 ```bash
-sudo pacman -S gtk4 python-gobject python-cairo cups python-numpy python-pillow python-pipx
+sudo pacman -S gtk4 python-gobject python-cairo cups python-pillow python-pipx
 pipx install --system-site-packages git+https://github.com/MrHaku81/disc-printer.git
 ```
 
@@ -169,7 +172,7 @@ pipx install --system-site-packages git+https://github.com/MrHaku81/disc-printer
 
 ```bash
 sudo apt install python3-gi python3-gi-cairo gir1.2-gtk-4.0 \
-                 python3-cairo cups cups-ipp-utils python3-numpy python3-pil pipx
+                 python3-cairo cups cups-ipp-utils python3-pil pipx
 pipx install --system-site-packages git+https://github.com/MrHaku81/disc-printer.git
 ```
 
