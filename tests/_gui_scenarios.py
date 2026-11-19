@@ -549,6 +549,72 @@ def scenario_bg_undo(win):
     assert win._history.redo_label == zoom, "Geste nach Undo erneut eingetragen"
 
 
+def scenario_img_slider_undo(win):
+    _ = i18n._
+    win._add_image_from_path(png("a.png"))
+    win._load_bg_image(png("bg.png"))
+    img = win._state.images[0]
+    row = win._find_img_row(img)
+    name = img.display_name
+    L = {"op": _("Opazität") + f": {name}", "br": _("Helligkeit") + f": {name}",
+         "co": _("Kontrast") + f": {name}", "zoom": _("Zoom") + f": {name}",
+         "flip": _("H-Spiegeln") + f": {name}",
+         "bgzoom": _("Zoom") + ": " + _("Hintergrund"),
+         "reset": _("Zurücksetzen") + ": " + _("Hintergrund")}
+
+    # 1. Undo mitten in der Geste nimmt genau diese Geste zurück
+    for v in (1.2, 1.4, 1.6):
+        row[5].set_value(v)
+    win._do_undo()
+    assert img.brightness == 1.0 and row[5].get_value() == 1.0
+    assert win._history.redo_label == L["br"], win._history.redo_label
+    pump(700)
+    assert win._history.redo_label == L["br"], "Geste nach Undo erneut eingetragen"
+    win._do_redo()
+    assert img.brightness == 1.6 and row[5].get_value() == 1.6
+
+    # 2. Andere Aktion mitten in der Geste: Geste zuerst
+    n = len(labels(win))
+    row[3].set_value(0.5)
+    win._canvas._select_image(img)
+    win._on_flip(True)
+    assert labels(win)[n:] == [L["op"], L["flip"]], labels(win)[n:]
+    pump(700)
+    assert labels(win)[n:] == [L["op"], L["flip"]], "verspäteter Eintrag"
+
+    # 3. Gemischt mit Hintergrund: Startreihenfolge
+    n = len(labels(win))
+    row[7].set_value(0.8)                       # Kontrast
+    win._scale_slider.set_value(1.5)            # Hintergrund-Zoom
+    win._canvas._select_image(img)
+    sx0 = img.scale_x
+    win._canvas._on_scroll(None, 0, -1)         # Mausrad auf dem Bild
+    assert img.scale_x != sx0
+    win._on_reset_transform(None)
+    assert labels(win)[n:] == [L["co"], L["bgzoom"], L["zoom"], L["reset"]], labels(win)[n:]
+    pump(700)
+    assert len(labels(win)) == n + 4
+    # rückwärts exakt: Reset, Bild-Zoom, Hintergrund-Zoom, Kontrast
+    win._do_undo(); assert win._state.bg_img_scale == 1.5
+    win._do_undo(); assert img.scale_x == sx0
+    win._do_undo(); assert win._state.bg_img_scale == 1.0
+    win._do_undo(); assert img.contrast == 1.0 and row[7].get_value() == 1.0
+    for _i in range(4):
+        win._do_redo()
+
+    # 4. Eine Geste endet von selbst: andere laufende Geste bleibt offen
+    n = len(labels(win))
+    row[3].set_value(0.3)                       # Deckkraft startet
+    pump(300)
+    row[5].set_value(1.1)                       # Helligkeit startet später
+    pump(400)                                   # Deckkraft fertig, Helligkeit offen
+    assert labels(win)[n:] == [L["op"]], labels(win)[n:]
+    assert ("brightness", img.id) in win._img_gestures
+    pump(700)
+    assert labels(win)[n:] == [L["op"], L["br"]], labels(win)[n:]
+    assert win._img_gestures == {}
+
+
 # ── Undo-Audit: jede Designaktion genau ein Eintrag, Undo/Redo exakt ─────────
 
 class FakeTextDialog:

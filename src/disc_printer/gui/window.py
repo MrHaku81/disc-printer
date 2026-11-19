@@ -54,6 +54,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self._bg_nudge_timer:  int = 0
         self._bg_nudge_before: tuple[float, float] | None = None
         self._bg_seq = itertools.count()       # Startreihenfolge der Gesten
+        # Laufende Bild-Gesten (Deckkraft, Helligkeit, Kontrast, Mausrad-Zoom):
+        # (art, bild-id) -> (startnummer, timer-dict, commit)
+        self._img_gestures: dict[tuple[str, int], tuple[int, dict, object]] = {}
         self._bg_zoom_seq = self._bg_nudge_seq = 0
         self._opacity_before:    dict[int, float]           = {}
         self._opacity_timer:     dict[int, int]             = {}
@@ -66,7 +69,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self._build_ui()
         self._history.on_change = self._on_history_changed
-        self._history.before_change = self._flush_bg_gestures
+        self._history.before_change = self._flush_gestures
         # Stand des zuletzt gespeicherten/geladenen/neuen Designs
         self._clean_fp = self._current_fingerprint()
         # Jedes Schließen (Titelleiste, Alt+F4, Taskleiste) läuft über close-request
@@ -679,6 +682,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 setattr(self, attr, 0)
         self._bg_zoom_before = None
         self._bg_nudge_before = None
+        self._img_gestures.clear()
 
     def _apply_loaded_design(self, loaded: DesignState, hub_mm: float) -> None:
         self._cancel_pending_timers()
@@ -1037,6 +1041,7 @@ class MainWindow(Gtk.ApplicationWindow):
             GLib.source_remove(self._opacity_timer.pop(img.id))
 
         def commit(img_id: int = img.id, img_ref: ImageElement = img) -> bool:
+            self._img_gestures.pop(("opacity", img_id), None)
             before = self._opacity_before.pop(img_id, None)
             self._opacity_timer.pop(img_id, None)
             if before is None or abs(img_ref.opacity - before) < 0.005:
@@ -1054,7 +1059,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     self._block_opacity_signal = False
                 self._canvas.refresh()
 
-            self._history.push(Command(
+            self._push_gesture(Command(
                 _("Opazität") + f": {img_ref.display_name}",
                 undo_fn=lambda: apply_opacity(b),
                 redo_fn=lambda: apply_opacity(a),
@@ -1062,6 +1067,7 @@ class MainWindow(Gtk.ApplicationWindow):
             return GLib.SOURCE_REMOVE
 
         self._opacity_timer[img.id] = GLib.timeout_add(600, commit)
+        self._track_img_gesture("opacity", img.id, self._opacity_timer, commit)
 
     def _on_img_brightness(self, slider: Gtk.Scale,
                             img: ImageElement, lbl: Gtk.Label) -> None:
@@ -1077,6 +1083,7 @@ class MainWindow(Gtk.ApplicationWindow):
             GLib.source_remove(self._brightness_timer.pop(img.id))
 
         def commit(img_id: int = img.id, img_ref: ImageElement = img) -> bool:
+            self._img_gestures.pop(("brightness", img_id), None)
             before = self._brightness_before.pop(img_id, None)
             self._brightness_timer.pop(img_id, None)
             if before is None or abs(img_ref.brightness - before) < 0.005:
@@ -1094,7 +1101,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     self._block_bc_signal = False
                 self._canvas.refresh()
 
-            self._history.push(Command(
+            self._push_gesture(Command(
                 _("Helligkeit") + f": {img_ref.display_name}",
                 undo_fn=lambda: apply_brightness(b),
                 redo_fn=lambda: apply_brightness(a),
@@ -1102,6 +1109,7 @@ class MainWindow(Gtk.ApplicationWindow):
             return GLib.SOURCE_REMOVE
 
         self._brightness_timer[img.id] = GLib.timeout_add(600, commit)
+        self._track_img_gesture("brightness", img.id, self._brightness_timer, commit)
 
     def _on_img_contrast(self, slider: Gtk.Scale,
                           img: ImageElement, lbl: Gtk.Label) -> None:
@@ -1117,6 +1125,7 @@ class MainWindow(Gtk.ApplicationWindow):
             GLib.source_remove(self._contrast_timer.pop(img.id))
 
         def commit(img_id: int = img.id, img_ref: ImageElement = img) -> bool:
+            self._img_gestures.pop(("contrast", img_id), None)
             before = self._contrast_before.pop(img_id, None)
             self._contrast_timer.pop(img_id, None)
             if before is None or abs(img_ref.contrast - before) < 0.005:
@@ -1134,7 +1143,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     self._block_bc_signal = False
                 self._canvas.refresh()
 
-            self._history.push(Command(
+            self._push_gesture(Command(
                 _("Kontrast") + f": {img_ref.display_name}",
                 undo_fn=lambda: apply_contrast(b),
                 redo_fn=lambda: apply_contrast(a),
@@ -1142,6 +1151,7 @@ class MainWindow(Gtk.ApplicationWindow):
             return GLib.SOURCE_REMOVE
 
         self._contrast_timer[img.id] = GLib.timeout_add(600, commit)
+        self._track_img_gesture("contrast", img.id, self._contrast_timer, commit)
 
     def _on_reset_brightness(self, img: ImageElement) -> None:
         old_b = img.brightness
@@ -1652,13 +1662,26 @@ class MainWindow(Gtk.ApplicationWindow):
             self._sync_scale_slider(scale)
         self._canvas.refresh()
 
-    def _flush_bg_gestures(self) -> None:
-        """Offene Hintergrund-Gesten sofort als Undo-Einträge abschließen.
+    def _track_img_gesture(self, kind: str, img_id: int, timers: dict,
+                           commit) -> None:
+        """Bild-Geste merken, damit _flush_gestures sie abschließen kann."""
+        key = (kind, img_id)
+        seq = self._img_gestures[key][0] if key in self._img_gestures else next(self._bg_seq)
+        self._img_gestures[key] = (seq, timers, commit)
 
-        Läuft vor jedem anderen Undo-Eintrag und vor Undo/Redo
-        (History.before_change); offene Gesten in Startreihenfolge.
+    def _flush_gestures(self) -> None:
+        """Offene Gesten sofort als Undo-Einträge abschließen.
+
+        Hintergrund (Zoom, Pfeilknöpfe) und Bilder (Deckkraft, Helligkeit,
+        Kontrast, Mausrad-Zoom). Läuft vor jedem anderen Undo-Eintrag und vor
+        Undo/Redo (History.before_change); offene Gesten in Startreihenfolge.
         """
         pending = []
+        for (kind, img_id), (seq, timers, commit) in list(self._img_gestures.items()):
+            tid = timers.pop(img_id, None)
+            if tid:
+                GLib.source_remove(tid)
+            pending.append((seq, commit))
         if self._bg_zoom_timer:
             GLib.source_remove(self._bg_zoom_timer)
             self._bg_zoom_timer = 0
@@ -1720,7 +1743,7 @@ class MainWindow(Gtk.ApplicationWindow):
         )
 
     def _on_reset_transform(self, _btn) -> None:
-        self._flush_bg_gestures()
+        self._flush_gestures()
         s = self._state
         before = (s.bg_img_x_mm, s.bg_img_y_mm, s.bg_img_scale)
         after = (0.0, 0.0, 1.0)
@@ -2121,6 +2144,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._scroll_before[img_id] = (old_sx, old_sy)
 
         def commit(img_ref: ImageElement = img, iid: int = img_id) -> bool:
+            self._img_gestures.pop(("zoom", iid), None)
             bef = self._scroll_before.pop(iid, None)
             self._scroll_timer.pop(iid, None)
             if bef is None:
@@ -2136,7 +2160,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 i.scale_x = sx; i.scale_y = sy
                 self._canvas.refresh()
 
-            self._history.push(Command(
+            self._push_gesture(Command(
                 _("Zoom") + f": {img_ref.display_name}",
                 undo_fn=lambda: apply_zoom(b_sx, b_sy),
                 redo_fn=lambda: apply_zoom(a_sx, a_sy),
@@ -2144,6 +2168,7 @@ class MainWindow(Gtk.ApplicationWindow):
             return GLib.SOURCE_REMOVE
 
         self._scroll_timer[img_id] = GLib.timeout_add(600, commit)
+        self._track_img_gesture("zoom", img_id, self._scroll_timer, commit)
 
     def _show_error(self, message: str) -> None:
         Gtk.AlertDialog(message=message).show(self)

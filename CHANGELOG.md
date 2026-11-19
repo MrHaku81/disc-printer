@@ -71,6 +71,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   mehrere Pfeilknopf-Klicks kurz hintereinander einen gemeinsamen Eintrag.
   Offene Gesten werden vor jedem anderen Eintrag und vor Undo/Redo
   abgeschlossen, damit die Reihenfolge stimmt
+- Dieselbe Logik für die Bild-Regler (Deckkraft, Helligkeit, Kontrast) und den
+  Mausrad-Zoom auf Bildern: eine laufende Geste wird vor Undo/Redo und vor
+  jedem anderen Eintrag abgeschlossen (Strg+Z mitten in der Geste nimmt genau
+  diese Geste zurück, nicht den vorigen Eintrag). Bild- und
+  Hintergrund-Gesten werden in der Reihenfolge ihres Beginns eingetragen
 - Fehler behoben (schon in 0.1.2): Undo nach dem Verschieben eines Bilds am
   Bildkörper scheiterte mit `KeyError`, weil nur die Position gemerkt wurde
 - README: Undo-Beschreibung präzisiert; Ebenen-Reihenfolge (↑/↓) gibt es nur

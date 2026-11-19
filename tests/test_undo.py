@@ -40,6 +40,9 @@ class UndoGuiTests(BroadwayCase):
     def test_every_design_action_is_undoable(self):
         self.run_scenario("undo_audit")
 
+    def test_image_slider_gestures_close_before_undo_and_other_entries(self):
+        self.run_scenario("img_slider_undo")
+
 
 if __name__ == "__main__":
     unittest.main()
