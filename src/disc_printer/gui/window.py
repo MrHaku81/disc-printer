@@ -191,7 +191,7 @@ class MainWindow(Gtk.ApplicationWindow):
         s = _settings.load()
         s["language"] = lang
         _settings.save(s)
-        log.info(f"Sprache gewechselt: {lang}")
+        log.info(f"Language changed: {lang}")
 
         _i18n.switch_language(lang if lang != "de" else None)
 
@@ -505,7 +505,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._cups_info.set_markup(
                 f"<small><i>{_('Kein Disc-fähiger Drucker erkannt.')}</i></small>"
             )
-            log.warning("Keine Disc-fähigen Drucker gefunden")
+            log.warning("No disc-capable printers found")
         else:
             for p in printers:
                 self._str_list.append(p.name)
@@ -514,7 +514,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._on_printer_changed(self._dropdown, None)
             if len(printers) == 1:
                 log.info(
-                    f"Einziger Disc-Drucker automatisch gewählt: {printers[0].name}"
+                    f"Only disc printer, selected automatically: {printers[0].name}"
                 )
 
         return GLib.SOURCE_REMOVE
@@ -527,7 +527,7 @@ class MainWindow(Gtk.ApplicationWindow):
             return
         self._selected = self._printers[idx]
         p = self._selected
-        log.info(f"Drucker gewählt: {p.name}")
+        log.info(f"Printer selected: {p.name}")
         self._cups_info.set_markup(
             f"<small><tt>lp -d <b>{p.name}</b> "
             f"{' '.join(p.lp_options)} &lt;datei&gt;</tt></small>"
@@ -544,7 +544,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if old_mm == new_mm:
             return
         self._canvas.set_hub(new_mm)
-        log.info(f"Hub-Größe: {new_mm:.0f} mm")
+        log.info(f"Hub size: {new_mm:.0f} mm")
 
         def set_hub(mm: float) -> None:
             self._block_hub_signal = True
@@ -587,9 +587,9 @@ class MainWindow(Gtk.ApplicationWindow):
             path = path.with_suffix(".discprint")
         try:
             _fmt.save(path, self._state, self._canvas.hub_mm)
-            log.info(f"Design gespeichert: {path}")
+            log.info(f"Design saved: {path}")
         except Exception as e:
-            log.error(f"Speichern fehlgeschlagen: {e}")
+            log.error(f"Save failed: {e}")
             self._show_error(_("Design konnte nicht gespeichert werden:\n%s") % e)
 
     def _on_open_clicked(self, _btn) -> None:
@@ -617,9 +617,9 @@ class MainWindow(Gtk.ApplicationWindow):
         try:
             loaded_state, hub_mm = _fmt.load(path)
             self._apply_loaded_design(loaded_state, hub_mm)
-            log.info(f"Design geöffnet: {path}")
+            log.info(f"Design opened: {path}")
         except Exception as e:
-            log.error(f"Öffnen fehlgeschlagen: {e}")
+            log.error(f"Open failed: {e}")
             self._show_error(_("Design konnte nicht geöffnet werden:\n%s") % e)
 
     def _apply_loaded_design(self, loaded: DesignState, hub_mm: float) -> None:
@@ -901,7 +901,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._add_image_row(img)
             self._canvas.update_cursor()
             self._canvas.refresh()
-            log.info(f"Bild-Element hinzugefügt: {path} z={next_z}")
+            log.info(f"Image element added: {path} z={next_z}")
 
             def undo(i=img) -> None:
                 if self._state.selected_image is i:
@@ -915,7 +915,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
             self._history.push(Command(_("Bild hinzufügen"), undo, redo))
         except Exception as e:
-            log.error(f"Bild laden fehlgeschlagen: {e}")
+            log.error(f"Image load failed: {e}")
             self._show_error(_("Bild konnte nicht geladen werden:\n%s") % e)
 
     def _on_img_opacity(self, slider: Gtk.Scale,
@@ -1100,7 +1100,7 @@ class MainWindow(Gtk.ApplicationWindow):
         img.z += delta
         new_z = img.z
         self._canvas.refresh()
-        log.info(f"Bild '{img.display_name}' z={img.z}")
+        log.info(f"Image '{img.display_name}' z={img.z}")
 
         def apply_z(z: int, i: ImageElement = img) -> None:
             i.z = z
@@ -1122,7 +1122,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._img_list.remove(row)
         self._canvas.update_cursor()
         self._canvas.refresh()
-        log.info(f"Bild-Element gelöscht: {img.display_name}")
+        log.info(f"Image element deleted: {img.display_name}")
 
         def undo(i=img, ix=idx) -> None:
             self._state.images.insert(ix, i)
@@ -1157,7 +1157,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if horizontal:
             img.flip_h = not img.flip_h
             new_val = img.flip_h
-            log.info(f"Bild '{img.display_name}' flip_h={new_val}")
+            log.info(f"Image '{img.display_name}' flip_h={new_val}")
             self._canvas.refresh()
 
             def apply_h(v: bool, i: ImageElement = img) -> None:
@@ -1171,7 +1171,7 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             img.flip_v = not img.flip_v
             new_val = img.flip_v
-            log.info(f"Bild '{img.display_name}' flip_v={new_val}")
+            log.info(f"Image '{img.display_name}' flip_v={new_val}")
             self._canvas.refresh()
 
             def apply_v(v: bool, i: ImageElement = img) -> None:
@@ -1190,7 +1190,7 @@ class MainWindow(Gtk.ApplicationWindow):
         btn.set_icon_name("view-reveal-symbolic" if new_vis else "view-conceal-symbolic")
         row.set_opacity(1.0 if new_vis else 0.5)
         self._canvas.refresh()
-        log.info(f"Bild '{img.display_name}' visible={new_vis}")
+        log.info(f"Image '{img.display_name}' visible={new_vis}")
 
         def apply_vis(v: bool, i: ImageElement = img) -> None:
             i.visible = v
@@ -1209,7 +1209,7 @@ class MainWindow(Gtk.ApplicationWindow):
             "changes-prevent-symbolic" if new_locked else "changes-allow-symbolic"
         )
         self._canvas.refresh()
-        log.info(f"Bild '{img.display_name}' locked={new_locked}")
+        log.info(f"Image '{img.display_name}' locked={new_locked}")
 
         def apply_lock(v: bool, i: ImageElement = img) -> None:
             i.locked = v
@@ -1246,7 +1246,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._add_image_row(new_img)
         self._canvas.update_cursor()
         self._canvas.refresh()
-        log.info(f"Bild-Element dupliziert: '{img.display_name}' → z={next_z}")
+        log.info(f"Image element duplicated: '{img.display_name}' → z={next_z}")
 
         def undo(ni=new_img) -> None:
             if self._state.selected_image is ni:
@@ -1321,7 +1321,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._add_element_row(new_elem)
         self._canvas.update_cursor()
         self._canvas.refresh()
-        log.info(f"Text-Element dupliziert: '{elem.display_text}' → z={next_z}")
+        log.info(f"Text element duplicated: '{elem.display_text}' → z={next_z}")
 
         def undo(ne=new_elem) -> None:
             if self._state.selected_element is ne:
@@ -1348,7 +1348,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._state.set_bg_color(*new_color)
         self._canvas.refresh()
         log.info(
-            f"Hintergrundfarbe: rgba({rgba.red:.3f}, {rgba.green:.3f}, "
+            f"Background colour: rgba({rgba.red:.3f}, {rgba.green:.3f}, "
             f"{rgba.blue:.3f}, {rgba.alpha:.3f})"
         )
         if old_color == new_color:
@@ -1418,7 +1418,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._canvas.update_cursor()
             self._canvas.refresh()
             log.info(
-                f"Hintergrundbild geladen: {path} "
+                f"Background image loaded: {path} "
                 f"({pixbuf.get_width()}×{pixbuf.get_height()} px)"
             )
 
@@ -1454,7 +1454,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
             self._history.push(Command(_("Hintergrundbild laden"), undo, redo))
         except Exception as e:
-            log.error(f"Fehler beim Laden von '{path}': {e}")
+            log.error(f"Failed to load '{path}': {e}")
             self._show_error(_("Bild konnte nicht geladen werden:\n%s") % e)
 
     def _on_clear_image(self, _btn) -> None:
@@ -1470,7 +1470,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._sync_scale_slider(1.0)
         self._canvas.update_cursor()
         self._canvas.refresh()
-        log.info(f"Hintergrundbild entfernt: {old_path}")
+        log.info(f"Background image removed: {old_path}")
 
         def undo() -> None:
             self._state.set_bg_image(old_surface, old_path)
@@ -1503,7 +1503,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._state.bg_img_scale = v
         self._scale_lbl.set_text(f"{v:.2f}×")
         self._canvas.refresh()
-        log.info(f"Bild-Zoom (Slider): {v:.2f}×")
+        log.info(f"Image zoom (slider): {v:.2f}×")
 
     def _sync_scale_slider(self, value: float) -> None:
         self._block_scale_signal = True
@@ -1518,7 +1518,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._state.bg_img_y_mm += dy_mm
         self._canvas.refresh()
         log.info(
-            f"Bild-Nudge dx={dx_mm:+.0f}mm dy={dy_mm:+.0f}mm → "
+            f"Image nudge dx={dx_mm:+.0f}mm dy={dy_mm:+.0f}mm → "
             f"x={self._state.bg_img_x_mm:.1f}mm y={self._state.bg_img_y_mm:.1f}mm"
         )
 
@@ -1526,7 +1526,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._state.reset_bg_transform()
         self._sync_scale_slider(1.0)
         self._canvas.refresh()
-        log.info("Bild-Transform zurückgesetzt")
+        log.info("Image transform reset")
 
     # ── Text-Handler ──────────────────────────────────────────────────────────
 
@@ -1554,7 +1554,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._canvas.update_cursor()
             self._canvas.refresh()
             log.info(
-                f"Text-Element hinzugefügt: '{elem.display_text}' [{elem.font_desc_str}]"
+                f"Text element added: '{elem.display_text}' [{elem.font_desc_str}]"
             )
 
             def undo(e=elem) -> None:
@@ -1611,7 +1611,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 )
             self._canvas.refresh()
             log.info(
-                f"Text-Element bearbeitet: '{elem.display_text}' [{elem.font_desc_str}]"
+                f"Text element edited: '{elem.display_text}' [{elem.font_desc_str}]"
             )
 
             def apply_text(s: dict, e: TextElement = elem) -> None:
@@ -1636,7 +1636,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._elem_list.remove(row)
         self._canvas.update_cursor()
         self._canvas.refresh()
-        log.info(f"Text-Element gelöscht: '{elem.display_text}'")
+        log.info(f"Text element deleted: '{elem.display_text}'")
 
         def undo(e=elem, i=idx) -> None:
             self._state.elements.insert(i, e)
@@ -1668,18 +1668,18 @@ class MainWindow(Gtk.ApplicationWindow):
                 self._temp_status(name, env)
             elif "idle" in out or "ready" in out:
                 GLib.idle_add(self._set_led, "green", _("Bereit"))
-                log.info(f"Drucker {name}: bereit")
+                log.info(f"Printer {name}: ready")
             elif "disabled" in out or "stopped" in out:
                 GLib.idle_add(self._set_led, "red", _("Deaktiviert / gestoppt"))
-                log.warning(f"Drucker {name}: deaktiviert/gestoppt")
+                log.warning(f"Printer {name}: disabled/stopped")
             else:
                 GLib.idle_add(self._set_led, "amber", _("Status unbekannt"))
         except subprocess.TimeoutExpired:
             GLib.idle_add(self._set_led, "red", _("Nicht erreichbar (Timeout)"))
-            log.error(f"Drucker {name}: Status-Timeout")
+            log.error(f"Printer {name}: status timeout")
         except Exception as e:
             GLib.idle_add(self._set_led, "red", _("Fehler: %s") % e)
-            log.error(f"Drucker {name}: Status-Fehler: {e}")
+            log.error(f"Printer {name}: status error: {e}")
 
     def _temp_status(self, name: str, env: dict[str, str]) -> None:
         r = subprocess.run(
@@ -1691,12 +1691,12 @@ class MainWindow(Gtk.ApplicationWindow):
             # without a permanent CUPS queue (created temporarily on printing)
             GLib.idle_add(self._set_led, "green",
                           _("Im Netzwerk verfügbar (treiberlos)"))
-            log.info(f"Drucker {name}: treiberlos, im Netzwerk verfügbar")
+            log.info(f"Printer {name}: driverless, available on the network")
         else:
             # TRANSLATORS: Driverless network printer is no longer announced
             GLib.idle_add(self._set_led, "red",
                           _("Nicht mehr im Netzwerk gefunden (treiberlos)"))
-            log.warning(f"Drucker {name}: treiberlos, nicht mehr gefunden")
+            log.warning(f"Printer {name}: driverless, no longer found")
 
     def _set_led(self, color: str, text: str) -> bool:
         _C = {"green": "#2ec27e", "red": "#e01b24",
@@ -1708,7 +1708,7 @@ class MainWindow(Gtk.ApplicationWindow):
     # ── Drucken ───────────────────────────────────────────────────────────────
 
     def _on_print_clicked(self, _btn) -> None:
-        log.info("Druckbutton geklickt")
+        log.info("Print button clicked")
         if self._selected is None:
             self._show_error(_("Kein Drucker ausgewählt."))
             return
@@ -1727,7 +1727,7 @@ class MainWindow(Gtk.ApplicationWindow):
         dlg.set_cancel_button(0)
         dlg.set_default_button(1)
         dlg.choose(self, None, self._on_print_confirmed)
-        log.info(f"Druckdialog geöffnet: {p.name}")
+        log.info(f"Print dialog opened: {p.name}")
 
     def _on_print_confirmed(self, dlg: Gtk.AlertDialog, result) -> None:
         try:
@@ -1735,19 +1735,19 @@ class MainWindow(Gtk.ApplicationWindow):
         except Exception:
             return
         if idx != 1:
-            log.info("Drucken abgebrochen")
+            log.info("Printing cancelled")
             return
 
         p      = self._selected
         hub_mm = self._canvas.hub_mm
         log.info(
-            f"Rendere Design für Druck: {PRINT_PX}×{PRINT_PX} px, "
-            f"Hub={hub_mm:.0f} mm, Drucker={p.name}"
+            f"Rendering design for print: {PRINT_PX}×{PRINT_PX} px, "
+            f"hub={hub_mm:.0f} mm, printer={p.name}"
         )
         try:
             surf = DiscCanvas.render_for_print(self._state, hub_mm)
         except Exception as e:
-            log.error(f"Render-Fehler: {e}")
+            log.error(f"Render error: {e}")
             self._show_error(_("Render-Fehler:\n%s") % e)
             return
 
@@ -1768,30 +1768,30 @@ class MainWindow(Gtk.ApplicationWindow):
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
             if r.returncode == 0:
                 job = r.stdout.strip()
-                log.info(f"Druckauftrag gesendet: {job}")
+                log.info(f"Print job sent: {job}")
                 GLib.idle_add(self._on_print_success, job)
             else:
                 err = (r.stderr or r.stdout).strip()
-                log.error(f"lp Fehler (rc={r.returncode}): {err}")
+                log.error(f"lp error (rc={r.returncode}): {err}")
                 if printer.temporary:
                     log.error(
-                        f"{printer.name} ist ein temporäres (treiberloses) Ziel "
-                        f"— CUPS hat vermutlich keine temporäre Queue angelegt "
+                        f"{printer.name} is a temporary (driverless) destination; "
+                        f"CUPS probably did not create a temporary queue "
                         f"(CUPS 2.4.20: OpenPrinting/cups#1751)"
                     )
                 GLib.idle_add(self._show_error, lp_error_message(printer, err))
 
         except subprocess.TimeoutExpired:
-            log.error("lp Timeout (>30 s)")
+            log.error("lp timeout (>30 s)")
             GLib.idle_add(self._show_error,
                           _("Timeout: Drucker antwortet nicht (>30 s)."))
         except Exception as e:
-            log.error(f"Druckfehler: {e}")
+            log.error(f"Print error: {e}")
             GLib.idle_add(self._show_error, _("Druckfehler:\n%s") % e)
         finally:
             try:
                 os.unlink(tmp_path)
-                log.info(f"Temp-PNG gelöscht: {tmp_path}")
+                log.info(f"Temp PNG deleted: {tmp_path}")
             except Exception:
                 pass
 
@@ -1944,12 +1944,12 @@ class DiscPrinterApp(Gtk.Application):
         self.connect("activate", self._on_activate)
 
     def _on_activate(self, _app) -> None:
-        log.info(f"=== Disc Printer gestartet (app_id={APP_ID}) ===")
+        log.info(f"=== Disc Printer started (app_id={APP_ID}) ===")
         MainWindow(self).present()
 
 
 def main() -> None:
     app  = DiscPrinterApp()
     code = app.run(sys.argv)
-    log.info(f"=== Disc Printer beendet (exit={code}) ===")
+    log.info(f"=== Disc Printer exited (exit={code}) ===")
     sys.exit(code)

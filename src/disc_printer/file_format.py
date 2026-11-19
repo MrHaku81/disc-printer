@@ -97,7 +97,7 @@ def save(path: str | Path, state: DesignState, hub_mm: float) -> None:
         for name, data in img_files.items():
             zf.writestr(name, data)
 
-    log.info(f"Design gespeichert: {path}")
+    log.info(f"Design saved: {path}")
 
 
 def load(path: str | Path) -> tuple[DesignState, float]:
@@ -188,7 +188,7 @@ def load(path: str | Path) -> tuple[DesignState, float]:
     n_img = len(state.images)
     n_txt = len(state.elements)
     log.info(
-        f"Design geladen: {path} "
-        f"(v{version}, hub={hub_mm}mm, {n_img} Bild(er), {n_txt} Text(e))"
+        f"Design loaded: {path} "
+        f"(v{version}, hub={hub_mm}mm, {n_img} image(s), {n_txt} text(s))"
     )
     return state, hub_mm

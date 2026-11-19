@@ -67,7 +67,7 @@ def _parse_ppd(ppd_path: Path) -> tuple[str | None, str | None, str] | None:
         # Adobe PPD-Spec 4.3 schreibt Latin-1 vor; errors='replace' für Robustheit
         text = ppd_path.read_text(encoding="latin-1", errors="replace")
     except OSError as e:
-        log.debug(f"    PPD-Lesefehler {ppd_path.name}: {e}")
+        log.debug(f"    PPD read error {ppd_path.name}: {e}")
         return None
 
     slot:  str | None = None
@@ -85,12 +85,12 @@ def _parse_ppd(ppd_path: Path) -> tuple[str | None, str | None, str] | None:
         if key == "inputslot" and slot is None:
             if _matches(value, _SLOT_KEYS) or _matches(label, _SLOT_KEYS):
                 slot = value
-                log.debug(f"    PPD InputSlot gefunden: {value!r}  label={label!r}")
+                log.debug(f"    PPD InputSlot found: {value!r}  label={label!r}")
 
         elif key == "mediatype" and mtype is None:
             if _matches(value, _TYPE_KEYS) or _matches(label, _TYPE_KEYS):
                 mtype = value
-                log.debug(f"    PPD MediaType gefunden: {value!r}  label={label!r}")
+                log.debug(f"    PPD MediaType found: {value!r}  label={label!r}")
 
         elif key == "pagesize" and msize is None:
             if (
@@ -99,7 +99,7 @@ def _parse_ppd(ppd_path: Path) -> tuple[str | None, str | None, str] | None:
                 or bool(_SIZE_PT_RE.search(value))
             ):
                 msize = value
-                log.debug(f"    PPD PageSize  gefunden: {value!r}  label={label!r}")
+                log.debug(f"    PPD PageSize  found: {value!r}  label={label!r}")
 
     if slot is None and mtype is None:
         return None
@@ -121,13 +121,13 @@ def _query_via_lpoptions(name: str) -> tuple[str | None, str | None, str] | None
             capture_output=True, text=True, timeout=6,
         )
     except FileNotFoundError:
-        log.error("lpoptions nicht gefunden — ist CUPS installiert?")
+        log.error("lpoptions not found; is CUPS installed?")
         return None
     except subprocess.TimeoutExpired:
-        log.error(f"lpoptions Timeout für {name}")
+        log.error(f"lpoptions timeout for {name}")
         return None
     except Exception as e:
-        log.error(f"lpoptions Fehler für {name}: {e}")
+        log.error(f"lpoptions error for {name}: {e}")
         return None
 
     slot:  str | None = None
@@ -188,11 +188,11 @@ def _fetch_ppd_via_cups_http(name: str) -> str | None:
             resp = conn.getresponse()
             if resp.status == 200:
                 content = resp.read().decode("latin-1", errors="replace")
-                log.debug(f"    PPD via CUPS-HTTP geholt ({len(content)} Bytes)")
+                log.debug(f"    PPD fetched via CUPS HTTP ({len(content)} bytes)")
                 return content
-            log.debug(f"    CUPS-HTTP PPD Status {resp.status} für {name!r}")
+            log.debug(f"    CUPS HTTP PPD status {resp.status} for {name!r}")
         except Exception as e:
-            log.debug(f"    CUPS-HTTP Fehler ({sock_path}): {e}")
+            log.debug(f"    CUPS HTTP error ({sock_path}): {e}")
     return None
 
 
@@ -319,9 +319,9 @@ def _check_ipp_tools(cmd: list[str]) -> bool:
     if not _ipp_tools_warned:
         _ipp_tools_warned = True
         log.warning(
-            f"{' und '.join(missing)} nicht gefunden — treiberlose Drucker "
-            f"ohne feste CUPS-Queue werden nicht als disc-fähig erkannt. "
-            f"Fehlendes Paket installieren ({_IPP_PACKAGE_HINT})."
+            f"{' and '.join(missing)} not found; driverless printers "
+            f"without a permanent CUPS queue cannot be detected as disc-capable. "
+            f"Install the missing package ({_IPP_PACKAGE_HINT})."
         )
     return False
 
@@ -345,7 +345,7 @@ def _ipp_lookup(
 def _ipp_lookup_uncached(device_uri: str) -> _IppInfo | None:
     cmd = _ipptool_cmd(device_uri)
     if cmd is None:
-        log.debug(f"    IPP: URI nicht unterstützt: {device_uri!r}")
+        log.debug(f"    IPP: unsupported URI: {device_uri!r}")
         return None
     if not _check_ipp_tools(cmd):
         return None
@@ -353,13 +353,13 @@ def _ipp_lookup_uncached(device_uri: str) -> _IppInfo | None:
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
     except FileNotFoundError:
         _check_ipp_tools(cmd)
-        log.debug(f"    IPP: {cmd[0]} nicht gefunden")
+        log.debug(f"    IPP: {cmd[0]} not found")
         return None
     except subprocess.TimeoutExpired:
-        log.debug(f"    IPP: Timeout für {device_uri!r}")
+        log.debug(f"    IPP: timeout for {device_uri!r}")
         return None
     except Exception as e:
-        log.debug(f"    IPP: Fehler für {device_uri!r}: {e}")
+        log.debug(f"    IPP: error for {device_uri!r}: {e}")
         return None
 
     resolved = device_uri if cmd[0] == "ipptool" else None
@@ -372,7 +372,7 @@ def _ipp_lookup_uncached(device_uri: str) -> _IppInfo | None:
         m = _RESOLVED_URI_RE.match(line)
         if m and resolved is None:
             resolved = m.group(1)
-    log.debug(f"    IPP: aufgelöst zu {resolved!r}")
+    log.debug(f"    IPP: resolved to {resolved!r}")
     return _IppInfo(resolved, attrs)
 
 
@@ -490,7 +490,7 @@ def _browse_ipp_services() -> dict[tuple[str, str], str] | None:
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
     except Exception as e:
-        log.debug(f"    ippfind-Suchlauf fehlgeschlagen: {e}")
+        log.debug(f"    ippfind browse failed: {e}")
         return None
     services: dict[tuple[str, str], str] = {}
     for line in r.stdout.splitlines():
@@ -499,7 +499,7 @@ def _browse_ipp_services() -> dict[tuple[str, str], str] | None:
         if not sep or not name or scheme not in ("ipp", "ipps"):
             continue
         services.setdefault((f"_{scheme}._tcp", name.lower()), uri)
-    log.debug(f"  ippfind-Suchlauf: {len(services)} Dienst(e)")
+    log.debug(f"  ippfind browse: {len(services)} service(s)")
     return services
 
 
@@ -522,7 +522,7 @@ def _resolve_temporary(dests: list["_Dest"]) -> dict[str, str]:
         if key and key in services:
             resolved[d.device_uri] = services[key]
         elif key:
-            log.debug(f"  {d.name}: im ippfind-Suchlauf nicht gefunden")
+            log.debug(f"  {d.name}: not found in ippfind browse")
     return resolved
 
 
@@ -573,22 +573,22 @@ def _detect_caps(
             return None, "ppd"
         else:
             log.debug(
-                f"    PPD existiert, aber kein Lesezugriff "
-                f"(cups-Gruppe?) → lpoptions"
+                f"    PPD exists but is not readable "
+                f"(cups group?) → lpoptions"
             )
     else:
-        log.debug(f"    Kein PPD für {name!r} (driverless?) → lpoptions")
+        log.debug(f"    No PPD for {name!r} (driverless?) → lpoptions")
 
     result = _query_via_lpoptions(name)
     if result is not None:
         return result, "lpoptions"
 
-    log.debug(f"    lpoptions kein Ergebnis → versuche CUPS HTTP-API")
+    log.debug(f"    lpoptions: no result → trying CUPS HTTP API")
     result = _query_via_cups_http(name)
     if result is not None or not device_uri:
         return result, "cups-http"
 
-    log.debug(f"    CUPS-HTTP kein Ergebnis → IPP-Abfrage {device_uri!r}")
+    log.debug(f"    CUPS HTTP: no result → IPP query {device_uri!r}")
     return _query_via_ipp(device_uri), "ipp"
 
 
@@ -609,17 +609,17 @@ def _run_lpstat(args: list[str], *, check: bool = False) -> str | None:
             timeout=6, env=env,
         )
     except FileNotFoundError:
-        log.error("lpstat nicht gefunden — ist CUPS installiert?")
+        log.error("lpstat not found; is CUPS installed?")
         return None
     except subprocess.TimeoutExpired:
-        log.error(f"lpstat {' '.join(args)}: Timeout")
+        log.error(f"lpstat {' '.join(args)}: timeout")
         return None
     except Exception as e:
-        log.error(f"lpstat {' '.join(args)}: Fehler: {e}")
+        log.error(f"lpstat {' '.join(args)}: error: {e}")
         return None
     if check and r.returncode != 0:
         log.warning(
-            f"lpstat {' '.join(args)} fehlgeschlagen (rc={r.returncode}): "
+            f"lpstat {' '.join(args)} failed (rc={r.returncode}): "
             f"{r.stderr.strip()}"
         )
         return None
@@ -693,7 +693,7 @@ def _lpstat_destinations() -> list[_Dest]:
     # -e fehlt in alten CUPS-Versionen (< 2.2) → dann nur -p wie bisher
     e_out = _run_lpstat(["-l", "-e"], check=True)
     if e_out is None:
-        log.info("lpstat -e nicht verfügbar → nur dauerhafte Queues (lpstat -p)")
+        log.info("lpstat -e not available → permanent queues only (lpstat -p)")
         return _merge_destinations(p_names, [])
     return _merge_destinations(p_names, _parse_lpstat_e(e_out))
 
@@ -713,13 +713,13 @@ def detect_disc_printers() -> list[DiscPrinter]:
     erscheinen in der Liste — die GUI zeigt damit automatisch nur
     kompatible Geräte an.
     """
-    log.info("=== Druckererkennung gestartet ===")
+    log.info("=== Printer detection started ===")
     t0 = time.monotonic()
     dests = _lpstat_destinations()
-    log.info(f"CUPS-Drucker gefunden: {[d.name for d in dests] or '(keine)'}")
+    log.info(f"CUPS printers found: {[d.name for d in dests] or '(none)'}")
     temp = [d.name for d in dests if d.temporary]
     if temp:
-        log.info(f"  davon temporär/treiberlos (nur lpstat -e): {temp}")
+        log.info(f"  of which temporary/driverless (lpstat -e only): {temp}")
 
     _ipp_cache.clear()
     permanent: dict[tuple[str, str], str] = {}
@@ -739,8 +739,8 @@ def detect_disc_printers() -> list[DiscPrinter]:
             if twin is not None:
                 hidden.add(d.name)
                 log.info(
-                    f"  ⊘ {d.name}: ausgeblendet — feste Queue {twin!r} "
-                    f"zeigt auf dasselbe Gerät"
+                    f"  ⊘ {d.name}: hidden; permanent queue {twin!r} "
+                    f"points to the same device"
                 )
         _prefetch_ipp([d for d in temps if d.name not in hidden], resolved)
 
@@ -749,7 +749,7 @@ def detect_disc_printers() -> list[DiscPrinter]:
         name = dest.name
         if name in hidden:
             continue
-        log.info(f"  Prüfe {name!r} …")
+        log.info(f"  Checking {name!r} …")
         result, source = _detect_caps(
             name, dest.device_uri if dest.temporary else None)
         if result:
@@ -763,10 +763,10 @@ def detect_disc_printers() -> list[DiscPrinter]:
                 f"InputSlot={slot!r}  MediaType={mtype!r}  media={msize!r}"
             )
         else:
-            log.info(f"  ✗ {name}: kein Disc-Druck erkannt")
+            log.info(f"  ✗ {name}: no disc printing detected")
 
     log.info(
-        f"Disc-fähige Drucker: {len(found)}  "
-        f"(Dauer {time.monotonic() - t0:.1f} s)"
+        f"Disc-capable printers: {len(found)}  "
+        f"(took {time.monotonic() - t0:.1f} s)"
     )
     return found

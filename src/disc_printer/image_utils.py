@@ -36,13 +36,13 @@ def is_image_path(path: str) -> bool:
 def boost_cairo_surface(surf: cairo.ImageSurface) -> cairo.ImageSurface:
     """Sättigungs- und Kontrast-geboostete Kopie von surf für den Druck."""
     if not _HAS_NUMPY:
-        log.warning("numpy nicht verfügbar – Farbboost übersprungen")
+        log.warning("numpy not available, skipping colour boost")
         return surf
     w, h   = surf.get_width(), surf.get_height()
     stride = surf.get_stride()
     if stride != w * 4:
         log.warning(
-            f"Unerwarteter Cairo-Stride {stride} != {w * 4} – Farbboost übersprungen"
+            f"Unexpected Cairo stride {stride} != {w * 4}, skipping colour boost"
         )
         return surf
     # Cairo FORMAT_RGB24 (little-endian): Byte-Reihenfolge pro Pixel ist B G R X
@@ -79,9 +79,9 @@ def write_print_png(surf: cairo.ImageSurface, path: str) -> None:
             img  = _PILImage.fromarray(rgb, "RGB")
             icc  = ImageCms.ImageCmsProfile(ImageCms.createProfile("sRGB")).tobytes()
             img.save(path, format="PNG", icc_profile=icc, compress_level=1)
-            log.info(f"PNG mit sRGB-Profil gespeichert (Pillow): {path}")
+            log.info(f"PNG saved with sRGB profile (Pillow): {path}")
             return
         except Exception as e:
-            log.warning(f"Pillow-PNG-Export fehlgeschlagen: {e} – Fallback zu Cairo")
+            log.warning(f"Pillow PNG export failed: {e}; falling back to Cairo")
     surf.write_to_png(path)
-    log.info(f"PNG gespeichert (Cairo, lossless): {path}")
+    log.info(f"PNG saved (Cairo, lossless): {path}")

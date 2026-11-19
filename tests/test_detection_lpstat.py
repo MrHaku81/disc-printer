@@ -208,7 +208,7 @@ class IppToolsMissingTests(unittest.TestCase):
             self.assertIsNone(det._query_via_ipp("ipp://other:631/ipp/print"))
             run.assert_not_called()
         self.assertEqual(len(cm.output), 1)
-        self.assertIn("ipptool und ippfind", cm.output[0])
+        self.assertIn("ipptool and ippfind", cm.output[0])
         self.assertIn("cups-ipp-utils", cm.output[0])
 
     def test_only_ippfind_missing(self):
@@ -216,7 +216,7 @@ class IppToolsMissingTests(unittest.TestCase):
         with mock.patch.object(det.shutil, "which", side_effect=which), \
              self.assertLogs("disc_printer", "WARNING") as cm:
             self.assertIsNone(det._query_via_ipp(CANON_DNSSD))
-        self.assertIn("ippfind nicht gefunden", cm.output[0])
+        self.assertIn("ippfind not found", cm.output[0])
 
     def test_ipp_uri_needs_only_ipptool(self):
         which = lambda t: None if t == "ippfind" else "/usr/bin/" + t
@@ -329,9 +329,9 @@ class DuplicateDeviceTests(unittest.TestCase):
                                        "ipp://lonely.local:631/ipp/print")
         self.assertEqual([p.name for p in found], ["Canon_TS705a", "Lonely"])
         self.assertEqual([p.temporary for p in found], [False, True])
-        self.assertTrue(any("Canon_TS700_series: ausgeblendet" in l
+        self.assertTrue(any("Canon_TS700_series: hidden" in l
                             and "'Canon_TS705a'" in l for l in cm.output))
-        self.assertFalse(any("Prüfe 'Canon_TS700_series'" in l
+        self.assertFalse(any("Checking 'Canon_TS700_series'" in l
                              for l in cm.output))
         self.assertEqual(dc.call_args_list[0].args, ("Canon_TS705a", None))
         self.assertEqual(dc.call_args_list[1].args,

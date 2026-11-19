@@ -110,9 +110,9 @@ def _warn_missing_translation(lang: str) -> None:
     _missing_warned.add(lang)
     mo = _LOCALE_DIR / lang / "LC_MESSAGES" / f"{_DOMAIN}.mo"
     log.warning(
-        f"Übersetzung für Sprache '{lang}' nicht gefunden ({mo}) — "
-        f"Oberfläche bleibt auf Deutsch. Beim Start aus dem Quellcode "
-        f"zuerst `make compile-mo` ausführen."
+        f"Translation for language '{lang}' not found ({mo}); "
+        f"the interface stays in German. When running from source, "
+        f"run `make compile-mo` first."
     )
 
 

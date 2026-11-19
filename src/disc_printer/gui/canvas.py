@@ -280,7 +280,7 @@ class DiscCanvas(Gtk.DrawingArea):
                 sel_img._draw_hw  = iw * abs(sel_img.scale_x) * ppm / PRINT_PPM / 2
                 sel_img._draw_hh  = ih * abs(sel_img.scale_y) * ppm / PRINT_PPM / 2
                 log.debug(
-                    f"Handle-Fallback: '{sel_img.display_name}' "
+                    f"Handle fallback: '{sel_img.display_name}' "
                     f"cx={sel_img._draw_cx:.1f} cy={sel_img._draw_cy:.1f} "
                     f"hw={sel_img._draw_hw:.1f} hh={sel_img._draw_hh:.1f}"
                 )
@@ -289,7 +289,7 @@ class DiscCanvas(Gtk.DrawingArea):
                     cr, sel_img, locked=sel_img.locked
                 )
             except Exception as exc:
-                log.error(f"Handle-Drawing fehlgeschlagen: {exc}")
+                log.error(f"Handle drawing failed: {exc}")
                 self._img_handles = []
         else:
             self._img_handles = []
@@ -833,22 +833,22 @@ class DiscCanvas(Gtk.DrawingArea):
                      dx: float, dy: float) -> None:
         if self._drag_target == "bg":
             log.info(
-                f"Hintergrundbild verschoben: "
+                f"Background image moved: "
                 f"x={self._state.bg_img_x_mm:.1f} mm, "
                 f"y={self._state.bg_img_y_mm:.1f} mm"
             )
         elif isinstance(self._drag_target, TextElement):
             e = self._drag_target
-            log.info(f"Text '{e.display_text}' verschoben: x={e.x_mm:.1f} mm, y={e.y_mm:.1f} mm")
+            log.info(f"Text '{e.display_text}' moved: x={e.x_mm:.1f} mm, y={e.y_mm:.1f} mm")
         elif isinstance(self._drag_target, ImageElement):
             img = self._drag_target
             h   = self._drag_handle
             if h == -1:
-                log.info(f"Bild '{img.display_name}' verschoben: x={img.x:.1f}, y={img.y:.1f} mm")
+                log.info(f"Image '{img.display_name}' moved: x={img.x:.1f}, y={img.y:.1f} mm")
             elif h == _H_ROT:
-                log.info(f"Bild '{img.display_name}' rotiert: {img.rotation:.1f}°")
+                log.info(f"Image '{img.display_name}' rotated: {img.rotation:.1f}°")
             else:
-                log.info(f"Bild '{img.display_name}' skaliert: sx={img.scale_x:.3f} sy={img.scale_y:.3f}")
+                log.info(f"Image '{img.display_name}' scaled: sx={img.scale_x:.3f} sy={img.scale_y:.3f}")
 
         # Undo/Redo-Callback: Snapshot + Aktion an window.py übergeben
         if (self._on_transform_cb
@@ -881,7 +881,7 @@ class DiscCanvas(Gtk.DrawingArea):
                 img.scale_x = new_sx
                 img.scale_y = new_sy
                 self.queue_draw()
-                log.info(f"Bild '{img.display_name}' Zoom: sx={new_sx:.2f}×")
+                log.info(f"Image '{img.display_name}' zoom: sx={new_sx:.2f}×")
                 if self._on_img_zoom_cb:
                     self._on_img_zoom_cb(img, old_sx, old_sy, new_sx, new_sy)
             return True
@@ -896,7 +896,7 @@ class DiscCanvas(Gtk.DrawingArea):
                 self.queue_draw()
                 if self._on_scale_changed_cb:
                     self._on_scale_changed_cb(new_scale)
-                log.info(f"Bild-Zoom: {new_scale:.2f}×")
+                log.info(f"Image zoom: {new_scale:.2f}×")
             return True
 
         return False
@@ -918,7 +918,7 @@ class DiscCanvas(Gtk.DrawingArea):
                       x: float, y: float) -> bool:
         path = value.get_path()
         if path and is_image_path(path) and self._on_file_drop_cb:
-            log.info(f"Datei auf Canvas gedroppt: {path}")
+            log.info(f"File dropped on canvas: {path}")
             self._on_file_drop_cb(path)
             return True
         return False

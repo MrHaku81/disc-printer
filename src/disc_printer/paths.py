@@ -90,5 +90,5 @@ def ensure_design_dir(home: Path | None = None, documents=_UNSET) -> Path:
         target.mkdir(parents=True, exist_ok=True)
         return target
     except OSError as e:
-        log.warning(f"Design-Ordner {target} nicht anlegbar: {e}")
+        log.warning(f"Cannot create design folder {target}: {e}")
         return open_dialog_folder(home, docs)
