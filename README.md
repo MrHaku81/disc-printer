@@ -221,20 +221,30 @@ PYTHONPATH=src python3 -m disc_printer
 
 ```
 src/disc_printer/
+├── __init__.py        # GI version pinning (GTK 4), exports the logger
+├── __main__.py        # `python -m disc_printer` entry point
 ├── gui/
+│   ├── __init__.py
 │   ├── canvas.py      # Cairo drawing area, handles, drag/rotate/scale
 │   ├── dialogs.py     # Text-edit dialog
-│   └── window.py      # Main GTK4 window, panel, undo/redo wiring
-├── history.py         # Command-pattern undo/redo stack
-├── model.py           # DesignState, ImageElement, TextElement
+│   └── window.py      # Main GTK4 window, panel, undo/redo wiring, main()
+├── constants.py       # Disc/hub sizes, print resolution, app ID, log file path
+├── detection.py       # Printer discovery (lpstat, PPD, lpoptions, CUPS HTTP, IPP)
 ├── file_format.py     # .discprint save / load (ZIP + JSON)
-├── detection.py       # PPD-based printer discovery
-├── printer.py         # DiscPrinter dataclass + lp options
-├── units.py           # mm / inch conversion for displayed dimensions
+├── history.py         # Command-pattern undo/redo stack
 ├── i18n.py            # gettext localisation
+├── image_utils.py     # Pixbuf → Cairo, print colour boost, print PNG export
+├── _log.py            # Logging to ~/disc-printer.log and the console
+├── model.py           # DesignState, ImageElement, TextElement
+├── paths.py           # Design folder (XDG documents dir, legacy ~/Dokumente)
+├── printer.py         # DiscPrinter dataclass + lp options
+├── settings.py        # User settings (~/.config/disc-printer/settings.json)
+├── units.py           # mm / inch conversion for displayed dimensions
 └── locale/            # 33 translations (.po; .mo compiled at build time),
+                       # disc_printer.pot template, LINGUAS;
                        # German is the source language
-tests/                 # unit tests (detection, print errors, i18n, units)
+tests/                 # unit tests (detection, print errors, i18n, units,
+                       # design folder, start without display)
 ```
 
 ## License
