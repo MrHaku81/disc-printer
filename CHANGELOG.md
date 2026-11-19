@@ -59,6 +59,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   auch nicht angerührt; sie kann von Hand gelöscht werden
 - README: neuer Abschnitt „Log file“ für Fehlerberichte
 
+#### Log aufgeräumt
+- „Printer selected“ und „Printer …: ready“ erschienen doppelt: Beim Befüllen
+  der Druckerliste löste GTK `notify::selected` selbst aus, danach wurde der
+  Handler noch einmal explizit aufgerufen (zwei Status-Threads). Das Signal ist
+  beim Befüllen jetzt gesperrt; die Auswahl läuft genau einmal
+- „Design saved“ erschien doppelt (in `file_format.save()` und im Fenster); das
+  Fenster loggt nicht mehr selbst. Ebenso entfällt „Design opened“ neben
+  „Design loaded“
+- Regler (Helligkeit, Kontrast, Opazität, Hintergrund-Zoom) und Mausrad-Zoom
+  loggen nur noch den Endwert nach 600 ms Ruhe statt jedes Zwischenschritts;
+  Helligkeit, Kontrast und Opazität wurden bisher gar nicht geloggt
+- Ein bloßer Klick auf Hintergrund, Bild oder Text (ohne Bewegung) loggt kein
+  „moved“ mehr und legt keinen leeren Undo-Eintrag an
+- Tests: `tests/test_log_cleanup.py` (echte Widgets, Broadway)
+
 #### README
 - Abschnitt „Project layout“ mit dem tatsächlichen Inhalt von
   `src/disc_printer` abgeglichen (u. a. `paths.py`, `constants.py`,

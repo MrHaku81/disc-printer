@@ -829,8 +829,28 @@ class DiscCanvas(Gtk.DrawingArea):
 
             self.queue_draw()
 
+    def _drag_changed(self) -> bool:
+        """Hat der Drag das Ziel wirklich verändert (nicht nur angeklickt)?"""
+        t = self._drag_target
+        if t == "bg":
+            return (self._state.bg_img_x_mm, self._state.bg_img_y_mm) != (
+                self._drag_start_bg_x, self._drag_start_bg_y)
+        if isinstance(t, TextElement):
+            return (t.x_mm, t.y_mm) != (self._drag_start["x"], self._drag_start["y"])
+        if isinstance(t, ImageElement):
+            now = {"x": t.x, "y": t.y, "scale_x": t.scale_x,
+                   "scale_y": t.scale_y, "rotation": t.rotation}
+            return any(now[k] != v for k, v in self._drag_start.items() if k in now)
+        return False
+
     def _on_drag_end(self, gesture: Gtk.GestureDrag,
                      dx: float, dy: float) -> None:
+        if not self._drag_changed():
+            # Nur geklickt (z. B. zum Auswählen): kein Log, kein Undo-Eintrag
+            self._drag_target = None
+            self._drag_handle = -1
+            self.update_cursor()
+            return
         if self._drag_target == "bg":
             log.info(
                 f"Background image moved: "
@@ -881,7 +901,7 @@ class DiscCanvas(Gtk.DrawingArea):
                 img.scale_x = new_sx
                 img.scale_y = new_sy
                 self.queue_draw()
-                log.info(f"Image '{img.display_name}' zoom: sx={new_sx:.2f}×")
+                # geloggt wird der Endwert in window._on_canvas_zoom
                 if self._on_img_zoom_cb:
                     self._on_img_zoom_cb(img, old_sx, old_sy, new_sx, new_sy)
             return True
@@ -895,8 +915,7 @@ class DiscCanvas(Gtk.DrawingArea):
                 self._state.bg_img_scale = new_scale
                 self.queue_draw()
                 if self._on_scale_changed_cb:
-                    self._on_scale_changed_cb(new_scale)
-                log.info(f"Image zoom: {new_scale:.2f}×")
+                    self._on_scale_changed_cb(new_scale)  # loggt den Endwert
             return True
 
         return False

@@ -45,6 +45,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self._block_color_signal   = False
         self._block_hub_signal     = False
         self._block_bc_signal      = False
+        self._block_printer_signal = False
+        self._bg_zoom_log_timer    = 0
         self._opacity_before:    dict[int, float]           = {}
         self._opacity_timer:     dict[int, int]             = {}
         self._brightness_before: dict[int, float]           = {}
@@ -134,7 +136,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._canvas = DiscCanvas(
             self._state,
             on_file_drop_cb     = self._add_image_from_path,
-            on_scale_changed_cb = self._sync_scale_slider,
+            on_scale_changed_cb = self._on_canvas_bg_zoom,
             on_edit_text_cb     = self._open_edit_dialog,
             on_img_select_cb    = self._on_canvas_img_selected,
             on_transform_cb     = self._on_canvas_transform,
@@ -501,6 +503,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def _on_detection_done(self, printers: list[DiscPrinter]) -> bool:
         self._printers = printers
+        # Beim Neubefüllen der Liste löst GTK notify::selected selbst aus
+        # (append wählt Eintrag 0). Signal sperren und unten genau einmal
+        # explizit auswählen, sonst doppelte Auswahl und zwei Status-Threads.
+        self._block_printer_signal = True
         n = self._str_list.get_n_items()
         for _i in range(n):
             self._str_list.remove(0)
@@ -512,12 +518,14 @@ class MainWindow(Gtk.ApplicationWindow):
             self._cups_info.set_markup(
                 f"<small><i>{_('Kein Disc-fähiger Drucker erkannt.')}</i></small>"
             )
+            self._block_printer_signal = False
             log.warning("No disc-capable printers found")
         else:
             for p in printers:
                 self._str_list.append(p.name)
             self._dropdown.set_sensitive(True)
             self._dropdown.set_selected(0)
+            self._block_printer_signal = False
             self._on_printer_changed(self._dropdown, None)
             if len(printers) == 1:
                 log.info(
@@ -529,6 +537,8 @@ class MainWindow(Gtk.ApplicationWindow):
     # ── Drucker-Handler ───────────────────────────────────────────────────────
 
     def _on_printer_changed(self, dd: Gtk.DropDown, _pspec) -> None:
+        if self._block_printer_signal:
+            return
         idx = dd.get_selected()
         if idx >= len(self._printers):
             return
@@ -598,8 +608,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if path.suffix.lower() != ".discprint":
             path = path.with_suffix(".discprint")
         try:
-            _fmt.save(path, self._state, self._canvas.hub_mm)
-            log.info(f"Design saved: {path}")
+            _fmt.save(path, self._state, self._canvas.hub_mm)  # loggt selbst
         except Exception as e:
             log.error(f"Save failed: {e}")
             self._show_error(_("Design konnte nicht gespeichert werden:\n%s") % e)
@@ -632,8 +641,7 @@ class MainWindow(Gtk.ApplicationWindow):
         path = gfile.get_path()
         try:
             loaded_state, hub_mm = _fmt.load(path)
-            self._apply_loaded_design(loaded_state, hub_mm)
-            log.info(f"Design opened: {path}")
+            self._apply_loaded_design(loaded_state, hub_mm)  # load() loggt
         except Exception as e:
             log.error(f"Open failed: {e}")
             self._show_error(_("Design konnte nicht geöffnet werden:\n%s") % e)
@@ -650,6 +658,9 @@ class MainWindow(Gtk.ApplicationWindow):
                 GLib.source_remove(tid)
             timers.clear()
             before.clear()
+        if self._bg_zoom_log_timer:
+            GLib.source_remove(self._bg_zoom_log_timer)
+            self._bg_zoom_log_timer = 0
 
     def _apply_loaded_design(self, loaded: DesignState, hub_mm: float) -> None:
         self._cancel_pending_timers()
@@ -992,6 +1003,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if before is None or abs(img_ref.opacity - before) < 0.005:
                 return GLib.SOURCE_REMOVE
             b, a = before, img_ref.opacity
+            log.info(f"Image '{img_ref.display_name}' opacity: {a*100:.0f}%")
 
             def apply_opacity(v: float, i: ImageElement = img_ref) -> None:
                 i.opacity = v
@@ -1031,6 +1043,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if before is None or abs(img_ref.brightness - before) < 0.005:
                 return GLib.SOURCE_REMOVE
             b, a = before, img_ref.brightness
+            log.info(f"Image '{img_ref.display_name}' brightness: {a*100:.0f}%")
 
             def apply_brightness(v: float, i: ImageElement = img_ref) -> None:
                 i.brightness = v
@@ -1070,6 +1083,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if before is None or abs(img_ref.contrast - before) < 0.005:
                 return GLib.SOURCE_REMOVE
             b, a = before, img_ref.contrast
+            log.info(f"Image '{img_ref.display_name}' contrast: {a*100:.0f}%")
 
             def apply_contrast(v: float, i: ImageElement = img_ref) -> None:
                 i.contrast = v
@@ -1556,7 +1570,23 @@ class MainWindow(Gtk.ApplicationWindow):
         self._state.bg_img_scale = v
         self._scale_lbl.set_text(f"{v:.2f}×")
         self._canvas.refresh()
-        log.info(f"Image zoom (slider): {v:.2f}×")
+        self._schedule_bg_zoom_log()
+
+    def _on_canvas_bg_zoom(self, value: float) -> None:
+        """Mausrad-Zoom des Hintergrundbilds auf der Vorschau."""
+        self._sync_scale_slider(value)
+        self._schedule_bg_zoom_log()
+
+    def _schedule_bg_zoom_log(self) -> None:
+        """Hintergrund-Zoom erst nach 600 ms Ruhe loggen (nur den Endwert)."""
+        if self._bg_zoom_log_timer:
+            GLib.source_remove(self._bg_zoom_log_timer)
+        self._bg_zoom_log_timer = GLib.timeout_add(600, self._log_bg_zoom)
+
+    def _log_bg_zoom(self) -> bool:
+        self._bg_zoom_log_timer = 0
+        log.info(f"Background image zoom: {self._state.bg_img_scale:.2f}×")
+        return GLib.SOURCE_REMOVE
 
     def _sync_scale_slider(self, value: float) -> None:
         self._block_scale_signal = True
@@ -1971,6 +2001,8 @@ class MainWindow(Gtk.ApplicationWindow):
             a_sx, a_sy = img_ref.scale_x, img_ref.scale_y
             if abs(a_sx - b_sx) < 1e-6 and abs(a_sy - b_sy) < 1e-6:
                 return GLib.SOURCE_REMOVE
+            log.info(f"Image '{img_ref.display_name}' zoom: "
+                     f"sx={a_sx:.2f}× sy={a_sy:.2f}×")
 
             def apply_zoom(sx: float, sy: float, i: ImageElement = img_ref) -> None:
                 i.scale_x = sx; i.scale_y = sy

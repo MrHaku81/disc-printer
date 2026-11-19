@@ -225,6 +225,118 @@ def scenario_new_button(win):
     assert tip == i18n._("Neues Design"), tip
 
 
+# ── Log-Szenarien (B) ────────────────────────────────────────────────────────
+
+LOG = Path(os.environ["DISC_PRINTER_LOG_FILE"])
+
+
+def log_lines(needle: str) -> list[str]:
+    return [l for l in LOG.read_text(encoding="utf-8").splitlines() if needle in l]
+
+
+def scenario_printer_once(win):
+    threads = []
+    with mock.patch.object(w.threading, "Thread") as thread:
+        thread.side_effect = lambda **kw: threads.append(kw) or mock.Mock()
+        win._on_detection_done([PRINTER])
+    assert len(log_lines("Printer selected: Canon_TS705a")) == 1, log_lines("Printer selected")
+    assert len(threads) == 1, f"Status-Threads: {len(threads)}"
+    assert win._selected is PRINTER and win._dropdown.get_selected() == 0
+    # Auswahl durch den Benutzer funktioniert weiter (Signal nicht gesperrt)
+    other = DiscPrinter("Other", "/y.ppd", "Disc", "Disc", "x")
+    with mock.patch.object(w.threading, "Thread", return_value=mock.Mock()):
+        win._on_detection_done([PRINTER, other])
+        win._dropdown.set_selected(1)
+    assert win._selected is other
+    assert len(log_lines("Printer selected: Other")) == 1
+    # Keine Drucker: kein Fehler, keine Auswahl-Zeile
+    win._on_detection_done([])
+    assert len(log_lines("Printer selected")) == 3
+
+
+def scenario_save_logged_once(win):
+    win._on_save_dialog_done(FakeSaveDialog(WORK / "x.discprint"), None)
+    assert len(log_lines("Design saved:")) == 1, log_lines("Design saved")
+    from disc_printer import file_format as fmt
+    st, hub = fmt.load(WORK / "x.discprint")
+    win._apply_loaded_design(st, hub)
+    assert len(log_lines("Design loaded:")) == 1
+
+
+def scenario_slider_final_value(win):
+    win._add_image_from_path(png("a.png"))
+    win._load_bg_image(png("bg.png"))
+    img = win._state.images[0]
+    row = win._find_img_row(img)
+    for v in (1.1, 1.2, 1.3, 1.4):
+        row[5].set_value(v)                    # Helligkeit
+    for v in (0.9, 0.8, 0.7):
+        row[7].set_value(v)                    # Kontrast
+    for v in (0.9, 0.5):
+        row[3].set_value(v)                    # Opazität
+    for v in (1.1, 1.2, 1.3):
+        win._scale_slider.set_value(v)         # Hintergrund-Zoom (Regler)
+    win._canvas._select_image(img)
+    for _ in range(3):
+        win._canvas._on_scroll(None, 0, -1)    # Mausrad auf dem Bild
+    pump(50)
+    for needle in ("brightness", "contrast", "opacity", "zoom"):
+        assert log_lines(needle) == [], f"Zwischenschritt geloggt: {log_lines(needle)}"
+    pump(900)
+    assert [l.split("] ", 2)[-1] for l in log_lines("brightness")] == ["Image 'a.png' brightness: 140%"], log_lines("brightness")
+    assert [l.split("] ", 2)[-1] for l in log_lines("contrast")] == ["Image 'a.png' contrast: 70%"], log_lines("contrast")
+    assert [l.split("] ", 2)[-1] for l in log_lines("opacity")] == ["Image 'a.png' opacity: 50%"], log_lines("opacity")
+    assert [l.split("] ", 2)[-1] for l in log_lines("Background image zoom")] == ["Background image zoom: 1.30×"]
+    assert len(log_lines("Image 'a.png' zoom:")) == 1, log_lines("zoom")
+    # Mausrad auf dem Hintergrund (kein Bild ausgewählt)
+    win._canvas._select_image(None)
+    for _ in range(4):
+        win._canvas._on_scroll(None, 0, -1)
+    pump(900)
+    assert len(log_lines("Background image zoom")) == 2, log_lines("Background image zoom")
+    assert win._scale_slider.get_value() == win._state.bg_img_scale
+
+
+def scenario_drag_only_when_moved(win):
+    c = win._canvas
+    win._load_bg_image(png("bg.png"))
+    # Hintergrund: nur angeklickt
+    c._drag_target = "bg"
+    c._drag_start_bg_x, c._drag_start_bg_y = win._state.bg_img_x_mm, win._state.bg_img_y_mm
+    c._on_drag_end(None, 0, 0)
+    assert log_lines("Background image moved") == []
+    # Hintergrund: wirklich verschoben
+    c._drag_target = "bg"
+    c._drag_start_bg_x, c._drag_start_bg_y = win._state.bg_img_x_mm, win._state.bg_img_y_mm
+    win._state.bg_img_x_mm += 2.0
+    c._on_drag_end(None, 10, 0)
+    assert len(log_lines("Background image moved")) == 1
+    # Bild: Klick ohne Bewegung -> kein Log, kein Undo-Eintrag
+    win._add_image_from_path(png("a.png"))
+    img = win._state.images[0]
+    n_hist = len(win._history._undo)
+    c._drag_target, c._drag_handle = img, -1
+    c._drag_start = {"x": img.x, "y": img.y}
+    c._on_drag_end(None, 0, 0)
+    assert log_lines("Image 'a.png' moved") == []
+    assert len(win._history._undo) == n_hist, "leerer Undo-Eintrag nach Klick"
+    # Bild: verschoben -> Log und Undo-Eintrag
+    c._drag_target, c._drag_handle = img, -1
+    c._drag_start = {"x": img.x, "y": img.y}
+    img.x += 3.0
+    c._on_drag_end(None, 5, 0)
+    assert len(log_lines("Image 'a.png' moved")) == 1
+    assert len(win._history._undo) == n_hist + 1
+    # Text: Klick ohne Bewegung
+    t = TextElement("Hallo", "Sans", 20, False, False, (0, 0, 0, 1))
+    win._state.elements.append(t)
+    c._drag_target, c._drag_handle = t, -1
+    c._drag_start = {"x": t.x_mm, "y": t.y_mm}
+    c._on_drag_end(None, 0, 0)
+    assert log_lines("Text 'Hallo' moved") == []
+    assert len(win._history._undo) == n_hist + 1
+
+
 # ── Ablauf ───────────────────────────────────────────────────────────────────
 
 def main() -> int:
