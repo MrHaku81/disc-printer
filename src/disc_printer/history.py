@@ -30,12 +30,18 @@ class History:
     def __init__(self) -> None:
         self._undo: list[Command] = []
         self._redo: list[Command] = []
+        self._in_before = False
         self.on_change: Callable[[], None] | None = None
+        # Läuft vor push/undo/redo, z. B. um eine noch offene Geste (Regler,
+        # Mausrad) als eigenen Eintrag abzuschließen, damit die Reihenfolge
+        # stimmt. Darf selbst push() aufrufen.
+        self.before_change: Callable[[], None] | None = None
 
     # ── Public API ────────────────────────────────────────────────────────────
 
     def push(self, cmd: Command) -> None:
         """Führt einen Command aus (ist bereits ausgeführt) und merkt ihn für Undo."""
+        self._before()
         self._undo.append(cmd)
         if len(self._undo) > self._MAX:
             del self._undo[0]
@@ -43,6 +49,7 @@ class History:
         self._fire()
 
     def undo(self) -> bool:
+        self._before()
         if not self._undo:
             return False
         cmd = self._undo.pop()
@@ -52,6 +59,7 @@ class History:
         return True
 
     def redo(self) -> bool:
+        self._before()
         if not self._redo:
             return False
         cmd = self._redo.pop()
@@ -80,6 +88,14 @@ class History:
     @property
     def redo_label(self) -> str:
         return self._redo[-1].description if self._redo else ""
+
+    def _before(self) -> None:
+        if self.before_change is not None and not self._in_before:
+            self._in_before = True
+            try:
+                self.before_change()
+            finally:
+                self._in_before = False
 
     def _fire(self) -> None:
         if self.on_change:

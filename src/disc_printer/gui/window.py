@@ -1,4 +1,5 @@
 import io
+import itertools
 import os
 import subprocess
 import sys
@@ -46,7 +47,14 @@ class MainWindow(Gtk.ApplicationWindow):
         self._block_hub_signal     = False
         self._block_bc_signal      = False
         self._block_printer_signal = False
-        self._bg_zoom_log_timer    = 0
+        # Hintergrund-Gesten (Zoom: Regler/Mausrad, Verschieben: Pfeilknöpfe):
+        # ein Undo-Eintrag je Geste, nach 600 ms Ruhe
+        self._bg_zoom_timer:  int = 0
+        self._bg_zoom_before: float | None = None
+        self._bg_nudge_timer:  int = 0
+        self._bg_nudge_before: tuple[float, float] | None = None
+        self._bg_seq = itertools.count()       # Startreihenfolge der Gesten
+        self._bg_zoom_seq = self._bg_nudge_seq = 0
         self._opacity_before:    dict[int, float]           = {}
         self._opacity_timer:     dict[int, int]             = {}
         self._brightness_before: dict[int, float]           = {}
@@ -58,6 +66,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self._build_ui()
         self._history.on_change = self._on_history_changed
+        self._history.before_change = self._flush_bg_gestures
         # Stand des zuletzt gespeicherten/geladenen/neuen Designs
         self._clean_fp = self._current_fingerprint()
         # Jedes Schließen (Titelleiste, Alt+F4, Taskleiste) läuft über close-request
@@ -664,9 +673,12 @@ class MainWindow(Gtk.ApplicationWindow):
                 GLib.source_remove(tid)
             timers.clear()
             before.clear()
-        if self._bg_zoom_log_timer:
-            GLib.source_remove(self._bg_zoom_log_timer)
-            self._bg_zoom_log_timer = 0
+        for attr in ("_bg_zoom_timer", "_bg_nudge_timer"):
+            if getattr(self, attr):
+                GLib.source_remove(getattr(self, attr))
+                setattr(self, attr, 0)
+        self._bg_zoom_before = None
+        self._bg_nudge_before = None
 
     def _apply_loaded_design(self, loaded: DesignState, hub_mm: float) -> None:
         self._cancel_pending_timers()
@@ -1594,26 +1606,78 @@ class MainWindow(Gtk.ApplicationWindow):
         if self._block_scale_signal:
             return
         v = slider.get_value()
+        old = self._state.bg_img_scale
         self._state.bg_img_scale = v
         self._scale_lbl.set_text(f"{v:.2f}×")
         self._canvas.refresh()
-        self._schedule_bg_zoom_log()
+        self._bg_zoom_step(old)
 
-    def _on_canvas_bg_zoom(self, value: float) -> None:
+    def _on_canvas_bg_zoom(self, value: float, old: float) -> None:
         """Mausrad-Zoom des Hintergrundbilds auf der Vorschau."""
         self._sync_scale_slider(value)
-        self._schedule_bg_zoom_log()
+        self._bg_zoom_step(old)
 
-    def _schedule_bg_zoom_log(self) -> None:
-        """Hintergrund-Zoom erst nach 600 ms Ruhe loggen (nur den Endwert)."""
-        if self._bg_zoom_log_timer:
-            GLib.source_remove(self._bg_zoom_log_timer)
-        self._bg_zoom_log_timer = GLib.timeout_add(600, self._log_bg_zoom)
+    def _bg_zoom_step(self, old: float) -> None:
+        """Zoom-Schritt (Regler oder Mausrad); Eintrag nach 600 ms Ruhe."""
+        if self._bg_zoom_before is None:
+            self._bg_zoom_before = old
+            self._bg_zoom_seq = next(self._bg_seq)
+        if self._bg_zoom_timer:
+            GLib.source_remove(self._bg_zoom_timer)
+        self._bg_zoom_timer = GLib.timeout_add(600, self._commit_bg_zoom)
 
-    def _log_bg_zoom(self) -> bool:
-        self._bg_zoom_log_timer = 0
-        log.info(f"Background image zoom: {self._state.bg_img_scale:.2f}×")
+    def _commit_bg_zoom(self) -> bool:
+        self._bg_zoom_timer = 0
+        before, self._bg_zoom_before = self._bg_zoom_before, None
+        after = self._state.bg_img_scale
+        if before is None or before == after:
+            return GLib.SOURCE_REMOVE
+        log.info(f"Background image zoom: {after:.2f}×")
+        self._push_gesture(Command(
+            _("Zoom") + ": " + _("Hintergrund"),
+            undo_fn=lambda: self._apply_bg_transform(scale=before),
+            redo_fn=lambda: self._apply_bg_transform(scale=after),
+        ))
         return GLib.SOURCE_REMOVE
+
+    def _apply_bg_transform(self, x: float | None = None, y: float | None = None,
+                            scale: float | None = None) -> None:
+        s = self._state
+        if x is not None:
+            s.bg_img_x_mm = x
+        if y is not None:
+            s.bg_img_y_mm = y
+        if scale is not None:
+            s.bg_img_scale = scale
+            self._sync_scale_slider(scale)
+        self._canvas.refresh()
+
+    def _flush_bg_gestures(self) -> None:
+        """Offene Hintergrund-Gesten sofort als Undo-Einträge abschließen.
+
+        Läuft vor jedem anderen Undo-Eintrag und vor Undo/Redo
+        (History.before_change); offene Gesten in Startreihenfolge.
+        """
+        pending = []
+        if self._bg_zoom_timer:
+            GLib.source_remove(self._bg_zoom_timer)
+            self._bg_zoom_timer = 0
+            pending.append((self._bg_zoom_seq, self._commit_bg_zoom))
+        if self._bg_nudge_timer:
+            GLib.source_remove(self._bg_nudge_timer)
+            self._bg_nudge_timer = 0
+            pending.append((self._bg_nudge_seq, self._commit_bg_nudge))
+        for _seq, commit in sorted(pending, key=lambda p: p[0]):
+            commit()
+
+    def _push_gesture(self, cmd: Command) -> None:
+        """Eintrag einer abgeschlossenen Geste, ohne andere Gesten abzuschließen."""
+        hook = self._history.before_change
+        self._history.before_change = None
+        try:
+            self._history.push(cmd)
+        finally:
+            self._history.before_change = hook
 
     def _sync_scale_slider(self, value: float) -> None:
         self._block_scale_signal = True
@@ -1622,21 +1686,53 @@ class MainWindow(Gtk.ApplicationWindow):
         self._block_scale_signal = False
 
     def _nudge(self, dx_mm: float, dy_mm: float) -> None:
-        if self._state.bg_surface is None:
+        """Pfeilknopf: Klicks kurz hintereinander ergeben einen Undo-Eintrag."""
+        s = self._state
+        if s.bg_surface is None:
             return
-        self._state.bg_img_x_mm += dx_mm
-        self._state.bg_img_y_mm += dy_mm
+        if self._bg_nudge_before is None:
+            self._bg_nudge_before = (s.bg_img_x_mm, s.bg_img_y_mm)
+            self._bg_nudge_seq = next(self._bg_seq)
+        s.bg_img_x_mm += dx_mm
+        s.bg_img_y_mm += dy_mm
         self._canvas.refresh()
-        log.info(
-            f"Image nudge dx={dx_mm:+.0f}mm dy={dy_mm:+.0f}mm → "
-            f"x={self._state.bg_img_x_mm:.1f}mm y={self._state.bg_img_y_mm:.1f}mm"
+        if self._bg_nudge_timer:
+            GLib.source_remove(self._bg_nudge_timer)
+        self._bg_nudge_timer = GLib.timeout_add(600, self._commit_bg_nudge)
+
+    def _commit_bg_nudge(self) -> bool:
+        self._bg_nudge_timer = 0
+        before, self._bg_nudge_before = self._bg_nudge_before, None
+        s = self._state
+        after = (s.bg_img_x_mm, s.bg_img_y_mm)
+        if before is None or before == after:
+            return GLib.SOURCE_REMOVE
+        log.info(f"Background image moved: x={after[0]:.1f} mm, y={after[1]:.1f} mm")
+        self._push_gesture(self._bg_move_command(before, after))
+        return GLib.SOURCE_REMOVE
+
+    def _bg_move_command(self, before: tuple[float, float],
+                         after: tuple[float, float]) -> Command:
+        return Command(
+            _("Bewegen") + ": " + _("Hintergrund"),
+            undo_fn=lambda: self._apply_bg_transform(*before),
+            redo_fn=lambda: self._apply_bg_transform(*after),
         )
 
     def _on_reset_transform(self, _btn) -> None:
-        self._state.reset_bg_transform()
-        self._sync_scale_slider(1.0)
-        self._canvas.refresh()
-        log.info("Image transform reset")
+        self._flush_bg_gestures()
+        s = self._state
+        before = (s.bg_img_x_mm, s.bg_img_y_mm, s.bg_img_scale)
+        after = (0.0, 0.0, 1.0)
+        if before == after:
+            return
+        self._apply_bg_transform(*after)
+        log.info("Background image transform reset")
+        self._history.push(Command(
+            _("Zurücksetzen") + ": " + _("Hintergrund"),
+            undo_fn=lambda: self._apply_bg_transform(*before),
+            redo_fn=lambda: self._apply_bg_transform(*after),
+        ))
 
     # ── Text-Handler ──────────────────────────────────────────────────────────
 
@@ -1973,6 +2069,11 @@ class MainWindow(Gtk.ApplicationWindow):
         return None
 
     def _on_canvas_transform(self, elem, drag_start: dict, action: str) -> None:
+        if elem == "bg":
+            s = self._state
+            self._history.push(self._bg_move_command(
+                (drag_start["x"], drag_start["y"]), (s.bg_img_x_mm, s.bg_img_y_mm)))
+            return
         if isinstance(elem, ImageElement):
             after = {
                 "x": elem.x, "y": elem.y,

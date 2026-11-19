@@ -734,7 +734,12 @@ class DiscCanvas(Gtk.DrawingArea):
             if not hit.locked:
                 self._drag_target = hit
                 self._drag_handle = -1
-                self._drag_start  = {"x": hit.x, "y": hit.y}
+                # vollständiger Schnappschuss: Undo stellt alle Werte her
+                self._drag_start  = {
+                    "x": hit.x, "y": hit.y,
+                    "scale_x": hit.scale_x, "scale_y": hit.scale_y,
+                    "rotation": hit.rotation,
+                }
                 gesture.set_state(Gtk.EventSequenceState.CLAIMED)
                 self.set_cursor(Gdk.Cursor.new_from_name("grabbing"))
             return
@@ -871,7 +876,10 @@ class DiscCanvas(Gtk.DrawingArea):
                 log.info(f"Image '{img.display_name}' scaled: sx={img.scale_x:.3f} sy={img.scale_y:.3f}")
 
         # Undo/Redo-Callback: Snapshot + Aktion an window.py übergeben
-        if (self._on_transform_cb
+        if self._on_transform_cb and self._drag_target == "bg":
+            self._on_transform_cb("bg", {"x": self._drag_start_bg_x,
+                                         "y": self._drag_start_bg_y}, "move")
+        elif (self._on_transform_cb
                 and isinstance(self._drag_target, (ImageElement, TextElement))):
             h = self._drag_handle
             if isinstance(self._drag_target, ImageElement):
@@ -908,14 +916,15 @@ class DiscCanvas(Gtk.DrawingArea):
 
         # Legacy Hintergrundbild zoomen
         if self._state.bg_surface is not None:
+            old_scale = self._state.bg_img_scale
             new_scale = max(self._SCALE_MIN,
-                            min(self._SCALE_MAX,
-                                self._state.bg_img_scale * factor))
-            if new_scale != self._state.bg_img_scale:
+                            min(self._SCALE_MAX, old_scale * factor))
+            if new_scale != old_scale:
                 self._state.bg_img_scale = new_scale
                 self.queue_draw()
                 if self._on_scale_changed_cb:
-                    self._on_scale_changed_cb(new_scale)  # loggt den Endwert
+                    # Undo-Eintrag und Log je Geste: window._bg_zoom_step
+                    self._on_scale_changed_cb(new_scale, old_scale)
             return True
 
         return False

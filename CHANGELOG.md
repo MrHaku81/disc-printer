@@ -64,6 +64,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   auch nicht angerührt; sie kann von Hand gelöscht werden
 - README: neuer Abschnitt „Log file“ für Fehlerberichte
 
+#### Undo vollständig
+- Hintergrund-Zoom (Regler und Mausrad), die Pfeilknöpfe, „Zentrieren“ und das
+  Verschieben des Hintergrundbilds mit der Maus haben jetzt Undo-Einträge.
+  Regler und Mausrad ergeben einen Eintrag je Geste (Endwert nach 600 ms Ruhe),
+  mehrere Pfeilknopf-Klicks kurz hintereinander einen gemeinsamen Eintrag.
+  Offene Gesten werden vor jedem anderen Eintrag und vor Undo/Redo
+  abgeschlossen, damit die Reihenfolge stimmt
+- Fehler behoben (schon in 0.1.2): Undo nach dem Verschieben eines Bilds am
+  Bildkörper scheiterte mit `KeyError`, weil nur die Position gemerkt wurde
+- README: Undo-Beschreibung präzisiert; Ebenen-Reihenfolge (↑/↓) gibt es nur
+  für Bilder, nicht für Text (Tabelle korrigiert)
+- Tests: `tests/test_undo.py` mit einem Audit aller 32 Designaktionen (je genau
+  ein Undo-Eintrag, Undo und Redo stellen den Zustand exakt her)
+
 #### Log aufgeräumt
 - „Printer selected“ und „Printer …: ready“ erschienen doppelt: Beim Befüllen
   der Druckerliste löste GTK `notify::selected` selbst aus, danach wurde der

@@ -89,9 +89,12 @@ def make_dirty(win) -> dict:
     row[5].set_value(1.3)                          # Helligkeit → Timer
     row[7].set_value(0.8)                          # Kontrast  → Timer
     win._on_canvas_zoom(img, 1.0, 1.0, 1.5, 1.5)   # Scroll-Zoom → Timer
+    win._scale_slider.set_value(1.4)               # Hintergrund-Zoom → Timer
+    win._nudge(5, 0)                               # Pfeilknopf → Timer
     tids = (list(win._opacity_timer.values()) + list(win._brightness_timer.values())
-            + list(win._contrast_timer.values()) + list(win._scroll_timer.values()))
-    assert len(tids) == 4, f"erwartet 4 laufende Regler-Timer, gefunden {len(tids)}"
+            + list(win._contrast_timer.values()) + list(win._scroll_timer.values())
+            + [win._bg_zoom_timer, win._bg_nudge_timer])
+    assert all(tids) and len(tids) == 6, f"erwartet 6 laufende Timer: {tids}"
     assert win._history.can_undo
     assert win._has_unsaved_changes()
     return {"tids": tids}
@@ -131,6 +134,8 @@ def scenario_reset(win):
               win._scroll_timer, win._opacity_before, win._brightness_before,
               win._contrast_before, win._scroll_before):
         assert d == {}, f"Timer-Zustand nicht leer: {d}"
+    assert win._bg_zoom_timer == 0 and win._bg_nudge_timer == 0
+    assert win._bg_zoom_before is None and win._bg_nudge_before is None
     ctx = GLib.MainContext.default()
     for tid in info["tids"]:
         src = ctx.find_source_by_id(tid)
@@ -446,6 +451,231 @@ def scenario_drag_only_when_moved(win):
     c._on_drag_end(None, 0, 0)
     assert log_lines("Text 'Hallo' moved") == []
     assert len(win._history._undo) == n_hist + 1
+
+
+# ── Undo für Hintergrund-Gesten (D) ──────────────────────────────────────────
+
+def labels(win):
+    return [c.description for c in win._history._undo]
+
+
+def bg(win):
+    st = win._state
+    return (st.bg_img_x_mm, st.bg_img_y_mm, st.bg_img_scale)
+
+
+def scenario_bg_undo(win):
+    win._load_bg_image(png("bg.png"))
+    base = len(labels(win))
+    zoom = i18n._("Zoom") + ": " + i18n._("Hintergrund")
+    move = i18n._("Bewegen") + ": " + i18n._("Hintergrund")
+    reset = i18n._("Zurücksetzen") + ": " + i18n._("Hintergrund")
+
+    # Regler: viele Schritte, ein Eintrag (Endwert)
+    for v in (1.1, 1.2, 1.3, 1.4, 1.5):
+        win._scale_slider.set_value(v)
+    pump(50)
+    assert len(labels(win)) == base, "Eintrag vor Ende der Geste"
+    pump(700)
+    assert labels(win)[base:] == [zoom], labels(win)
+    win._do_undo()
+    assert bg(win) == (0.0, 0.0, 1.0) and win._scale_slider.get_value() == 1.0
+    win._do_redo()
+    assert bg(win)[2] == 1.5 and win._scale_slider.get_value() == 1.5
+
+    # Mausrad: ein Eintrag je Geste
+    n = len(labels(win))
+    win._canvas._select_image(None)
+    for _ in range(4):
+        win._canvas._on_scroll(None, 0, -1)
+    pump(700)
+    assert labels(win)[n:] == [zoom]
+    after_wheel = bg(win)[2]
+    win._do_undo()
+    assert bg(win)[2] == 1.5 and win._scale_slider.get_value() == 1.5
+    win._do_redo()
+    assert bg(win)[2] == after_wheel
+
+    # Pfeilknöpfe: Klicks kurz hintereinander -> ein Eintrag
+    n = len(labels(win))
+    win._nudge(5, 0); win._nudge(5, 0); win._nudge(0, -5)
+    pump(700)
+    assert labels(win)[n:] == [move], labels(win)[n:]
+    assert bg(win)[:2] == (10.0, -5.0)
+    win._do_undo()
+    assert bg(win)[:2] == (0.0, 0.0)
+    win._do_redo()
+    # mit Pause -> zwei Einträge
+    n = len(labels(win))
+    win._nudge(5, 0); pump(700); win._nudge(5, 0); pump(700)
+    assert labels(win)[n:] == [move, move]
+
+    # Zentrieren: eigener Eintrag; offene Gesten werden vorher abgeschlossen
+    n = len(labels(win))
+    win._scale_slider.set_value(2.0)
+    win._nudge(0, 5)
+    win._on_reset_transform(None)                  # ohne Pause
+    assert labels(win)[n:] == [zoom, move, reset], labels(win)[n:]
+    assert bg(win) == (0.0, 0.0, 1.0) and win._scale_slider.get_value() == 1.0
+    pump(700)
+    assert labels(win)[n:] == [zoom, move, reset], "verspäteter Eintrag nach Reset"
+    win._do_undo()
+    assert bg(win) == (20.0, 0.0, 2.0), bg(win)
+    win._do_undo()
+    assert bg(win) == (20.0, -5.0, 2.0), bg(win)
+    win._do_redo(); win._do_redo()
+    # Zentrieren ohne Änderung: kein Eintrag
+    n = len(labels(win))
+    win._on_reset_transform(None)
+    assert len(labels(win)) == n
+
+    # Maus-Drag des Hintergrunds
+    c = win._canvas
+    c._drag_target = "bg"
+    c._drag_start_bg_x, c._drag_start_bg_y = 0.0, 0.0
+    win._state.bg_img_x_mm, win._state.bg_img_y_mm = 7.0, 3.0
+    c._on_drag_end(None, 1, 1)
+    assert labels(win)[-1] == move
+    win._do_undo()
+    assert bg(win)[:2] == (0.0, 0.0)
+    win._do_redo()
+    assert bg(win)[:2] == (7.0, 3.0)
+
+    # Undo mitten in der Geste: die Geste selbst wird rückgängig gemacht
+    win._scale_slider.set_value(1.8)
+    win._do_undo()
+    assert bg(win)[2] == 1.0 and win._history.redo_label == zoom
+    pump(700)
+    assert win._history.redo_label == zoom, "Geste nach Undo erneut eingetragen"
+
+
+# ── Undo-Audit: jede Designaktion genau ein Eintrag, Undo/Redo exakt ─────────
+
+class FakeTextDialog:
+    def __init__(self, text):
+        self.result = {"text": text, "font_family": "Sans", "font_size_pt": 18.0,
+                       "bold": True, "italic": False, "color": (0.2, 0.3, 0.4, 1.0)}
+
+
+def scenario_undo_audit(win):
+    import random
+    rnd = random.Random(1)
+    fp = win._current_fingerprint
+    c = win._canvas
+    failures = []
+
+    def img():
+        return win._state.images[-1]
+
+    def row_of(i):
+        return win._find_img_row(i)
+
+    def text():
+        return win._state.elements[-1]
+
+    def check(name, action, gesture=False):
+        fp0, n0 = fp(), len(win._history._undo)
+        action()
+        if gesture:
+            pump(700)                               # Geste abschließen (600 ms)
+        fp1, n1 = fp(), len(win._history._undo)
+        if fp1 == fp0:
+            failures.append(f"{name}: keine Änderung"); return
+        if n1 != n0 + 1:
+            failures.append(f"{name}: {n1 - n0} Undo-Einträge statt 1"); return
+        win._do_undo()
+        if fp() != fp0:
+            failures.append(f"{name}: Undo stellt den Zustand nicht exakt her"); return
+        win._do_redo()
+        if fp() != fp1:
+            failures.append(f"{name}: Redo stellt den Zustand nicht exakt her")
+
+    def color():
+        r = Gdk.RGBA(); r.red, r.green, r.blue, r.alpha = rnd.random(), 0.5, 0.5, 1
+        win._color_btn.set_rgba(r)
+
+    def drag(target, start, apply):
+        if target == "bg":
+            c._drag_target = "bg"
+            c._drag_start_bg_x, c._drag_start_bg_y = start
+        else:
+            c._drag_target, c._drag_handle, c._drag_start = target, -1, dict(start)
+        apply()
+        c._on_drag_end(None, 1, 1)
+
+    def scroll(n):
+        for _ in range(n):
+            c._on_scroll(None, 0, -1)
+
+    def bgdrag():
+        st = win._state
+        start = (st.bg_img_x_mm, st.bg_img_y_mm)
+        drag("bg", start, lambda: (setattr(st, "bg_img_x_mm", start[0] + 4),
+                                   setattr(st, "bg_img_y_mm", start[1] - 2)))
+
+    def imgdrag():
+        # Startzustand so, wie der Canvas ihn beim Ziehen am Bildkörper ablegt
+        i = img()
+        # Drag-Beginn über den echten Canvas-Code: Bild an seiner Mitte treffen
+        with mock.patch.object(c, "_hit_any", return_value=i), \
+             mock.patch.object(c, "_hit_handle_idx", return_value=-1):
+            c._on_drag_begin(mock.Mock(), 0, 0)
+        assert c._drag_target is i and c._drag_handle == -1, "Drag-Beginn traf nicht"
+        i.x += 3
+        c._on_drag_end(None, 1, 1)
+
+    def txtdrag():
+        t = text()
+        drag(t, {"x": t.x_mm, "y": t.y_mm}, lambda: setattr(t, "y_mm", t.y_mm + 2))
+
+    def select(i):
+        c._select_image(i)
+
+    actions = [
+        ("Hub-Größe", lambda: (win._r33 if win._r50.get_active() else win._r50).set_active(True)),
+        ("Hintergrundfarbe", color),
+        ("Farbe zurücksetzen", lambda: win._on_reset_color(None)),
+        ("Hintergrundbild laden", lambda: win._load_bg_image(png("bg.png"))),
+        ("Hintergrund-Zoom (Regler)", lambda: [win._scale_slider.set_value(v) for v in (1.2, 1.4)]),
+        ("Hintergrund-Zoom (Mausrad)", lambda: (select(None), scroll(3))),
+        ("Hintergrund Pfeilknöpfe", lambda: [win._nudge(5, 0), win._nudge(0, 5)]),
+        ("Hintergrund ziehen", bgdrag),
+        ("Zentrieren", lambda: win._on_reset_transform(None)),
+        ("Hintergrundbild entfernen", lambda: win._on_clear_image(None)),
+        ("Bild hinzufügen", lambda: win._add_image_from_path(png("a.png"))),
+        ("Opazität", lambda: row_of(img())[3].set_value(0.6)),
+        ("Helligkeit", lambda: row_of(img())[5].set_value(1.3)),
+        ("Kontrast", lambda: row_of(img())[7].set_value(0.7)),
+        ("Helligkeit zurücksetzen", lambda: win._on_reset_brightness(img())),
+        ("Kontrast zurücksetzen", lambda: win._on_reset_contrast(img())),
+        ("Spiegeln H", lambda: (select(img()), win._on_flip(True))),
+        ("Spiegeln V", lambda: (select(img()), win._on_flip(False))),
+        ("Ebene", lambda: win._img_z_change(img(), +1)),
+        ("Bild ziehen", imgdrag),
+        ("Bild Mausrad-Zoom", lambda: (select(img()), scroll(3))),
+        ("Bild duplizieren", lambda: win._duplicate_image(img())),
+        ("Bild sichtbar", lambda: win._toggle_image_visible(img(), row_of(img())[1], w.Gtk.Button())),
+        ("Bild sperren", lambda: win._toggle_image_locked(img(), w.Gtk.Button())),
+        ("Bild löschen", lambda: win._delete_image(img(), row_of(img())[1])),
+        ("Text hinzufügen", lambda: win._on_add_dialog_closed(FakeTextDialog("Hallo"))),
+        ("Text bearbeiten", lambda: win._on_edit_dialog_closed(FakeTextDialog("Welt"), text())),
+        ("Text ziehen", txtdrag),
+        ("Text duplizieren", lambda: win._duplicate_element(text())),
+        ("Text sichtbar", lambda: win._toggle_element_visible(
+            text(), win._elem_list.get_row_at_index(0), w.Gtk.Button())),
+        ("Text sperren", lambda: win._toggle_element_locked(text(), w.Gtk.Button())),
+        ("Text löschen", lambda: win._delete_element(text(), win._elem_list.get_row_at_index(0))),
+    ]
+    gestures = {"Hintergrund-Zoom (Regler)", "Hintergrund-Zoom (Mausrad)",
+                "Hintergrund Pfeilknöpfe", "Opazität", "Helligkeit", "Kontrast",
+                "Bild Mausrad-Zoom"}
+    for name, action in actions:
+        try:
+            check(name, action, name in gestures)
+        except Exception as e:  # pragma: no cover - Diagnose
+            failures.append(f"{name}: Ausnahme {type(e).__name__}: {e}")
+    print(f"Audit: {len(actions)} Aktionen geprüft", flush=True)
+    assert not failures, "\n".join(failures)
 
 
 # ── Ablauf ───────────────────────────────────────────────────────────────────

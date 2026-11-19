@@ -74,7 +74,7 @@ Until a CUPS release with the fix is available, set the printer up as a permanen
 | Brightness | ✓ | — |
 | Contrast | ✓ | — |
 | Flip horizontal / vertical | ✓ | — |
-| Z-order (↑ / ↓) | ✓ | ✓ |
+| Z-order (↑ / ↓) | ✓ | — |
 | Lock (prevent move/scale/rotate) | ✓ | ✓ |
 | Visibility toggle | ✓ | ✓ |
 | Duplicate | ✓ | ✓ |
@@ -85,8 +85,12 @@ Until a CUPS release with the fix is available, set the printer up as a permanen
   selected printer and the language stay
 - **Unsaved changes** — New, Open and closing the window ask first if the design has
   unsaved changes (Cancel / Discard / Save …); Cancel keeps the window open
-- **Undo / Redo** (Ctrl+Z / Ctrl+Y / Ctrl+Shift+Z) — full command history, up to 50 steps,
-  covering all canvas actions, slider changes (debounced), and panel operations
+- **Undo / Redo** (Ctrl+Z / Ctrl+Y / Ctrl+Shift+Z) — command history of up to 50 steps
+  covering every change to the design: canvas actions (move, scale, rotate, mouse-wheel
+  zoom), sliders, the background controls (zoom, arrow buttons, centre) and panel
+  operations. Sliders, mouse-wheel zoom and repeated arrow-button clicks count as one
+  step per gesture. Not in the history: printer selection and language (not part of the
+  design); New and Open replace the design and start a fresh history
 - Drag-and-drop images from a file manager directly onto the canvas
 - Background image with independent position and zoom controls
 
