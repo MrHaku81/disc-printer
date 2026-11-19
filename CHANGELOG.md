@@ -7,7 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+#### Pillow im Flatpak
+- Manifest: neues Modul `python-pillow` (Pillow 13.0.0, manylinux-Wheel für
+  CPython 3.14 / x86_64, sha256 gegen PyPI geprüft). Damit bettet auch die
+  Flatpak-Version das sRGB-Farbprofil in die Druck-PNG ein (`PIL.ImageCms`; das
+  Wheel bringt liblcms2 selbst mit). Lizenz: MIT-CMU
+- Runtime bleibt GNOME Platform 51 (aktuellster Zweig auf Flathub)
+
+### Changed
+
+#### numpy ist eine feste Abhängigkeit
+- `pyproject.toml`: numpy steht unter `dependencies` statt im Extra
+  `enhanced` (die Zeichenfläche importiert es fest, ohne numpy startet die App
+  nicht); Pillow bleibt optional. `pip`/`pipx` installieren numpy jetzt
+  automatisch
+- README: numpy ist in den pipx-Installationsbefehlen kein eigener Schritt mehr
+
+#### Log-Meldungen auf Englisch
+- Alle Log-Meldungen sind englisch, sachlich und knapp; sie sind für
+  Fehlerberichte gedacht und werden nicht übersetzt. Texte der Oberfläche sind
+  unverändert
+
+#### README
+- Abschnitt „Project layout“ mit dem tatsächlichen Inhalt von
+  `src/disc_printer` abgeglichen (u. a. `paths.py`, `constants.py`,
+  `settings.py`, `image_utils.py`)
+
 ### Fixed
+
+#### Start ohne Anzeige (#2)
+- Kann GTK keine Anzeige öffnen, endet die App mit einer einzeiligen Meldung
+  auf stderr und Exit-Code 1 statt mit Traceback, GTK-Warnungen und
+  `exit=0` im Log. Die Ursache steht zusätzlich in der Logdatei
+- Tests: `tests/test_no_display.py`, inklusive eines echten Starts ohne Anzeige
 
 #### Design-Ordner folgt dem System-Dokumente-Ordner (#2)
 - Neues Modul `paths.py`: Der Speicherort für `.discprint`-Designs wird über
