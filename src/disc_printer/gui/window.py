@@ -60,6 +60,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self._history.on_change = self._on_history_changed
         # Stand des zuletzt gespeicherten/geladenen/neuen Designs
         self._clean_fp = self._current_fingerprint()
+        # Jedes Schließen (Titelleiste, Alt+F4, Taskleiste) läuft über close-request
+        self._close_confirmed = False
+        self.connect("close-request", self._on_close_request)
         self._detect_async()
 
     # ── UI-Aufbau ─────────────────────────────────────────────────────────────
@@ -618,6 +621,9 @@ class MainWindow(Gtk.ApplicationWindow):
             on_saved()
 
     def _on_open_clicked(self, _btn) -> None:
+        self._confirm_unsaved(self._show_open_dialog)
+
+    def _show_open_dialog(self) -> None:
         dlg = Gtk.FileDialog(title=_("Design öffnen"))
         f_dp = Gtk.FileFilter()
         f_dp.set_name(_("DiscPrint-Design (*.discprint)"))
@@ -720,8 +726,16 @@ class MainWindow(Gtk.ApplicationWindow):
         log.info("New design")
 
     def _on_new_clicked(self, _btn) -> None:
+        self._confirm_unsaved(self._reset_design)
+
+    def _confirm_unsaved(self, proceed) -> None:
+        """Vor Neu/Öffnen/Schließen: bei ungespeicherten Änderungen nachfragen.
+
+        Abbrechen: nichts. Verwerfen: ``proceed()``. Speichern …: erst
+        speichern, ``proceed()`` nur nach erfolgreichem Speichern.
+        """
         if not self._has_unsaved_changes():
-            self._reset_design()
+            proceed()
             return
         dlg = Gtk.AlertDialog()
         dlg.set_message(_("Ungespeicherte Änderungen verwerfen?"))
@@ -729,17 +743,30 @@ class MainWindow(Gtk.ApplicationWindow):
         dlg.set_buttons([_("Abbrechen"), _("Verwerfen"), _("Speichern …")])
         dlg.set_cancel_button(0)
         dlg.set_default_button(2)
-        dlg.choose(self, None, self._on_new_confirmed)
+        dlg.choose(self, None,
+                   lambda d, r: self._on_unsaved_choice(d, r, proceed))
 
-    def _on_new_confirmed(self, dlg: Gtk.AlertDialog, result) -> None:
+    def _on_unsaved_choice(self, dlg: Gtk.AlertDialog, result, proceed) -> None:
         try:
             idx = dlg.choose_finish(result)
         except Exception:
             return
         if idx == 1:
-            self._reset_design()
+            log.info("Unsaved changes discarded")
+            proceed()
         elif idx == 2:
-            self._start_save(on_saved=self._reset_design)
+            self._start_save(on_saved=proceed)
+
+    def _on_close_request(self, _win) -> bool:
+        """True hält das Fenster offen; geschlossen wird ggf. nach der Rückfrage."""
+        if self._close_confirmed or not self._has_unsaved_changes():
+            return False
+        self._confirm_unsaved(self._close_now)
+        return True
+
+    def _close_now(self) -> None:
+        self._close_confirmed = True
+        self.close()
 
     # ── Bild-Elemente Sektion ─────────────────────────────────────────────────
 

@@ -167,43 +167,154 @@ def scenario_dirty_detection(win):
     assert not win._has_unsaved_changes()
 
 
+class PromptSpy:
+    """Ersetzt Gtk.AlertDialog: merkt sich Knöpfe und den echten Callback."""
+
+    def __init__(self):
+        self.calls = []
+        spy = self
+        real = w.Gtk.AlertDialog
+
+        class SpyAlert(real):
+            def choose(self, parent, cancellable, callback):
+                spy.calls.append({"buttons": self.get_buttons(),
+                                  "message": self.get_message(),
+                                  "callback": callback})
+
+        self.patch = mock.patch.object(w.Gtk, "AlertDialog", SpyAlert)
+
+    def answer(self, idx):
+        """Knopf ``idx`` "drücken": echten Callback der letzten Rückfrage aufrufen."""
+        self.calls[-1]["callback"](FakeChoice(idx), None)
+
+    def __enter__(self):
+        self.patch.start()
+        return self
+
+    def __exit__(self, *exc):
+        self.patch.stop()
+
+
+def assert_prompt(spy, n):
+    assert len(spy.calls) == n, f"erwartet {n} Rückfragen, waren {len(spy.calls)}"
+    if n:
+        c = spy.calls[-1]
+        assert c["buttons"] == [i18n._("Abbrechen"), i18n._("Verwerfen"),
+                                i18n._("Speichern …")], c["buttons"]
+        assert c["message"] == i18n._("Ungespeicherte Änderungen verwerfen?")
+
+
 def scenario_new_prompt(win):
-    created = []
-    real_alert = w.Gtk.AlertDialog
-
-    class SpyAlert(real_alert):
-        def choose(self, *a):
-            created.append(self.get_buttons())
-
-    with mock.patch.object(w.Gtk, "AlertDialog", SpyAlert):
+    with PromptSpy() as spy:
         # sauber: kein Dialog, direkt zurücksetzen
         win._on_new_clicked(None)
-        assert created == []
+        assert_prompt(spy, 0)
         # geändert: Dialog mit Abbrechen / Verwerfen / Speichern
         win._add_image_from_path(png("a.png"))
         win._on_new_clicked(None)
-        assert len(created) == 1 and len(created[0]) == 3, created
-    # Abbrechen: nichts passiert
-    win._on_new_confirmed(FakeChoice(0), None)
-    assert len(win._state.images) == 1 and win._has_unsaved_changes()
-    # Speichern …: Speichern-Dialog mit Reset als Fortsetzung
-    with mock.patch.object(win, "_start_save") as start_save:
-        win._on_new_confirmed(FakeChoice(2), None)
-    start_save.assert_called_once_with(on_saved=win._reset_design)
-    # Speichern schlägt fehl: kein Reset
-    with mock.patch.object(win, "_show_error") as err:
-        win._on_save_dialog_done(FakeSaveDialog(WORK / "fehlt" / "x.discprint"),
-                                 None, win._reset_design)
-    err.assert_called_once()
-    assert len(win._state.images) == 1, "Reset trotz Speicherfehler"
-    # Speichern gelingt: danach Reset
-    win._on_save_dialog_done(FakeSaveDialog(WORK / "ok.discprint"), None,
-                             win._reset_design)
-    assert (WORK / "ok.discprint").exists() and win._state.images == []
-    # Verwerfen: Reset
-    win._add_image_from_path(png("b.png"))
-    win._on_new_confirmed(FakeChoice(1), None)
-    assert win._state.images == [] and not win._has_unsaved_changes()
+        assert_prompt(spy, 1)
+        # Abbrechen: nichts passiert
+        spy.answer(0)
+        assert len(win._state.images) == 1 and win._has_unsaved_changes()
+        # Speichern …: Speichern-Dialog mit Reset als Fortsetzung
+        with mock.patch.object(win, "_start_save") as start_save:
+            spy.answer(2)
+        start_save.assert_called_once_with(on_saved=win._reset_design)
+        # Speichern schlägt fehl: kein Reset
+        with mock.patch.object(win, "_show_error") as err:
+            win._on_save_dialog_done(FakeSaveDialog(WORK / "fehlt" / "x.discprint"),
+                                     None, win._reset_design)
+        err.assert_called_once()
+        assert len(win._state.images) == 1, "Reset trotz Speicherfehler"
+        # Speichern gelingt: danach Reset
+        win._on_save_dialog_done(FakeSaveDialog(WORK / "ok.discprint"), None,
+                                 win._reset_design)
+        assert (WORK / "ok.discprint").exists() and win._state.images == []
+        # Verwerfen: Reset
+        win._add_image_from_path(png("b.png"))
+        win._on_new_clicked(None)
+        assert_prompt(spy, 2)
+        spy.answer(1)
+        assert win._state.images == [] and not win._has_unsaved_changes()
+
+
+def scenario_open_prompt(win):
+    with PromptSpy() as spy, \
+         mock.patch.object(win, "_show_open_dialog") as show_open:
+        # sauber: Öffnen-Dialog direkt
+        win._on_open_clicked(None)
+        assert_prompt(spy, 0)
+        assert show_open.call_count == 1
+        # geändert: erst Rückfrage
+        win._add_image_from_path(png("a.png"))
+        win._on_open_clicked(None)
+        assert_prompt(spy, 1)
+        assert show_open.call_count == 1, "Öffnen-Dialog vor der Rückfrage"
+        spy.answer(0)                                   # Abbrechen
+        assert show_open.call_count == 1 and len(win._state.images) == 1
+        spy.answer(1)                                   # Verwerfen
+        assert show_open.call_count == 2
+        with mock.patch.object(win, "_start_save") as start_save:
+            spy.answer(2)                               # Speichern …
+        start_save.assert_called_once_with(on_saved=win._show_open_dialog)
+        # Speichern gelingt -> danach Öffnen-Dialog
+        win._on_save_dialog_done(FakeSaveDialog(WORK / "o.discprint"), None,
+                                 win._show_open_dialog)
+        assert show_open.call_count == 3
+
+
+def scenario_close_prompt(win):
+    app = win.get_application()
+
+    def fresh(dirty: bool):
+        nw = w.MainWindow(app)
+        nw.present()
+        if dirty:
+            nw._add_image_from_path(png("c.png"))
+        pump(30)
+        return nw
+
+    def is_open(x):
+        return x in app.get_windows()
+
+    with PromptSpy() as spy:
+        # sauber: schließt ohne Rückfrage
+        a = fresh(False)
+        a.close()
+        pump(30)
+        assert not is_open(a) and spy.calls == []
+        # geändert: Fenster bleibt offen, Rückfrage
+        b = fresh(True)
+        b.close()
+        pump(30)
+        assert is_open(b), "Fenster trotz ungespeicherter Änderungen geschlossen"
+        assert_prompt(spy, 1)
+        spy.answer(0)                                   # Abbrechen
+        pump(30)
+        assert is_open(b), "Abbrechen hat das Fenster geschlossen"
+        b.close()                                       # erneut: wieder Rückfrage
+        pump(30)
+        assert_prompt(spy, 2)
+        spy.answer(1)                                   # Verwerfen
+        pump(30)
+        assert not is_open(b), "Verwerfen schließt nicht"
+        # Speichern …: Fehler -> offen; Erfolg -> zu
+        c = fresh(True)
+        c.close()
+        pump(30)
+        assert_prompt(spy, 3)
+        with mock.patch.object(c, "_start_save") as start_save:
+            spy.answer(2)
+        start_save.assert_called_once_with(on_saved=c._close_now)
+        with mock.patch.object(c, "_show_error"):
+            c._on_save_dialog_done(FakeSaveDialog(WORK / "fehlt" / "c.discprint"),
+                                   None, c._close_now)
+        pump(30)
+        assert is_open(c), "nach Speicherfehler geschlossen"
+        c._on_save_dialog_done(FakeSaveDialog(WORK / "c.discprint"), None, c._close_now)
+        pump(30)
+        assert not is_open(c) and (WORK / "c.discprint").exists()
+        assert len(spy.calls) == 3, "nach dem Speichern erneut gefragt"
 
 
 def scenario_new_button(win):

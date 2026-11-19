@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Änderungen ohne Undo-Eintrag wie den Hintergrund-Zoom). Dann fragt die App
   vorher nach: Abbrechen / Verwerfen / Speichern … (nach erfolgreichem
   Speichern wird zurückgesetzt, bei Fehler oder Abbruch nicht)
+- Dieselbe Rückfrage bei „Öffnen“ (vor dem Dateidialog) und beim Schließen
+  des Fensters, nur bei ungespeicherten Änderungen. Abbrechen lässt das
+  Fenster offen; „Speichern …“ schließt bzw. öffnet erst nach erfolgreichem
+  Speichern. Alle Wege des Schließens (Titelleiste, Alt+F4, Taskleiste) laufen
+  über `close-request`; ein eigenes Tastenkürzel zum Beenden gibt es nicht
 - Neue Texte in allen 33 Sprachen
 - Tests: `tests/test_new_design.py`; die GUI-Tests laufen mit echten Widgets
   gegen einen privaten Broadway-Server (ohne `gtk4-broadwayd` übersprungen)

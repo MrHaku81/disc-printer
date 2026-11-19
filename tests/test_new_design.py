@@ -87,5 +87,13 @@ class NewDesignGuiTests(BroadwayCase):
         self.run_scenario("new_prompt")
 
 
+class OpenClosePromptGuiTests(BroadwayCase):
+    def test_open_asks_first(self):
+        self.run_scenario("open_prompt")
+
+    def test_close_asks_and_cancel_keeps_window(self):
+        self.run_scenario("close_prompt")
+
+
 if __name__ == "__main__":
     unittest.main()
