@@ -117,8 +117,11 @@ class DialogFolderTests(_HomeCase):
     def test_save_mkdir_failure_falls_back(self):
         docs = self.home / "Documents"
         docs.mkdir()
-        with mock.patch.object(Path, "mkdir", side_effect=PermissionError("ro")):
+        # log mocken: sonst landet die Warnung in der echten ~/disc-printer.log
+        with mock.patch.object(Path, "mkdir", side_effect=PermissionError("ro")), \
+             mock.patch.object(paths, "log") as log:
             self.assertEqual(paths.ensure_design_dir(self.home, docs), docs)
+        log.warning.assert_called_once()
 
 
 class NoStartupMkdirTests(unittest.TestCase):
