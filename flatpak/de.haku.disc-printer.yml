@@ -32,6 +32,21 @@ modules:
         url: https://files.pythonhosted.org/packages/16/d5/928078d2b28f26829b138b4a6c3980045022fb409f570657a224ae60ef4e/numpy-2.5.4-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
         sha256: d549420b8858885cea8838a727842249218b9c1da24dd517e25c9c7a948310a3
 
+  # ── 1b. Pillow ────────────────────────────────────────────────────────────
+  # Optional at runtime; embeds an sRGB ICC profile in the print PNG
+  # (PIL.ImageCms). The manylinux wheel bundles its own liblcms2, so no
+  # extra library module is needed. License: MIT-CMU.
+  # Pre-built manylinux wheel for CPython 3.14 / x86_64.
+  - name: python-pillow
+    buildsystem: simple
+    build-commands:
+      - pip3 install --no-index --no-deps --find-links=. --prefix=/app
+          pillow-13.0.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/1d/f2/1371707ce438ba9a43f9d24089828494ec6f9396e28cd7903aa704dd6306/pillow-13.0.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+        sha256: e91c2b1cbeae768c98752e67e717e283d68dae45717b41f2d91eaee648e37b7d
+
   # ── 2. CUPS client tools ──────────────────────────────────────────────────
   # The Platform already has libcups.so.2; we only need to build and install
   # the three client utilities: lp, lpstat, lpoptions.

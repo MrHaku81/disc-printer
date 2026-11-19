@@ -138,7 +138,7 @@ flatpak install --user ./disc-printer.flatpak
 flatpak run de.haku.disc-printer
 ```
 
-> The Flatpak bundle includes numpy, the CUPS client tools (`lp`, `lpstat`, `lpoptions`),
+> The Flatpak bundle includes numpy, Pillow, the CUPS client tools (`lp`, `lpstat`, `lpoptions`),
 > and all Python dependencies. It runs on the GNOME Platform 51 runtime, which Flatpak
 > downloads from Flathub automatically on the first install (a few hundred MB). Coming
 > from an older version, `flatpak uninstall --unused` removes the previous runtime.
