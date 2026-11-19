@@ -4,16 +4,26 @@ from typing import Callable
 
 
 class Command:
-    """Eine atomare, rückgängig machbare Aktion."""
+    """Eine atomare, rückgängig machbare Aktion.
 
-    __slots__ = ("description", "_undo_fn", "_redo_fn")
+    description ist ein Text oder eine Funktion, die ihn liefert. Mit einer
+    Funktion wird die Beschriftung erst beim Anzeigen übersetzt und folgt so
+    einem Sprachwechsel.
+    """
 
-    def __init__(self, description: str,
+    __slots__ = ("_description", "_undo_fn", "_redo_fn")
+
+    def __init__(self, description: str | Callable[[], str],
                  undo_fn: Callable[[], None],
                  redo_fn: Callable[[], None]) -> None:
-        self.description = description
-        self._undo_fn    = undo_fn
-        self._redo_fn    = redo_fn
+        self._description = description
+        self._undo_fn     = undo_fn
+        self._redo_fn     = redo_fn
+
+    @property
+    def description(self) -> str:
+        d = self._description
+        return d() if callable(d) else d
 
     def undo(self) -> None:
         self._undo_fn()

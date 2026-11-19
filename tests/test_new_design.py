@@ -101,6 +101,10 @@ class LanguageSelectorGuiTests(BroadwayCase):
         # Sprachwechsel (auch zurück auf Deutsch), Neues Design, Öffnen
         self.run_scenario("lang_selector")
 
+    def test_language_switch_keeps_design_in_same_window(self):
+        # ohne/mit Änderungen, Undo danach, laufende Geste, gespeicherter Stand
+        self.run_scenario("lang_switch")
+
 
 if __name__ == "__main__":
     unittest.main()

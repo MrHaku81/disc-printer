@@ -712,6 +712,143 @@ def scenario_lang_selector(win):
     i18n.switch_language(None)
 
 
+# ── Sprachwechsel behält das Design (ein Fenster, keine Rückfrage) ──────────
+
+def _fp(win):
+    return design_fingerprint(win._state, win._canvas.hub_mm)
+
+
+def _switch(win, code):
+    app = win.get_application()
+    win._lang_dd.set_selected(i18n.available_languages().index(code))
+    pump(100)
+    mains = [x for x in app.get_windows() if isinstance(x, w.MainWindow)]
+    assert mains == [win], f"nach Wechsel -> {code}: Fenster {mains}"
+    assert win.get_visible()
+    check_lang(win, f"Wechsel -> {code}")
+    assert _key_ctrls(win) == _KEYS["n"], \
+        f"Tastatur-Controller: {_key_ctrls(win)} statt {_KEYS['n']} (Strg+Z mehrfach)"
+
+
+_KEYS = {}
+
+
+def _key_ctrls(win):
+    ctrls = win.observe_controllers()
+    return sum(isinstance(ctrls.get_item(i), w.Gtk.EventControllerKey)
+               for i in range(ctrls.get_n_items()))
+
+
+def _rgba(btn):
+    c = btn.get_rgba()
+    return (round(c.red, 3), round(c.green, 3), round(c.blue, 3), round(c.alpha, 3))
+
+
+def scenario_lang_switch(win):
+    app = win.get_application()
+    i18n._LOCALE_DIR = _compile_locales(["fr", "en"])
+    i18n.switch_language(None)
+    w.MainWindow(app).present(); win.close(); pump(50)
+    win = _main_window(app)
+    other = DiscPrinter("Other", "/y.ppd", "Disc", "Disc", "x")
+    _KEYS["n"] = _key_ctrls(win)                    # frisches Fenster (GTK + unserer)
+
+    with PromptSpy() as spy:
+        # 1. Ohne Änderungen
+        _switch(win, "en")
+        assert not win._has_unsaved_changes() and not win._history.can_undo
+        _switch(win, "de")
+
+        # 2. Mit ungespeicherten Änderungen, Undo- und Redo-Stapel, Druckerwahl
+        win._on_detection_done([PRINTER, other])
+        win._dropdown.set_selected(1)
+        assert win._selected is other
+        fps = [_fp(win)]
+        win._add_image_from_path(png("a.png")); fps.append(_fp(win))
+        win._load_bg_image(png("bg.png", (0, 0, 1))); fps.append(_fp(win))
+        win._r33.set_active(True); fps.append(_fp(win))
+        red = Gdk.RGBA(); red.red, red.green, red.blue, red.alpha = 1, 0, 0, 1
+        win._color_btn.set_rgba(red); fps.append(_fp(win))
+        img = win._state.images[0]
+        win._find_img_row(img)[3].set_value(0.4); pump(700); fps.append(_fp(win))
+        win._canvas._select_image(img)
+        win._on_flip(True); fps.append(_fp(win))
+        win._do_undo()                                  # Redo-Stapel: Spiegeln
+        assert _fp(win) == fps[-2]
+        name = img.display_name
+        spec = [("Bild hinzufügen", None), ("Hintergrundbild laden", None),
+                ("Hub-Größe", None), ("Hintergrundfarbe", None), ("Opazität", name)]
+
+        def expected(code):
+            return [_expected_ui(code, m) + (f": {n}" if n else "") for m, n in spec]
+
+        assert labels(win) == expected("de"), labels(win)
+        fp_before, clean_before = _fp(win), win._clean_fp
+        selected_logs = len(log_lines("Printer selected"))
+
+        _switch(win, "fr")
+        # Design, Stand, Auswahl unverändert
+        assert _fp(win) == fp_before and win._clean_fp == clean_before
+        assert win._has_unsaved_changes()
+        assert win._state.selected_image is img and win._flip_box.get_visible()
+        # Widgets zeigen das Design
+        assert win._r33.get_active() and win._canvas.hub_mm == HUB_SMALL_MM
+        assert _rgba(win._color_btn) == (1, 0, 0, 1)
+        assert win._bg_file_label.get_text() == "bg.png"
+        assert win._clear_img_btn.get_sensitive() and win._transform_box.get_sensitive()
+        assert win._find_img_row(img)[3].get_value() == 0.4
+        # Drucker: gleiche Auswahl, kein erneutes "Printer selected"
+        assert win._selected is other and win._dropdown.get_selected() == 1
+        assert win._dropdown.get_sensitive()
+        assert len(log_lines("Printer selected")) == selected_logs
+        assert win._stlbl.get_text() == _expected_ui("fr", "Prüfe Status …"), win._stlbl.get_text()
+        # Undo/Redo-Beschriftungen in der neuen Sprache
+        assert labels(win) == expected("fr"), labels(win)
+        assert win._history.redo_label == _expected_ui("fr", "H-Spiegeln") + f": {name}"
+        assert win._undo_btn.get_tooltip_text() == \
+            _expected_ui("fr", "Rückgängig") + ": " + expected("fr")[-1]
+        assert win._redo_btn.get_tooltip_text() == \
+            _expected_ui("fr", "Wiederherstellen") + ": " + win._history.redo_label
+
+        # 3. Undo/Redo nach dem Wechsel: Einträge von vorher wirken auf die neuen Widgets
+        win._do_redo(); assert _fp(win) == fps[-1]
+        for k in range(len(fps) - 1, 0, -1):
+            win._do_undo()
+            assert _fp(win) == fps[k - 1], f"Undo {k}"
+            if k == 5: assert win._find_img_row(img)[3].get_value() == 1.0
+            if k == 4: assert _rgba(win._color_btn) == (1, 1, 1, 1)
+            if k == 3: assert win._r50.get_active() and win._canvas.hub_mm == HUB_LARGE_MM
+            if k == 2: assert win._bg_file_label.get_text() == _expected_ui("fr", "(kein Bild)")
+        assert not win._history.can_undo
+        assert not win._has_unsaved_changes(), "Ausgangsstand gilt wieder als gespeichert"
+        for k in range(1, len(fps)):
+            win._do_redo(); assert _fp(win) == fps[k], f"Redo {k}"
+        assert win._r33.get_active() and _rgba(win._color_btn) == (1, 0, 0, 1)
+        assert win._has_unsaved_changes()
+
+        # 4. Laufende Geste beim Wechsel wird ein Eintrag (in der neuen Sprache)
+        win._scale_slider.set_value(1.4)
+        _switch(win, "en")
+        assert win._history.undo_label == _expected_ui("en", "Zoom") + ": " + \
+            _expected_ui("en", "Hintergrund")
+        assert win._scale_slider.get_value() == 1.4
+        win._do_undo()
+        assert win._state.bg_img_scale == 1.0 and win._scale_slider.get_value() == 1.0
+        pump(700)
+        assert win._history.redo_label.startswith(_expected_ui("en", "Zoom")), "verspätet"
+
+        # 5. Gespeicherter Stand bleibt gespeichert
+        win._on_save_dialog_done(FakeSaveDialog(WORK / "s.discprint"), None)
+        assert not win._has_unsaved_changes()
+        _switch(win, "de")
+        assert not win._has_unsaved_changes()
+        assert win._r33.get_active()
+        win._r50.set_active(True)                       # Änderung danach erkannt
+        assert win._has_unsaved_changes()
+
+    assert spy.calls == [], f"Rückfrage beim Sprachwechsel: {spy.calls}"
+
+
 # ── Undo-Audit: jede Designaktion genau ein Eintrag, Undo/Redo exakt ─────────
 
 class FakeTextDialog:
@@ -839,6 +976,54 @@ def scenario_undo_audit(win):
             failures.append(f"{name}: Ausnahme {type(e).__name__}: {e}")
     print(f"Audit: {len(actions)} Aktionen geprüft", flush=True)
     assert not failures, "\n".join(failures)
+
+    # Alle Einträge nach einem Sprachwechsel: vorher angelegt, danach rückgängig
+    n = len(win._history._undo)
+    assert n >= len(actions) - 1, n                 # Verlauf hält max. 50
+    ref = [fp()]
+    for _i in range(n):
+        win._do_undo(); ref.append(fp())
+    for _i in range(n):
+        win._do_redo()
+    assert fp() == ref[0]
+    i18n._LOCALE_DIR = _compile_locales(["en"])
+    win._lang_dd.set_selected(i18n.available_languages().index("en"))
+    pump(100)
+    assert [x for x in win.get_application().get_windows()
+            if isinstance(x, w.MainWindow)] == [win]
+    check_lang(win, "Audit nach Wechsel")
+    assert len(win._history._undo) == n and fp() == ref[0]
+
+    def widgets_match_model():
+        st = win._state
+        c = win._color_btn.get_rgba()
+        assert (c.red, c.green, c.blue, c.alpha) == pytest_approx(st.bg_color), "Farbknopf"
+        assert win._scale_slider.get_value() == pytest_approx(st.bg_img_scale), "Zoom-Regler"
+        assert win._r50.get_active() == (win._canvas.hub_mm == HUB_LARGE_MM), "Hub"
+        for im in st.images:
+            r = win._find_img_row(im)
+            assert r is not None, "Bildzeile fehlt"
+            assert abs(r[3].get_value() - im.opacity) < 1e-6, "Opazitätsregler"
+
+    for k in range(1, n + 1):
+        win._do_undo()
+        assert fp() == ref[k], f"Undo {k} nach Sprachwechsel"
+        widgets_match_model()
+    for k in range(n - 1, -1, -1):
+        win._do_redo()
+        assert fp() == ref[k], f"Redo nach Sprachwechsel ({k})"
+        widgets_match_model()
+    print(f"Audit nach Sprachwechsel: {n} Einträge rückgängig/wiederhergestellt", flush=True)
+
+
+def pytest_approx(v, tol=1e-3):
+    """Kleiner Vergleich ohne pytest: Zahl oder Tupel mit Toleranz."""
+    class _A:
+        def __eq__(self, other):
+            if isinstance(v, tuple):
+                return len(other) == len(v) and all(abs(a - b) <= tol for a, b in zip(other, v))
+            return abs(other - v) <= tol
+    return _A()
 
 
 # ── Ablauf ───────────────────────────────────────────────────────────────────

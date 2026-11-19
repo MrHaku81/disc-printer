@@ -67,7 +67,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self._scroll_before:     dict[int, tuple[float, float]] = {}
         self._scroll_timer:      dict[int, int]             = {}
 
+        # Druckerstatus als (Farbe, Text-Funktion): folgt einem Sprachwechsel
+        self._led_state: tuple[str, object] = ("gray", lambda: _("Initialisierung …"))
+        self._printers_known = False          # Erkennung abgeschlossen?
         self._build_ui()
+        key_ctrl = Gtk.EventControllerKey()
+        key_ctrl.connect("key-pressed", self._on_key_pressed)
+        self.add_controller(key_ctrl)
         self._history.on_change = self._on_history_changed
         self._history.before_change = self._flush_gestures
         # Stand des zuletzt gespeicherten/geladenen/neuen Designs
@@ -116,10 +122,6 @@ class MainWindow(Gtk.ApplicationWindow):
         hb.pack_end(self._print_btn)
 
         self.set_titlebar(hb)
-
-        key_ctrl = Gtk.EventControllerKey()
-        key_ctrl.connect("key-pressed", self._on_key_pressed)
-        self.add_controller(key_ctrl)
 
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         outer.set_margin_top(12)
@@ -221,10 +223,24 @@ class MainWindow(Gtk.ApplicationWindow):
         log.info(f"Language changed: {lang}")
 
         _i18n.switch_language(lang if lang != "de" else None)
+        # Nach dem Signal des alten Auswahlfelds, nicht mittendrin
+        GLib.idle_add(self._retranslate)
 
-        app = self.get_application()
-        MainWindow(app).present()
-        self.close()
+    def _retranslate(self) -> bool:
+        """Oberfläche in der aktuellen Sprache neu aufbauen, im selben Fenster.
+
+        Design, Undo/Redo-Verlauf, Stand gespeichert/ungespeichert, Auswahl und
+        Drucker bleiben erhalten: sie hängen am Fenster und am Modell, nicht an
+        den Widgets. Undo-Einträge greifen über self auf die (neuen) Widgets zu.
+        """
+        self._flush_gestures()               # laufende Geste als Eintrag sichern
+        hub_mm = self._canvas.hub_mm
+        self._build_ui()
+        self._sync_widgets_from_state(hub_mm)
+        self._on_canvas_img_selected(self._state.selected_image)   # Markierung
+        self._restore_printer_ui()
+        self._on_history_changed()           # Undo/Redo-Tooltips neu übersetzen
+        return GLib.SOURCE_REMOVE
 
     # ── Drucker-Frame ─────────────────────────────────────────────────────────
 
@@ -513,7 +529,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def _detect_async(self) -> None:
         self._dropdown.set_sensitive(False)
-        self._set_led("gray", _("Erkenne Drucker …"))
+        self._set_led("gray", lambda: _("Erkenne Drucker …"))
         threading.Thread(target=self._detect_thread, daemon=True).start()
 
     def _detect_thread(self) -> None:
@@ -521,6 +537,18 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def _on_detection_done(self, printers: list[DiscPrinter]) -> bool:
         self._printers = printers
+        self._printers_known = True
+        self._fill_printer_list(announce=True)
+        return GLib.SOURCE_REMOVE
+
+    def _fill_printer_list(self, announce: bool) -> None:
+        """Auswahlliste aus self._printers füllen.
+
+        announce=True: Erkennung, Eintrag 0 wählen, Status prüfen und loggen.
+        announce=False: Neuaufbau nach Sprachwechsel, bisherige Auswahl ohne
+        neuen Status-Thread und ohne Logzeile wiederherstellen.
+        """
+        printers = self._printers
         # Beim Neubefüllen der Liste löst GTK notify::selected selbst aus
         # (append wählt Eintrag 0). Signal sperren und unten genau einmal
         # explizit auswählen, sonst doppelte Auswahl und zwei Status-Threads.
@@ -532,25 +560,37 @@ class MainWindow(Gtk.ApplicationWindow):
         if not printers:
             self._str_list.append(_("(Kein Disc-Drucker gefunden)"))
             self._dropdown.set_sensitive(False)
-            self._set_led("red", _("Kein Disc-fähiger Drucker gefunden"))
             self._cups_info.set_markup(
                 f"<small><i>{_('Kein Disc-fähiger Drucker erkannt.')}</i></small>"
             )
             self._block_printer_signal = False
-            log.warning("No disc-capable printers found")
+            if announce:
+                self._set_led("red", lambda: _("Kein Disc-fähiger Drucker gefunden"))
+                log.warning("No disc-capable printers found")
         else:
             for p in printers:
                 self._str_list.append(p.name)
             self._dropdown.set_sensitive(True)
-            self._dropdown.set_selected(0)
-            self._block_printer_signal = False
-            self._on_printer_changed(self._dropdown, None)
-            if len(printers) == 1:
-                log.info(
-                    f"Only disc printer, selected automatically: {printers[0].name}"
-                )
+            if announce:
+                self._dropdown.set_selected(0)
+                self._block_printer_signal = False
+                self._on_printer_changed(self._dropdown, None)
+                if len(printers) == 1:
+                    log.info(
+                        f"Only disc printer, selected automatically: {printers[0].name}"
+                    )
+            else:
+                idx = printers.index(self._selected) if self._selected in printers else 0
+                self._dropdown.set_selected(idx)
+                self._block_printer_signal = False
+                if self._selected is not None:
+                    self._show_lp_command(self._selected)
 
-        return GLib.SOURCE_REMOVE
+    def _restore_printer_ui(self) -> None:
+        """Druckerbereich nach dem Neuaufbau wie vorher zeigen."""
+        if self._printers_known:
+            self._fill_printer_list(announce=False)
+        self._set_led(*self._led_state)
 
     # ── Drucker-Handler ───────────────────────────────────────────────────────
 
@@ -563,13 +603,16 @@ class MainWindow(Gtk.ApplicationWindow):
         self._selected = self._printers[idx]
         p = self._selected
         log.info(f"Printer selected: {p.name}")
+        self._show_lp_command(p)
+        self._set_led("gray", lambda: _("Prüfe Status …"))
+        threading.Thread(target=self._status_thread,
+                         args=(p.name, p.temporary), daemon=True).start()
+
+    def _show_lp_command(self, p: DiscPrinter) -> None:
         self._cups_info.set_markup(
             f"<small><tt>lp -d <b>{p.name}</b> "
             f"{' '.join(p.lp_options)} &lt;datei&gt;</tt></small>"
         )
-        self._set_led("gray", _("Prüfe Status …"))
-        threading.Thread(target=self._status_thread,
-                         args=(p.name, p.temporary), daemon=True).start()
 
     def _on_hub_toggled(self, btn: Gtk.CheckButton) -> None:
         if not btn.get_active() or self._block_hub_signal:
@@ -588,7 +631,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._canvas.set_hub(mm)
 
         self._history.push(Command(
-            _("Hub-Größe"),
+            lambda: _("Hub-Größe"),
             undo_fn=lambda: set_hub(old_mm),
             redo_fn=lambda: set_hub(new_mm),
         ))
@@ -702,6 +745,13 @@ class MainWindow(Gtk.ApplicationWindow):
         s.selected_element = None
         s.selected_image   = None
 
+        self._sync_widgets_from_state(hub_mm)
+        self._history.clear()
+        self._clean_fp = self._current_fingerprint()
+
+    def _sync_widgets_from_state(self, hub_mm: float) -> None:
+        """Widgets nach Modell und Hub einstellen (ohne Undo-Einträge)."""
+        s = self._state
         self._block_hub_signal = True
         if abs(hub_mm - HUB_LARGE_MM) < 1.0:
             self._r50.set_active(True)
@@ -718,7 +768,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self._block_color_signal = False
 
         if s.bg_surface is not None:
-            self._bg_file_label.set_text(_("(aus Datei geladen)"))
+            # wie in den Undo-Funktionen: Dateiname, sonst aus .discprint geladen
+            self._bg_file_label.set_text(
+                Path(s.bg_path).name if s.bg_path else _("(aus Datei geladen)"))
             self._clear_img_btn.set_sensitive(True)
             self._transform_box.set_sensitive(True)
         else:
@@ -728,8 +780,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._sync_scale_slider(s.bg_img_scale)
 
         self._rebuild_panel()
-        self._history.clear()
-        self._clean_fp = self._current_fingerprint()
+        self._canvas.update_cursor()
 
     # ── Neues Design / ungespeicherte Änderungen ──────────────────────────────
 
@@ -1023,7 +1074,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self._state.images.append(i)
                 self._rebuild_panel()
 
-            self._history.push(Command(_("Bild hinzufügen"), undo, redo))
+            self._history.push(Command(lambda: _("Bild hinzufügen"), undo, redo))
         except Exception as e:
             log.error(f"Image load failed: {e}")
             self._show_error(_("Bild konnte nicht geladen werden:\n%s") % e)
@@ -1063,7 +1114,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self._canvas.refresh()
 
             self._push_gesture(Command(
-                _("Opazität") + f": {img_ref.display_name}",
+                lambda n=img_ref.display_name: _("Opazität") + f": {n}",
                 undo_fn=lambda: apply_opacity(b),
                 redo_fn=lambda: apply_opacity(a),
             ))
@@ -1105,7 +1156,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self._canvas.refresh()
 
             self._push_gesture(Command(
-                _("Helligkeit") + f": {img_ref.display_name}",
+                lambda n=img_ref.display_name: _("Helligkeit") + f": {n}",
                 undo_fn=lambda: apply_brightness(b),
                 redo_fn=lambda: apply_brightness(a),
             ))
@@ -1147,7 +1198,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self._canvas.refresh()
 
             self._push_gesture(Command(
-                _("Kontrast") + f": {img_ref.display_name}",
+                lambda n=img_ref.display_name: _("Kontrast") + f": {n}",
                 undo_fn=lambda: apply_contrast(b),
                 redo_fn=lambda: apply_contrast(a),
             ))
@@ -1180,7 +1231,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._canvas.refresh()
 
         self._history.push(Command(
-            _("Helligkeit zurücksetzen") + f": {img.display_name}",
+            lambda n=img.display_name: _("Helligkeit zurücksetzen") + f": {n}",
             undo_fn=lambda: apply_brightness(old_b),
             redo_fn=lambda: apply_brightness(1.0),
         ))
@@ -1209,7 +1260,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._canvas.refresh()
 
         self._history.push(Command(
-            _("Kontrast zurücksetzen") + f": {img.display_name}",
+            lambda n=img.display_name: _("Kontrast zurücksetzen") + f": {n}",
             undo_fn=lambda: apply_contrast(old_c),
             redo_fn=lambda: apply_contrast(1.0),
         ))
@@ -1226,7 +1277,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._canvas.refresh()
 
         self._history.push(Command(
-            _("Ebene") + f": {img.display_name}",
+            lambda n=img.display_name: _("Ebene") + f": {n}",
             undo_fn=lambda: apply_z(old_z),
             redo_fn=lambda: apply_z(new_z),
         ))
@@ -1254,7 +1305,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._rebuild_panel()
 
         self._history.push(Command(
-            _("Bild löschen") + f": {img.display_name}", undo, redo
+            lambda n=img.display_name: _("Bild löschen") + f": {n}", undo, redo
         ))
 
     def _on_img_row_clicked(self, img: ImageElement) -> None:
@@ -1283,7 +1334,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 i.flip_h = v; self._canvas.refresh()
 
             self._history.push(Command(
-                _("H-Spiegeln") + f": {img.display_name}",
+                lambda n=img.display_name: _("H-Spiegeln") + f": {n}",
                 undo_fn=lambda: apply_h(not new_val),
                 redo_fn=lambda: apply_h(new_val),
             ))
@@ -1297,7 +1348,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 i.flip_v = v; self._canvas.refresh()
 
             self._history.push(Command(
-                _("V-Spiegeln") + f": {img.display_name}",
+                lambda n=img.display_name: _("V-Spiegeln") + f": {n}",
                 undo_fn=lambda: apply_v(not new_val),
                 redo_fn=lambda: apply_v(new_val),
             ))
@@ -1316,7 +1367,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._rebuild_panel()
 
         self._history.push(Command(
-            _("Sichtbarkeit") + f": {img.display_name}",
+            lambda n=img.display_name: _("Sichtbarkeit") + f": {n}",
             undo_fn=lambda: apply_vis(not new_vis),
             redo_fn=lambda: apply_vis(new_vis),
         ))
@@ -1335,7 +1386,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._rebuild_panel()
 
         self._history.push(Command(
-            _("Sperren") + f": {img.display_name}",
+            lambda n=img.display_name: _("Sperren") + f": {n}",
             undo_fn=lambda: apply_lock(not new_locked),
             redo_fn=lambda: apply_lock(new_locked),
         ))
@@ -1378,7 +1429,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._rebuild_panel()
 
         self._history.push(Command(
-            _("Bild duplizieren") + f": {img.display_name}", undo, redo
+            lambda n=img.display_name: _("Bild duplizieren") + f": {n}", undo, redo
         ))
 
     def _toggle_element_visible(self, elem: TextElement,
@@ -1395,7 +1446,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._rebuild_panel()
 
         self._history.push(Command(
-            _("Sichtbarkeit") + f": {elem.display_text}",
+            lambda n=elem.display_text: _("Sichtbarkeit") + f": {n}",
             undo_fn=lambda: apply_vis(not new_vis),
             redo_fn=lambda: apply_vis(new_vis),
         ))
@@ -1414,7 +1465,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._rebuild_panel()
 
         self._history.push(Command(
-            _("Sperren") + f": {elem.display_text}",
+            lambda n=elem.display_text: _("Sperren") + f": {n}",
             undo_fn=lambda: apply_lock(not new_locked),
             redo_fn=lambda: apply_lock(new_locked),
         ))
@@ -1453,7 +1504,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._rebuild_panel()
 
         self._history.push(Command(
-            _("Text duplizieren") + f": {elem.display_text}", undo, redo
+            lambda n=elem.display_text: _("Text duplizieren") + f": {n}", undo, redo
         ))
 
     # ── Hintergrund-Handler ───────────────────────────────────────────────────
@@ -1483,7 +1534,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._canvas.refresh()
 
         self._history.push(Command(
-            _("Hintergrundfarbe"),
+            lambda: _("Hintergrundfarbe"),
             undo_fn=lambda: apply_color(old_color),
             redo_fn=lambda: apply_color(new_color),
         ))
@@ -1571,7 +1622,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self._canvas.update_cursor()
                 self._canvas.refresh()
 
-            self._history.push(Command(_("Hintergrundbild laden"), undo, redo))
+            self._history.push(Command(lambda: _("Hintergrundbild laden"), undo, redo))
         except Exception as e:
             log.error(f"Failed to load '{path}': {e}")
             self._show_error(_("Bild konnte nicht geladen werden:\n%s") % e)
@@ -1613,7 +1664,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._canvas.update_cursor()
             self._canvas.refresh()
 
-        self._history.push(Command(_("Hintergrundbild entfernen"), undo, redo))
+        self._history.push(Command(lambda: _("Hintergrundbild entfernen"), undo, redo))
 
     def _on_scale_slider_changed(self, slider) -> None:
         if self._block_scale_signal:
@@ -1647,7 +1698,7 @@ class MainWindow(Gtk.ApplicationWindow):
             return GLib.SOURCE_REMOVE
         log.info(f"Background image zoom: {after:.2f}×")
         self._push_gesture(Command(
-            _("Zoom") + ": " + _("Hintergrund"),
+            lambda: _("Zoom") + ": " + _("Hintergrund"),
             undo_fn=lambda: self._apply_bg_transform(scale=before),
             redo_fn=lambda: self._apply_bg_transform(scale=after),
         ))
@@ -1740,7 +1791,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def _bg_move_command(self, before: tuple[float, float],
                          after: tuple[float, float]) -> Command:
         return Command(
-            _("Bewegen") + ": " + _("Hintergrund"),
+            lambda: _("Bewegen") + ": " + _("Hintergrund"),
             undo_fn=lambda: self._apply_bg_transform(*before),
             redo_fn=lambda: self._apply_bg_transform(*after),
         )
@@ -1755,7 +1806,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._apply_bg_transform(*after)
         log.info("Background image transform reset")
         self._history.push(Command(
-            _("Zurücksetzen") + ": " + _("Hintergrund"),
+            lambda: _("Zurücksetzen") + ": " + _("Hintergrund"),
             undo_fn=lambda: self._apply_bg_transform(*before),
             redo_fn=lambda: self._apply_bg_transform(*after),
         ))
@@ -1799,7 +1850,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self._state.elements.append(e)
                 self._rebuild_panel()
 
-            self._history.push(Command(_("Text hinzufügen"), undo, redo))
+            self._history.push(Command(lambda: _("Text hinzufügen"), undo, redo))
         return False
 
     def _open_edit_dialog(self, elem: TextElement) -> None:
@@ -1853,7 +1904,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self._rebuild_panel()
 
             self._history.push(Command(
-                _("Text bearbeiten") + f": {elem.display_text}",
+                lambda n=elem.display_text: _("Text bearbeiten") + f": {n}",
                 undo_fn=lambda os=old_state: apply_text(os),
                 redo_fn=lambda ns=new_state: apply_text(ns),
             ))
@@ -1881,7 +1932,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._rebuild_panel()
 
         self._history.push(Command(
-            _("Text löschen") + f": {elem.display_text}", undo, redo
+            lambda n=elem.display_text: _("Text löschen") + f": {n}", undo, redo
         ))
 
     # ── Drucker-Status ────────────────────────────────────────────────────────
@@ -1899,18 +1950,18 @@ class MainWindow(Gtk.ApplicationWindow):
                 # kennt es nicht. Stattdessen prüfen, ob es noch angeboten wird.
                 self._temp_status(name, env)
             elif "idle" in out or "ready" in out:
-                GLib.idle_add(self._set_led, "green", _("Bereit"))
+                GLib.idle_add(self._set_led, "green", lambda: _("Bereit"))
                 log.info(f"Printer {name}: ready")
             elif "disabled" in out or "stopped" in out:
-                GLib.idle_add(self._set_led, "red", _("Deaktiviert / gestoppt"))
+                GLib.idle_add(self._set_led, "red", lambda: _("Deaktiviert / gestoppt"))
                 log.warning(f"Printer {name}: disabled/stopped")
             else:
-                GLib.idle_add(self._set_led, "amber", _("Status unbekannt"))
+                GLib.idle_add(self._set_led, "amber", lambda: _("Status unbekannt"))
         except subprocess.TimeoutExpired:
-            GLib.idle_add(self._set_led, "red", _("Nicht erreichbar (Timeout)"))
+            GLib.idle_add(self._set_led, "red", lambda: _("Nicht erreichbar (Timeout)"))
             log.error(f"Printer {name}: status timeout")
         except Exception as e:
-            GLib.idle_add(self._set_led, "red", _("Fehler: %s") % e)
+            GLib.idle_add(self._set_led, "red", lambda e=e: _("Fehler: %s") % e)
             log.error(f"Printer {name}: status error: {e}")
 
     def _temp_status(self, name: str, env: dict[str, str]) -> None:
@@ -1922,19 +1973,21 @@ class MainWindow(Gtk.ApplicationWindow):
             # TRANSLATORS: Printer status for a driverless network printer
             # without a permanent CUPS queue (created temporarily on printing)
             GLib.idle_add(self._set_led, "green",
-                          _("Im Netzwerk verfügbar (treiberlos)"))
+                          lambda: _("Im Netzwerk verfügbar (treiberlos)"))
             log.info(f"Printer {name}: driverless, available on the network")
         else:
             # TRANSLATORS: Driverless network printer is no longer announced
             GLib.idle_add(self._set_led, "red",
-                          _("Nicht mehr im Netzwerk gefunden (treiberlos)"))
+                          lambda: _("Nicht mehr im Netzwerk gefunden (treiberlos)"))
             log.warning(f"Printer {name}: driverless, no longer found")
 
-    def _set_led(self, color: str, text: str) -> bool:
+    def _set_led(self, color: str, text) -> bool:
+        """text: Funktion, die den Text in der aktuellen Sprache liefert."""
+        self._led_state = (color, text)
         _C = {"green": "#2ec27e", "red": "#e01b24",
               "amber": "#e5a50a", "gray": "#888888"}
         self._led.set_markup(f"<span color='{_C.get(color, '#888888')}'>●</span>")
-        self._stlbl.set_text(text)
+        self._stlbl.set_text(text() if callable(text) else text)
         return GLib.SOURCE_REMOVE
 
     # ── Drucken ───────────────────────────────────────────────────────────────
@@ -2107,11 +2160,11 @@ class MainWindow(Gtk.ApplicationWindow):
                 "rotation": elem.rotation,
             }
             if action == "move":
-                desc = _("Bewegen") + f": {elem.display_name}"
+                desc = lambda n=elem.display_name: _("Bewegen") + f": {n}"
             elif action == "rotate":
-                desc = _("Drehen") + f": {elem.display_name}"
+                desc = lambda n=elem.display_name: _("Drehen") + f": {n}"
             else:
-                desc = _("Skalieren") + f": {elem.display_name}"
+                desc = lambda n=elem.display_name: _("Skalieren") + f": {n}"
 
             def apply_img(s: dict, i: ImageElement = elem) -> None:
                 i.x = s["x"]; i.y = s["y"]
@@ -2132,7 +2185,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self._canvas.refresh()
 
             self._history.push(Command(
-                _("Bewegen") + f": {elem.display_text}",
+                lambda n=elem.display_text: _("Bewegen") + f": {n}",
                 undo_fn=lambda b=drag_start: apply_txt(b),
                 redo_fn=lambda a=after: apply_txt(a),
             ))
@@ -2164,7 +2217,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self._canvas.refresh()
 
             self._push_gesture(Command(
-                _("Zoom") + f": {img_ref.display_name}",
+                lambda n=img_ref.display_name: _("Zoom") + f": {n}",
                 undo_fn=lambda: apply_zoom(b_sx, b_sy),
                 redo_fn=lambda: apply_zoom(a_sx, a_sy),
             ))

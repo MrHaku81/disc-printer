@@ -23,6 +23,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Fenster offen; „Speichern …“ schließt bzw. öffnet erst nach erfolgreichem
   Speichern. Alle Wege des Schließens (Titelleiste, Alt+F4, Taskleiste) laufen
   über `close-request`; ein eigenes Tastenkürzel zum Beenden gibt es nicht
+- Sprachwechsel behält das Design: Die Oberfläche wird im selben Fenster neu
+  aufgebaut statt in einem neuen. Hintergrund, Bilder, Texte, Hub, Auswahl,
+  Undo/Redo-Verlauf, der Stand gespeichert/ungespeichert und die
+  Druckerauswahl bleiben erhalten; es gibt keine Rückfrage und nie zwei
+  Fenster. Undo-Beschriftungen und Druckerstatus erscheinen in der neuen
+  Sprache; eine laufende Regler-Geste wird vorher als Eintrag abgeschlossen.
+  Vorher (0.1.2) ging ein ungespeichertes Design beim Sprachwechsel
+  kommentarlos verloren; mit der neuen Schließen-Rückfrage blieben nach
+  „Abbrechen“ zwei Fenster offen
 - Neue Texte in allen 33 Sprachen
 - Tests: `tests/test_new_design.py`; die GUI-Tests laufen mit echten Widgets
   gegen einen privaten Broadway-Server (ohne `gtk4-broadwayd` übersprungen)
