@@ -7,55 +7,81 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] – 2026-11-19
+
+Zuerst die Änderungen, die man beim Arbeiten mit der App bemerkt; danach
+Technisches für Installation, Fehlerberichte und Entwicklung.
+
 ### Added
 
 #### Neues Design
 - Knopf „Neues Design“ in der Kopfleiste (links vor „Öffnen“): setzt das Design
   auf den Zustand eines frischen Starts zurück (Hintergrund, Bild- und
   Text-Elemente, Hub-Größe, Undo/Redo-Verlauf). Druckerauswahl und Sprache
-  bleiben; laufende Regler-Timer werden verworfen
-- Ungespeicherte Änderungen werden erkannt (Fingerabdruck des Designs, auch für
-  Änderungen ohne Undo-Eintrag wie den Hintergrund-Zoom). Dann fragt die App
-  vorher nach: Abbrechen / Verwerfen / Speichern … (nach erfolgreichem
-  Speichern wird zurückgesetzt, bei Fehler oder Abbruch nicht)
-- Dieselbe Rückfrage bei „Öffnen“ (vor dem Dateidialog) und beim Schließen
-  des Fensters, nur bei ungespeicherten Änderungen. Abbrechen lässt das
-  Fenster offen; „Speichern …“ schließt bzw. öffnet erst nach erfolgreichem
-  Speichern. Alle Wege des Schließens (Titelleiste, Alt+F4, Taskleiste) laufen
-  über `close-request`; ein eigenes Tastenkürzel zum Beenden gibt es nicht
-- Sprachwechsel behält das Design: Die Oberfläche wird im selben Fenster neu
-  aufgebaut statt in einem neuen. Hintergrund, Bilder, Texte, Hub, Auswahl,
-  Undo/Redo-Verlauf, der Stand gespeichert/ungespeichert und die
-  Druckerauswahl bleiben erhalten; es gibt keine Rückfrage und nie zwei
-  Fenster. Undo-Beschriftungen und Druckerstatus erscheinen in der neuen
-  Sprache; eine laufende Regler-Geste wird vorher als Eintrag abgeschlossen.
-  Vorher (0.1.2) ging ein ungespeichertes Design beim Sprachwechsel
-  kommentarlos verloren; mit der neuen Schließen-Rückfrage blieben nach
-  „Abbrechen“ zwei Fenster offen
-- Neue Texte in allen 33 Sprachen
-- Tests: `tests/test_new_design.py`; die GUI-Tests laufen mit echten Widgets
-  gegen einen privaten Broadway-Server (ohne `gtk4-broadwayd` übersprungen)
+  bleiben
 
-#### Pillow im Flatpak
-- Manifest: neues Modul `python-pillow` (Pillow 13.0.0, manylinux-Wheel für
-  CPython 3.14 / x86_64, sha256 gegen PyPI geprüft). Damit bettet auch die
-  Flatpak-Version das sRGB-Farbprofil in die Druck-PNG ein (`PIL.ImageCms`; das
-  Wheel bringt liblcms2 selbst mit). Lizenz: MIT-CMU
-- Runtime bleibt GNOME Platform 51 (aktuellster Zweig auf Flathub)
+#### Rückfrage bei ungespeicherten Änderungen
+- Vor „Neues Design“, vor „Öffnen“ und beim Schließen des Fensters fragt die
+  App nach, wenn es ungespeicherte Änderungen gibt: Abbrechen / Verwerfen /
+  Speichern …. „Abbrechen“ lässt alles, wie es war (beim Schließen bleibt das
+  Fenster offen); „Speichern …“ macht erst nach erfolgreichem Speichern weiter.
+  Ohne Änderungen kommt keine Rückfrage
+- Gilt für jeden Weg des Schließens: Titelleiste, Alt+F4, Taskleiste
 
 ### Changed
 
-#### numpy ist eine feste Abhängigkeit
-- `pyproject.toml`: numpy steht unter `dependencies` statt im Extra
-  `enhanced` (die Zeichenfläche importiert es fest, ohne numpy startet die App
-  nicht); Pillow bleibt optional. `pip`/`pipx` installieren numpy jetzt
-  automatisch
-- README: numpy ist in den pipx-Installationsbefehlen kein eigener Schritt mehr
+#### Undo vollständig
+- Hintergrund-Zoom (Regler und Mausrad), die Pfeilknöpfe, „Zentrieren“ und das
+  Verschieben des Hintergrundbilds mit der Maus lassen sich jetzt rückgängig
+  machen. Eine Regler- oder Mausrad-Bewegung ist ein Schritt; mehrere
+  Pfeilknopf-Klicks kurz hintereinander sind ein gemeinsamer Schritt
+- Strg+Z mitten in einer Regler-Bewegung (auch Deckkraft, Helligkeit, Kontrast
+  und Mausrad-Zoom auf Bildern) nimmt genau diese Bewegung zurück, nicht den
+  Schritt davor
 
-#### Log-Meldungen auf Englisch
-- Alle Log-Meldungen sind englisch, sachlich und knapp; sie sind für
-  Fehlerberichte gedacht und werden nicht übersetzt. Texte der Oberfläche sind
-  unverändert
+#### Design-Ordner folgt dem Dokumente-Ordner des Systems (#2)
+- Designs werden in `<Dokumente>/DiscPrinter` gespeichert, wobei
+  `<Dokumente>` der Dokumente-Ordner des Systems ist (z. B. `~/Documents`),
+  statt fest in `~/Dokumente/DiscPrinter`. Auf nicht-deutschen Systemen entsteht
+  kein Ordner „Dokumente“ mehr; ohne Dokumente-Ordner wird `~/DiscPrinter`
+  verwendet
+- Wer schon `.discprint`-Designs in `~/Dokumente/DiscPrinter` hat, arbeitet
+  dort weiter, solange der neue Ordner noch nicht existiert; nichts wird
+  verschoben oder gelöscht
+- Der Ordner wird erst beim Speichern angelegt, nicht schon beim Start
+
+#### Sprachwechsel behält das Design
+- Beim Wechsel der Sprache bleiben Design, Undo/Redo-Verlauf, der Stand
+  gespeichert/ungespeichert und die Druckerauswahl erhalten; die Oberfläche
+  erscheint im selben Fenster in der neuen Sprache, ohne Rückfrage. Bisher ging
+  ein ungespeichertes Design beim Sprachwechsel verloren
+
+### Fixed
+
+#### Sprach-Auswahlfeld
+- Nach dem Zurückwechseln auf Deutsch zeigte das Feld „العربية“, obwohl die
+  Oberfläche deutsch war (schon in 0.1.2; ebenso beim ersten Start, wenn die
+  Systemsprache nicht übersetzt ist). Jetzt zeigt das Feld immer die
+  tatsächlich angezeigte Sprache. In die Einstellungen wurde nie eine falsche
+  Sprache geschrieben
+
+#### Undo nach dem Verschieben eines Bilds
+- Undo nach dem Verschieben eines Bilds am Bildkörper funktionierte nicht
+  (Fehler `KeyError`, schon in 0.1.2)
+
+#### Start ohne Anzeige (#2)
+- Kann die App keine Anzeige öffnen (z. B. Start über SSH ohne Grafik), endet
+  sie mit einer einzeiligen Meldung und Exit-Code 1 statt mit Traceback und
+  GTK-Warnungen (und `exit=0` im Log). Die Ursache steht zusätzlich in der
+  Logdatei
+
+#### Kleinigkeiten
+- Der Platzhalter `<datei>` in der Druckbefehl-Anzeige unter der
+  Druckerauswahl ist jetzt übersetzt
+- README: Ebenen-Reihenfolge (↑/↓) gibt es nur für Bilder, nicht für Text
+  (Tabelle korrigiert); Undo-Beschreibung präzisiert
+
+### Technisches
 
 #### Logdatei im XDG-State-Ordner
 - Die Logdatei liegt nicht mehr lose im Home, sondern unter
@@ -67,87 +93,76 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Die Datei wird erst beim ersten Log-Eintrag geöffnet, nicht schon beim Import;
   der Ordner wird bei Bedarf angelegt. Ist sie nicht schreibbar, läuft die App
   ohne Datei-Log weiter und meldet das einmal auf stderr
-- `DISC_PRINTER_LOG_FILE` lenkt den Pfad um (leer: kein Datei-Log). Die Tests
-  nutzen das und schreiben nicht mehr ins Home
+- `DISC_PRINTER_LOG_FILE` lenkt den Pfad um (leer: kein Datei-Log)
 - Die alte `~/disc-printer.log` (bis 0.1.2) wird nicht mehr geschrieben, aber
   auch nicht angerührt; sie kann von Hand gelöscht werden
 - README: neuer Abschnitt „Log file“ für Fehlerberichte
 
-#### Undo vollständig
-- Hintergrund-Zoom (Regler und Mausrad), die Pfeilknöpfe, „Zentrieren“ und das
-  Verschieben des Hintergrundbilds mit der Maus haben jetzt Undo-Einträge.
-  Regler und Mausrad ergeben einen Eintrag je Geste (Endwert nach 600 ms Ruhe),
-  mehrere Pfeilknopf-Klicks kurz hintereinander einen gemeinsamen Eintrag.
-  Offene Gesten werden vor jedem anderen Eintrag und vor Undo/Redo
-  abgeschlossen, damit die Reihenfolge stimmt
-- Dieselbe Logik für die Bild-Regler (Deckkraft, Helligkeit, Kontrast) und den
-  Mausrad-Zoom auf Bildern: eine laufende Geste wird vor Undo/Redo und vor
-  jedem anderen Eintrag abgeschlossen (Strg+Z mitten in der Geste nimmt genau
-  diese Geste zurück, nicht den vorigen Eintrag). Bild- und
-  Hintergrund-Gesten werden in der Reihenfolge ihres Beginns eingetragen
-- Fehler behoben (schon in 0.1.2): Undo nach dem Verschieben eines Bilds am
-  Bildkörper scheiterte mit `KeyError`, weil nur die Position gemerkt wurde
-- README: Undo-Beschreibung präzisiert; Ebenen-Reihenfolge (↑/↓) gibt es nur
-  für Bilder, nicht für Text (Tabelle korrigiert)
-- Tests: `tests/test_undo.py` mit einem Audit aller 32 Designaktionen (je genau
-  ein Undo-Eintrag, Undo und Redo stellen den Zustand exakt her)
-
-#### Log aufgeräumt
-- „Printer selected“ und „Printer …: ready“ erschienen doppelt: Beim Befüllen
-  der Druckerliste löste GTK `notify::selected` selbst aus, danach wurde der
-  Handler noch einmal explizit aufgerufen (zwei Status-Threads). Das Signal ist
-  beim Befüllen jetzt gesperrt; die Auswahl läuft genau einmal
-- „Design saved“ erschien doppelt (in `file_format.save()` und im Fenster); das
-  Fenster loggt nicht mehr selbst. Ebenso entfällt „Design opened“ neben
-  „Design loaded“
+#### Log-Meldungen
+- Alle Log-Meldungen sind englisch, sachlich und knapp; sie sind für
+  Fehlerberichte gedacht und werden nicht übersetzt
+- Doppelte Zeilen entfernt: „Printer selected“ und „Printer …: ready“ (GTK
+  löste beim Befüllen der Druckerliste `notify::selected` selbst aus; das
+  Signal ist dabei jetzt gesperrt, die Auswahl läuft genau einmal, ein
+  Status-Thread), „Design saved“ (stand in `file_format.save()` und im Fenster)
+  und „Design opened“ neben „Design loaded“
 - Regler (Helligkeit, Kontrast, Opazität, Hintergrund-Zoom) und Mausrad-Zoom
-  loggen nur noch den Endwert nach 600 ms Ruhe statt jedes Zwischenschritts;
-  Helligkeit, Kontrast und Opazität wurden bisher gar nicht geloggt
+  loggen nur noch den Endwert nach 600 ms Ruhe; Helligkeit, Kontrast und
+  Opazität wurden bisher gar nicht geloggt
 - Ein bloßer Klick auf Hintergrund, Bild oder Text (ohne Bewegung) loggt kein
   „moved“ mehr und legt keinen leeren Undo-Eintrag an
-- Tests: `tests/test_log_cleanup.py` (echte Widgets, Broadway)
 
-#### README
-- Abschnitt „Project layout“ mit dem tatsächlichen Inhalt von
+#### Installation
+- `pyproject.toml`: numpy steht unter `dependencies` statt im Extra
+  `enhanced` (die Zeichenfläche importiert es fest, ohne numpy startet die App
+  nicht); Pillow bleibt optional. `pip`/`pipx` installieren numpy jetzt
+  automatisch; in der README ist numpy kein eigener Schritt mehr
+- Flatpak-Manifest: neues Modul `python-pillow` (Pillow 13.0.0, manylinux-Wheel
+  für CPython 3.14 / x86_64, sha256 gegen PyPI geprüft). Damit bettet auch die
+  Flatpak-Version das sRGB-Farbprofil in die Druck-PNG ein (`PIL.ImageCms`; das
+  Wheel bringt liblcms2 selbst mit). Lizenz: MIT-CMU. Runtime bleibt GNOME
+  Platform 51
+
+#### Umsetzung
+- Ungespeicherte Änderungen werden über einen Fingerabdruck des Designs
+  erkannt, auch Änderungen ohne Undo-Eintrag. Schließen läuft über
+  `close-request`; ein eigenes Tastenkürzel zum Beenden gibt es nicht
+- Undo: Regler- und Mausrad-Gesten (Bild und Hintergrund) ergeben einen
+  Eintrag je Geste (Endwert nach 600 ms Ruhe). Offene Gesten werden über
+  `History.before_change` vor jedem anderen Eintrag und vor Undo/Redo
+  abgeschlossen, in der Reihenfolge ihres Beginns. Beim Ziehen eines Bilds
+  wird der vollständige Zustand (Position, Größe, Drehung) gemerkt
+- Sprachwechsel: Die Oberfläche wird im selben Fenster neu aufgebaut
+  (`_retranslate`) statt in einem neuen; Undo-Beschriftungen und Druckerstatus
+  werden erst beim Anzeigen übersetzt. Vorher entstand ein neues Fenster; mit
+  der Schließen-Rückfrage blieben nach „Abbrechen“ zwei Fenster offen
+- Sprach-Auswahlfeld: Deutsch ist intern der Fallback ohne Sprache; das Feld
+  suchte diesen Wert nicht in der Liste und fiel auf Eintrag 0 zurück
+  (`i18n.effective_lang()`). Fehlt die Übersetzungsdatei einer Sprache (Start
+  aus dem Quellcode ohne `make compile-mo`), zeigt das Feld jetzt Deutsch, wie
+  die Oberfläche
+- `paths.py`: Design-Ordner über
+  `GLib.get_user_special_dir(DIRECTORY_DOCUMENTS)`, unabhängig von der
+  App-Sprache; `window.py` legt ihn erst beim Speichern-Dialog an, der
+  Öffnen-Dialog startet im Dokumente-Ordner (bzw. im Home), solange der
+  Unterordner fehlt; `file_format.py`: Konstante `DEFAULT_DIR` entfernt
+- „Neues Design“ verwirft laufende Regler-Timer, damit kein verspäteter
+  Undo-Eintrag im frischen Design landet
+- Übersetzungen: neue Texte in allen 33 Sprachen; veraltete Katalogeinträge
+  entfernt, Zeilenverweise und Versionsangaben der Kataloge aufgefrischt
+- README: Abschnitt „Project layout“ mit dem tatsächlichen Inhalt von
   `src/disc_printer` abgeglichen (u. a. `paths.py`, `constants.py`,
   `settings.py`, `image_utils.py`)
 
-### Fixed
-
-#### Sprach-Auswahlfeld
-- Das Feld zeigte nach dem Zurückwechseln auf Deutsch „العربية“
-  (ersten Listeneintrag), obwohl die Oberfläche deutsch war (schon in 0.1.2).
-  Deutsch ist intern der Fallback ohne Sprache; das Feld suchte diesen Wert
-  nicht in der Liste und fiel auf Eintrag 0 zurück. Dasselbe beim ersten Start
-  ohne Einstellung, wenn die Systemsprache nicht übersetzt ist. Fehlt die
-  Übersetzungsdatei einer Sprache (Start aus dem Quellcode ohne
-  `make compile-mo`), zeigte das Feld diese Sprache, die Oberfläche blieb aber
-  deutsch. In die Einstellungen wurde nie eine falsche Sprache geschrieben.
-  Jetzt zeigt das Feld immer die tatsächlich angezeigte Sprache.
-- Tests: Feld, aktive Übersetzung und sichtbare Beschriftung werden nach
-  Sprachwechsel, Neues Design und Öffnen verglichen; die GUI-Tests laufen mit
-  fester Systemsprache
-
-#### Start ohne Anzeige (#2)
-- Kann GTK keine Anzeige öffnen, endet die App mit einer einzeiligen Meldung
-  auf stderr und Exit-Code 1 statt mit Traceback, GTK-Warnungen und
-  `exit=0` im Log. Die Ursache steht zusätzlich in der Logdatei
-- Tests: `tests/test_no_display.py`, inklusive eines echten Starts ohne Anzeige
-
-#### Design-Ordner folgt dem System-Dokumente-Ordner (#2)
-- Neues Modul `paths.py`: Der Speicherort für `.discprint`-Designs wird über
-  `GLib.get_user_special_dir(DIRECTORY_DOCUMENTS)` ermittelt
-  (`<Dokumente>/DiscPrinter`) statt fest `~/Dokumente/DiscPrinter`; ohne
-  Dokumente-Ordner im System Rückfall auf `~/DiscPrinter`. Unabhängig von der
-  App-Sprache. Auf nicht-deutschen Systemen entsteht kein Ordner „Dokumente“ mehr
-- Abwärtskompatibel: Enthält `~/Dokumente/DiscPrinter` bereits Dateien und
-  existiert der neue Ordner noch nicht, wird weiter der alte verwendet; es wird
-  nichts verschoben oder gelöscht
-- `window.py`: Der Ordner wird nicht mehr beim Programmstart angelegt, sondern
-  erst beim Öffnen des Speichern-Dialogs; der Öffnen-Dialog startet im
-  Dokumente-Ordner (bzw. im Home), solange der Unterordner fehlt
-- `file_format.py`: Konstante `DEFAULT_DIR` entfernt
-- Tests: `tests/test_paths.py` (hermetisch, temporäres Home)
+#### Tests
+- GUI-Tests mit echten Widgets gegen einen privaten Broadway-Server (ohne
+  `gtk4-broadwayd` übersprungen), mit fester Systemsprache:
+  `tests/test_new_design.py`, `tests/test_undo.py` (Audit aller 32
+  Designaktionen: je genau ein Undo-Eintrag, Undo und Redo exakt, auch nach
+  einem Sprachwechsel), `tests/test_log_cleanup.py`
+- `tests/test_paths.py`, `tests/test_logfile.py`, `tests/test_no_display.py`
+  (inklusive eines echten Starts ohne Anzeige)
+- Die Tests schreiben nichts ins Home (`DISC_PRINTER_LOG_FILE`, temporäres Home)
 
 
 ## [0.1.2] – 2026-11-13
@@ -347,7 +362,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (TypeError: 'int' object is not callable) wenn keine Disc-Drucker gefunden
 
 
-[Unreleased]: https://github.com/MrHaku81/disc-printer/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/MrHaku81/disc-printer/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/MrHaku81/disc-printer/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/MrHaku81/disc-printer/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/MrHaku81/disc-printer/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/MrHaku81/disc-printer/releases/tag/v0.1.0

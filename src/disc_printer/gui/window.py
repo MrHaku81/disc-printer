@@ -609,9 +609,13 @@ class MainWindow(Gtk.ApplicationWindow):
                          args=(p.name, p.temporary), daemon=True).start()
 
     def _show_lp_command(self, p: DiscPrinter) -> None:
+        # TRANSLATORS: Placeholder for the file name in the print command shown
+        # below the printer selection ("lp -d PRINTER ... <file>"). One short
+        # lowercase word, as in command-line help texts.
+        placeholder = GLib.markup_escape_text(_("datei"))
         self._cups_info.set_markup(
             f"<small><tt>lp -d <b>{p.name}</b> "
-            f"{' '.join(p.lp_options)} &lt;datei&gt;</tt></small>"
+            f"{' '.join(p.lp_options)} &lt;{placeholder}&gt;</tt></small>"
         )
 
     def _on_hub_toggled(self, btn: Gtk.CheckButton) -> None:

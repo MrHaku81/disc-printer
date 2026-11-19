@@ -34,6 +34,11 @@
     <category>Publishing</category>
   </categories>
   <releases>
+    <release version="0.1.3" date="2026-11-19">
+      <description>
+        <p>New "New design" button. Before starting a new design, opening another one or closing the window, the app asks whether unsaved changes should be saved. Undo now covers the background controls and finishes a running slider change first. Designs are saved in the system's documents folder instead of a fixed "Dokumente" folder. Switching the language keeps the current design, and the language selector always shows the active language.</p>
+      </description>
+    </release>
     <release version="0.1.2" date="2026-11-13">
       <description>
         <p>Detects driverless network printers that have no permanent CUPS queue and checks their disc support via IPP. Shows an understandable message when printing to such a printer fails because of a bug in CUPS 2.4.20, and fixes a crash of the confirmation shown after a successful print.</p>

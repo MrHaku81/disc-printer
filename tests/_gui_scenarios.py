@@ -800,6 +800,11 @@ def scenario_lang_switch(win):
         # Drucker: gleiche Auswahl, kein erneutes "Printer selected"
         assert win._selected is other and win._dropdown.get_selected() == 1
         assert win._dropdown.get_sensitive()
+        # Druckbefehl-Anzeige mit übersetztem Platzhalter
+        cmd = win._cups_info.get_text()
+        assert cmd.startswith("lp -d Other") and cmd.endswith(
+            "<" + _expected_ui("fr", "datei") + ">"), cmd
+        assert _expected_ui("fr", "datei") == "fichier"
         assert len(log_lines("Printer selected")) == selected_logs
         assert win._stlbl.get_text() == _expected_ui("fr", "Prüfe Status …"), win._stlbl.get_text()
         # Undo/Redo-Beschriftungen in der neuen Sprache
