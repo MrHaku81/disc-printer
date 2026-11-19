@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 
 import cairo
@@ -142,3 +143,47 @@ class DesignState:
         def key(e: ImageElement | TextElement):
             return (e.z, isinstance(e, TextElement))
         return sorted(list(self.images) + list(self.elements), key=key)
+
+
+# ── Fingerabdruck für "ungespeicherte Änderungen" ─────────────────────────────
+#
+# Erfasst alle öffentlichen Felder von DesignState, TextElement und
+# ImageElement (inklusive Bildpixel), aber keine Auswahl, IDs und internen
+# Caches (Felder mit "_"). Neue Modellfelder sind damit automatisch dabei.
+
+_FP_SKIP = frozenset({"id", "selected", "selected_element", "selected_image"})
+
+
+def _fp_value(h, v) -> None:
+    if isinstance(v, cairo.ImageSurface):
+        v.flush()
+        h.update(b"surface:%d,%d,%d,%d;" % (
+            v.get_width(), v.get_height(), v.get_stride(), int(v.get_format())))
+        h.update(v.get_data())
+    elif isinstance(v, (list, tuple)):
+        h.update(b"[%d:" % len(v))
+        for x in v:
+            _fp_value(h, x)
+        h.update(b"]")
+    elif isinstance(v, (TextElement, ImageElement)):
+        h.update(type(v).__name__.encode() + b"{")
+        _fp_obj(h, v)
+        h.update(b"}")
+    else:
+        h.update(repr(v).encode() + b";")
+
+
+def _fp_obj(h, obj) -> None:
+    for k in sorted(vars(obj)):
+        if k.startswith("_") or k in _FP_SKIP:
+            continue
+        h.update(k.encode() + b"=")
+        _fp_value(h, getattr(obj, k))
+
+
+def design_fingerprint(state: DesignState, hub_mm: float) -> str:
+    """Kurzer Hash über den gespeicherten Designinhalt (inkl. Hub-Größe)."""
+    h = hashlib.blake2b(digest_size=16)
+    h.update(b"hub=" + repr(float(hub_mm)).encode() + b";")
+    _fp_obj(h, state)
+    return h.hexdigest()

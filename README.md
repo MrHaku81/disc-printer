@@ -80,6 +80,10 @@ Until a CUPS release with the fix is available, set the printer up as a permanen
 | Duplicate | ✓ | ✓ |
 
 ### Editing
+- **New design** (header bar, left of Open) — starts over as after a fresh start:
+  background, image and text elements, hub size and undo history are reset; the
+  selected printer and the language stay. If the design has unsaved changes, Disc
+  Printer asks first (Cancel / Discard / Save …)
 - **Undo / Redo** (Ctrl+Z / Ctrl+Y / Ctrl+Shift+Z) — full command history, up to 50 steps,
   covering all canvas actions, slider changes (debounced), and panel operations
 - Drag-and-drop images from a file manager directly onto the canvas

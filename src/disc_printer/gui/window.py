@@ -19,7 +19,7 @@ from .. import file_format as _fmt
 from .. import paths as _paths
 from ..printer import DiscPrinter, lp_error_message
 from ..detection import detect_disc_printers
-from ..model import TextElement, ImageElement, DesignState
+from ..model import TextElement, ImageElement, DesignState, design_fingerprint
 from ..image_utils import pixbuf_to_cairo, write_print_png
 from ..units import format_dimension
 from .canvas import DiscCanvas
@@ -56,6 +56,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self._build_ui()
         self._history.on_change = self._on_history_changed
+        # Stand des zuletzt gespeicherten/geladenen/neuen Designs
+        self._clean_fp = self._current_fingerprint()
         self._detect_async()
 
     # ── UI-Aufbau ─────────────────────────────────────────────────────────────
@@ -63,6 +65,11 @@ class MainWindow(Gtk.ApplicationWindow):
     def _build_ui(self) -> None:
         hb = Gtk.HeaderBar()
         hb.set_show_title_buttons(True)
+
+        new_btn = Gtk.Button(icon_name="document-new-symbolic")
+        new_btn.set_tooltip_text(_("Neues Design"))
+        new_btn.connect("clicked", self._on_new_clicked)
+        hb.pack_start(new_btn)
 
         open_btn = Gtk.Button(icon_name="document-open-symbolic")
         open_btn.set_tooltip_text(_("Design öffnen …"))
@@ -561,6 +568,10 @@ class MainWindow(Gtk.ApplicationWindow):
     # ── Datei Speichern / Öffnen ──────────────────────────────────────────────
 
     def _on_save_clicked(self, _btn) -> None:
+        self._start_save()
+
+    def _start_save(self, on_saved=None) -> None:
+        """Speichern-Dialog; ``on_saved`` läuft nur nach erfolgreichem Speichern."""
         dlg = Gtk.FileDialog(title=_("Design speichern"))
         f_dp = Gtk.FileFilter()
         f_dp.set_name(_("DiscPrint-Design (*.discprint)"))
@@ -575,9 +586,10 @@ class MainWindow(Gtk.ApplicationWindow):
         dlg.set_default_filter(f_dp)
         dlg.set_initial_folder(Gio.File.new_for_path(str(_paths.ensure_design_dir())))
         dlg.set_initial_name("design.discprint")
-        dlg.save(self, None, self._on_save_dialog_done)
+        dlg.save(self, None,
+                 lambda d, r: self._on_save_dialog_done(d, r, on_saved))
 
-    def _on_save_dialog_done(self, dlg, result) -> None:
+    def _on_save_dialog_done(self, dlg, result, on_saved=None) -> None:
         try:
             gfile = dlg.save_finish(result)
         except Exception:
@@ -591,6 +603,10 @@ class MainWindow(Gtk.ApplicationWindow):
         except Exception as e:
             log.error(f"Save failed: {e}")
             self._show_error(_("Design konnte nicht gespeichert werden:\n%s") % e)
+            return
+        self._clean_fp = self._current_fingerprint()
+        if on_saved is not None:
+            on_saved()
 
     def _on_open_clicked(self, _btn) -> None:
         dlg = Gtk.FileDialog(title=_("Design öffnen"))
@@ -622,20 +638,21 @@ class MainWindow(Gtk.ApplicationWindow):
             log.error(f"Open failed: {e}")
             self._show_error(_("Design konnte nicht geöffnet werden:\n%s") % e)
 
+    def _cancel_pending_timers(self) -> None:
+        """Laufende Debounce-Timer der Regler/Scroll-Zooms verwerfen."""
+        for timers, before in (
+            (self._opacity_timer,    self._opacity_before),
+            (self._brightness_timer, self._brightness_before),
+            (self._contrast_timer,   self._contrast_before),
+            (self._scroll_timer,     self._scroll_before),
+        ):
+            for tid in list(timers.values()):
+                GLib.source_remove(tid)
+            timers.clear()
+            before.clear()
+
     def _apply_loaded_design(self, loaded: DesignState, hub_mm: float) -> None:
-        # Pending Debounce-Timer abbrechen
-        for tid in list(self._opacity_timer.values()):
-            GLib.source_remove(tid)
-        self._opacity_before.clear();    self._opacity_timer.clear()
-        for tid in list(self._brightness_timer.values()):
-            GLib.source_remove(tid)
-        self._brightness_before.clear(); self._brightness_timer.clear()
-        for tid in list(self._contrast_timer.values()):
-            GLib.source_remove(tid)
-        self._contrast_before.clear();   self._contrast_timer.clear()
-        for tid in list(self._scroll_timer.values()):
-            GLib.source_remove(tid)
-        self._scroll_before.clear();     self._scroll_timer.clear()
+        self._cancel_pending_timers()
 
         s = self._state
         s.bg_color         = loaded.bg_color
@@ -676,6 +693,42 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self._rebuild_panel()
         self._history.clear()
+        self._clean_fp = self._current_fingerprint()
+
+    # ── Neues Design / ungespeicherte Änderungen ──────────────────────────────
+
+    def _current_fingerprint(self) -> str:
+        return design_fingerprint(self._state, self._canvas.hub_mm)
+
+    def _has_unsaved_changes(self) -> bool:
+        return self._current_fingerprint() != self._clean_fp
+
+    def _reset_design(self) -> None:
+        """Zustand wie nach frischem Start. Drucker und Sprache bleiben."""
+        self._apply_loaded_design(DesignState(), HUB_LARGE_MM)
+        log.info("New design")
+
+    def _on_new_clicked(self, _btn) -> None:
+        if not self._has_unsaved_changes():
+            self._reset_design()
+            return
+        dlg = Gtk.AlertDialog()
+        dlg.set_message(_("Ungespeicherte Änderungen verwerfen?"))
+        dlg.set_detail(_("Das aktuelle Design wurde seit dem letzten Speichern geändert."))
+        dlg.set_buttons([_("Abbrechen"), _("Verwerfen"), _("Speichern …")])
+        dlg.set_cancel_button(0)
+        dlg.set_default_button(2)
+        dlg.choose(self, None, self._on_new_confirmed)
+
+    def _on_new_confirmed(self, dlg: Gtk.AlertDialog, result) -> None:
+        try:
+            idx = dlg.choose_finish(result)
+        except Exception:
+            return
+        if idx == 1:
+            self._reset_design()
+        elif idx == 2:
+            self._start_save(on_saved=self._reset_design)
 
     # ── Bild-Elemente Sektion ─────────────────────────────────────────────────
 

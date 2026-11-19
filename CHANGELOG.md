@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Neues Design
+- Knopf „Neues Design“ in der Kopfleiste (links vor „Öffnen“): setzt das Design
+  auf den Zustand eines frischen Starts zurück (Hintergrund, Bild- und
+  Text-Elemente, Hub-Größe, Undo/Redo-Verlauf). Druckerauswahl und Sprache
+  bleiben; laufende Regler-Timer werden verworfen
+- Ungespeicherte Änderungen werden erkannt (Fingerabdruck des Designs, auch für
+  Änderungen ohne Undo-Eintrag wie den Hintergrund-Zoom). Dann fragt die App
+  vorher nach: Abbrechen / Verwerfen / Speichern … (nach erfolgreichem
+  Speichern wird zurückgesetzt, bei Fehler oder Abbruch nicht)
+- Neue Texte in allen 33 Sprachen
+- Tests: `tests/test_new_design.py`; die GUI-Tests laufen mit echten Widgets
+  gegen einen privaten Broadway-Server (ohne `gtk4-broadwayd` übersprungen)
+
 #### Pillow im Flatpak
 - Manifest: neues Modul `python-pillow` (Pillow 13.0.0, manylinux-Wheel für
   CPython 3.14 / x86_64, sha256 gegen PyPI geprüft). Damit bettet auch die
