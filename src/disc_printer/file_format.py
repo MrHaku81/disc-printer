@@ -14,7 +14,6 @@ from .model import DesignState, TextElement, ImageElement
 
 DESIGN_JSON    = "design.json"
 FORMAT_VERSION = 2
-DEFAULT_DIR    = Path.home() / "Dokumente" / "DiscPrinter"
 
 
 def _rgb_to_hex(r: float, g: float, b: float) -> str:

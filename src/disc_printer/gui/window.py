@@ -16,6 +16,7 @@ from ..i18n import _
 from .. import i18n as _i18n
 from .. import settings as _settings
 from .. import file_format as _fmt
+from .. import paths as _paths
 from ..printer import DiscPrinter, lp_error_message
 from ..detection import detect_disc_printers
 from ..model import TextElement, ImageElement, DesignState
@@ -52,8 +53,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self._contrast_timer:    dict[int, int]             = {}
         self._scroll_before:     dict[int, tuple[float, float]] = {}
         self._scroll_timer:      dict[int, int]             = {}
-
-        _fmt.DEFAULT_DIR.mkdir(parents=True, exist_ok=True)
 
         self._build_ui()
         self._history.on_change = self._on_history_changed
@@ -574,7 +573,7 @@ class MainWindow(Gtk.ApplicationWindow):
         store.append(f_all)
         dlg.set_filters(store)
         dlg.set_default_filter(f_dp)
-        dlg.set_initial_folder(Gio.File.new_for_path(str(_fmt.DEFAULT_DIR)))
+        dlg.set_initial_folder(Gio.File.new_for_path(str(_paths.ensure_design_dir())))
         dlg.set_initial_name("design.discprint")
         dlg.save(self, None, self._on_save_dialog_done)
 
@@ -606,7 +605,7 @@ class MainWindow(Gtk.ApplicationWindow):
         store.append(f_all)
         dlg.set_filters(store)
         dlg.set_default_filter(f_dp)
-        dlg.set_initial_folder(Gio.File.new_for_path(str(_fmt.DEFAULT_DIR)))
+        dlg.set_initial_folder(Gio.File.new_for_path(str(_paths.open_dialog_folder())))
         dlg.open(self, None, self._on_open_dialog_done)
 
     def _on_open_dialog_done(self, dlg, result) -> None:

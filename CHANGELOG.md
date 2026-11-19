@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+#### Design-Ordner folgt dem System-Dokumente-Ordner (#2)
+- Neues Modul `paths.py`: Der Speicherort für `.discprint`-Designs wird über
+  `GLib.get_user_special_dir(DIRECTORY_DOCUMENTS)` ermittelt
+  (`<Dokumente>/DiscPrinter`) statt fest `~/Dokumente/DiscPrinter`; ohne
+  Dokumente-Ordner im System Rückfall auf `~/DiscPrinter`. Unabhängig von der
+  App-Sprache. Auf nicht-deutschen Systemen entsteht kein Ordner „Dokumente“ mehr
+- Abwärtskompatibel: Enthält `~/Dokumente/DiscPrinter` bereits Dateien und
+  existiert der neue Ordner noch nicht, wird weiter der alte verwendet; es wird
+  nichts verschoben oder gelöscht
+- `window.py`: Der Ordner wird nicht mehr beim Programmstart angelegt, sondern
+  erst beim Öffnen des Speichern-Dialogs; der Öffnen-Dialog startet im
+  Dokumente-Ordner (bzw. im Home), solange der Unterordner fehlt
+- `file_format.py`: Konstante `DEFAULT_DIR` entfernt
+- Tests: `tests/test_paths.py` (hermetisch, temporäres Home)
+
 
 ## [0.1.2] – 2026-11-13
 
