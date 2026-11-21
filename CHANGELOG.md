@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] – 2026-11-21
+
+Zuerst die Korrektur beim Druck, dann die Änderungen, die man beim Arbeiten mit
+der App bemerkt; danach Technisches.
+
+### Fixed
+
+#### Kein Druck mehr in die Disc-Mitte
+- **Alle Versionen bis 0.1.3 haben bis in die Mitte der Disc gedruckt.**
+  Hintergrundfarbe und Motive reichten durch den Hub, beschnitten wurde nur
+  außen bei 118 mm. Der Drucker spart die Mitte nicht selbst aus (geprüft am
+  Canon TS705a, treiberlos über IPP Everywhere: Tintenreste in der Mitte des
+  Disc-Fachs). Tinte konnte so auf dem Hub und durch das Loch auf dem Fach
+  landen
+- Ab 0.2.0 wird das Druckbild mit dem eingestellten Innen- und
+  Außendurchmesser maskiert; innen und außen bleibt es weiß, dort kommt keine
+  Tinte hin. Seitengröße (120 × 120 mm, 300 DPI) und lp-Optionen sind
+  unverändert
+- **Empfehlung:** Wer mit einer älteren Version Discs bedruckt hat, sollte das
+  Disc-Fach in der Mitte reinigen, damit getrocknete Tinte nicht auf neue
+  Discs übertragen wird
+- Die Vorschau zeigt genau, was gedruckt wird: Motive im Hub und außerhalb des
+  Außendurchmessers sind verdeckt, der nicht bedruckte Ring am Rand ist
+  schraffiert
+
 ### Added
 
 #### Einstellbarer Druckbereich (#3, Vorschlag von JPinTX)
@@ -14,32 +39,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   sind frei einstellbar, je mit Schieberegler (0,5-mm-Schritte) und Zahlenfeld
   (0,1 mm genau, in Zoll zwei Nachkommastellen). Innen 18–50 mm, außen
   70–120 mm. Damit lassen sich Rohlinge mit anderem Druckbeginn und
-  Mini-Discs (80 mm) einstellen
+  Mini-Discs (80 mm) einstellen; 80-mm-Discs sind noch nicht am Drucker
+  getestet
 - Zwei Voreinstellungen als Abkürzung: „Standard“ (innen 50, außen 118 mm) und
   „Vollflächig“ (innen 33, außen 118 mm). Hervorgehoben ist ein Knopf, wenn die
   aktuellen Werte seiner Voreinstellung entsprechen, auch nach
   Hand-Einstellung oder nach dem Laden einer Datei
-- Schalter mm | in: gilt für alle Maßangaben der App (auch die Tooltips der
-  Pfeilknöpfe), wird gespeichert, beim ersten Start mm. Das Dezimalzeichen
-  folgt der Sprache der Oberfläche; Eingaben mit Komma und Punkt werden beide
-  verstanden. Die Einheit gehört nicht zum Design (kein Undo-Schritt, keine
-  ungespeicherte Änderung)
 - Hinweis, keine Sperre: außen über 118 mm oder innen unter 21 mm erscheint
   „Außerhalb des üblichen Druckbereichs … Tinte kann auf dem Disc-Fach landen“
 - Jede Reglerbewegung, jede Feldeingabe und jeder Klick auf eine
-  Voreinstellung ist genau ein Undo-Schritt
+  Voreinstellung ist genau ein Undo-Schritt. Neues Design setzt auf „Standard“
+  zurück, ein Sprachwechsel behält die Werte
+
+#### Millimeter oder Zoll
+- Schalter mm | in im Druckbereich: gilt für alle Maßangaben der App (auch die
+  Tooltips der Pfeilknöpfe), wird gespeichert, beim ersten Start mm. Das
+  Dezimalzeichen folgt der Sprache der Oberfläche; Eingaben mit Komma und
+  Punkt werden beide verstanden. Die Einheit gehört nicht zum Design (kein
+  Undo-Schritt, keine ungespeicherte Änderung)
+- Was in der gewählten Einheit gleich angezeigt wird wie eine Voreinstellung
+  oder Schwelle, gilt auch als gleich: „4,65 in“ ist „Standard“ außen und
+  löst keinen Hinweis aus. Eine Zoll-Eingabe wird dazu auf das nächste
+  0,5-mm-Vielfache gelegt, wenn es denselben Zoll-Wert zeigt (4,65 in →
+  118,0 mm; 4,66 in bleibt 118,4 mm)
 
 ### Changed
-
-#### Verhaltensänderung beim Druck: die Disc-Mitte bleibt jetzt frei
-- **Bisher wurde der Hub im Druck nicht ausgespart**: Hintergrundfarbe und
-  Motive gingen bis in die Mitte, beschnitten wurde nur außen bei 118 mm. Jetzt
-  wird das Druckbild mit dem eingestellten Innen- und Außendurchmesser
-  maskiert; innen und außen bleibt es weiß (keine Tinte). Seitengröße
-  (120 × 120 mm, 300 DPI) und lp-Optionen sind unverändert
-- Die Vorschau zeigt genau das: Motive im Hub und außerhalb des
-  Außendurchmessers sind verdeckt, der nicht bedruckte Ring am Rand ist
-  schraffiert
 
 #### Vorschau und Seitenleiste
 - Die Maßtexte auf der Vorschau (Ø 120 mm, Hub-Maß, „bedruckbar“) sind
@@ -74,9 +98,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Übersetzungen: 16 neue Texte in allen 33 Sprachen, 11 nicht mehr gebrauchte
   entfernt (Maßtexte, Hub-Größe, „5 mm links“ usw.)
 - Tests: GUI-Szenarien `print_area` und `area_lang` (Voreinstellungen und
-  Hervorhebung, Regler und Felder in mm und Zoll, Undo, Speichern/Laden alt und
-  neu, Sprachwechsel, Druckmaske über den echten Druckweg, Vorschau-Maske); der
-  Undo-Prüftest deckt Voreinstellung, Regler und Felder ab
+  Hervorhebung, Regler und Felder in mm und Zoll, gleich angezeigte Werte,
+  Undo, Speichern/Laden alt und neu, Sprachwechsel, Druckmaske über den echten
+  Druckweg, Vorschau-Maske); der Undo-Prüftest deckt Voreinstellung, Regler
+  und Felder ab
 
 ## [0.1.3] – 2026-11-19
 
@@ -433,7 +458,8 @@ Technisches für Installation, Fehlerberichte und Entwicklung.
   (TypeError: 'int' object is not callable) wenn keine Disc-Drucker gefunden
 
 
-[Unreleased]: https://github.com/MrHaku81/disc-printer/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/MrHaku81/disc-printer/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/MrHaku81/disc-printer/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/MrHaku81/disc-printer/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/MrHaku81/disc-printer/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/MrHaku81/disc-printer/compare/v0.1.0...v0.1.1

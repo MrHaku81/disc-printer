@@ -3,9 +3,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: disc-printer 0.1.3\n"
+"Project-Id-Version: disc-printer 0.2.0\n"
 "Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
-"POT-Creation-Date: 2026-11-21 12:55+0100\n"
+"POT-Creation-Date: 2026-11-21 13:45+0100\n"
 "PO-Revision-Date: 2026-04-24 14:00+0000\n"
 "Last-Translator: Claude AI\n"
 "Language-Team: Norwegian\n"
@@ -15,12 +15,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:745
-#: src/disc_printer/gui/window.py:2139
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:753
+#: src/disc_printer/gui/window.py:2147
 msgid "Text bearbeiten"
 msgstr "Rediger tekst"
 
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:2085
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:2093
 msgid "Text hinzufügen"
 msgstr "Legg til tekst"
 
@@ -40,16 +40,16 @@ msgstr "Skrifttype:"
 msgid "Textfarbe"
 msgstr "Tekstfarge"
 
-#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:565
+#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:573
 msgid "Farbe:"
 msgstr "Farge:"
 
-#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:1032
-#: src/disc_printer/gui/window.py:2243
+#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:1040
+#: src/disc_printer/gui/window.py:2251
 msgid "Abbrechen"
 msgstr "Avbryt"
 
-#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:2321
+#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:2329
 msgid "OK"
 msgstr "OK"
 
@@ -69,11 +69,11 @@ msgstr "Åpne design …"
 msgid "Design speichern …"
 msgstr "Lagre design …"
 
-#: src/disc_printer/gui/window.py:120 src/disc_printer/gui/window.py:2337
+#: src/disc_printer/gui/window.py:120 src/disc_printer/gui/window.py:2345
 msgid "Rückgängig"
 msgstr "Angre"
 
-#: src/disc_printer/gui/window.py:126 src/disc_printer/gui/window.py:2340
+#: src/disc_printer/gui/window.py:126 src/disc_printer/gui/window.py:2348
 msgid "Wiederherstellen"
 msgstr "Gjør om"
 
@@ -97,7 +97,7 @@ msgstr "Skriver"
 msgid "Drucker:"
 msgstr "Skriver:"
 
-#: src/disc_printer/gui/window.py:272 src/disc_printer/gui/window.py:768
+#: src/disc_printer/gui/window.py:272 src/disc_printer/gui/window.py:776
 msgid "Erkenne Drucker …"
 msgstr "Oppdager skriver …"
 
@@ -135,7 +135,7 @@ msgstr "mm"
 msgid "in"
 msgstr "in"
 
-#: src/disc_printer/gui/window.py:334 src/disc_printer/gui/window.py:527
+#: src/disc_printer/gui/window.py:334 src/disc_printer/gui/window.py:535
 msgid "Druckbereich"
 msgstr "Utskriftsområde"
 
@@ -153,12 +153,12 @@ msgstr "Indre:"
 
 #. TRANSLATORS: Tooltip of a print area preset, e.g.
 #. "Inner 50 mm, outer 118 mm"
-#: src/disc_printer/gui/window.py:425
+#: src/disc_printer/gui/window.py:433
 #, python-format
 msgid "Innen %(inner)s, außen %(outer)s"
 msgstr "Indre %(inner)s, ytre %(outer)s"
 
-#: src/disc_printer/gui/window.py:435
+#: src/disc_printer/gui/window.py:443
 #, python-format
 msgid ""
 "Außerhalb des üblichen Druckbereichs (innen ab %(inner)s, außen bis "
@@ -169,155 +169,155 @@ msgstr ""
 
 #. TRANSLATORS: Tooltips of the arrow buttons that move the background
 #. image; %(length)s is the step, e.g. "5 mm" or "0.20 in".
-#: src/disc_printer/gui/window.py:537
+#: src/disc_printer/gui/window.py:545
 #, python-format
 msgid "%(length)s links"
 msgstr "%(length)s venstre"
 
-#: src/disc_printer/gui/window.py:538
+#: src/disc_printer/gui/window.py:546
 #, python-format
 msgid "%(length)s rechts"
 msgstr "%(length)s høyre"
 
-#: src/disc_printer/gui/window.py:539
+#: src/disc_printer/gui/window.py:547
 #, python-format
 msgid "%(length)s oben"
 msgstr "%(length)s opp"
 
-#: src/disc_printer/gui/window.py:540
+#: src/disc_printer/gui/window.py:548
 #, python-format
 msgid "%(length)s unten"
 msgstr "%(length)s ned"
 
-#: src/disc_printer/gui/window.py:560 src/disc_printer/gui/window.py:1920
-#: src/disc_printer/gui/window.py:2019 src/disc_printer/gui/window.py:2034
+#: src/disc_printer/gui/window.py:568 src/disc_printer/gui/window.py:1928
+#: src/disc_printer/gui/window.py:2027 src/disc_printer/gui/window.py:2042
 msgid "Hintergrund"
 msgstr "Bakgrunn"
 
-#: src/disc_printer/gui/window.py:566 src/disc_printer/gui/window.py:1756
+#: src/disc_printer/gui/window.py:574 src/disc_printer/gui/window.py:1764
 msgid "Hintergrundfarbe"
 msgstr "Bakgrunnsfarge"
 
-#: src/disc_printer/gui/window.py:574
+#: src/disc_printer/gui/window.py:582
 msgid "Zurücksetzen auf Weiß"
 msgstr "Tilbakestill til hvit"
 
-#: src/disc_printer/gui/window.py:581
+#: src/disc_printer/gui/window.py:589
 msgid "Bild:"
 msgstr "Bilde:"
 
-#: src/disc_printer/gui/window.py:582
+#: src/disc_printer/gui/window.py:590
 msgid "Laden …"
 msgstr "Last inn …"
 
-#: src/disc_printer/gui/window.py:590 src/disc_printer/gui/window.py:996
-#: src/disc_printer/gui/window.py:1827 src/disc_printer/gui/window.py:1856
-#: src/disc_printer/gui/window.py:1879
+#: src/disc_printer/gui/window.py:598 src/disc_printer/gui/window.py:1004
+#: src/disc_printer/gui/window.py:1835 src/disc_printer/gui/window.py:1864
+#: src/disc_printer/gui/window.py:1887
 msgid "(kein Bild)"
 msgstr "(intet bilde)"
 
-#: src/disc_printer/gui/window.py:595 src/disc_printer/gui/window.py:1886
+#: src/disc_printer/gui/window.py:603 src/disc_printer/gui/window.py:1894
 msgid "Hintergrundbild entfernen"
 msgstr "Fjern bakgrunnsbilde"
 
-#: src/disc_printer/gui/window.py:603
+#: src/disc_printer/gui/window.py:611
 msgid "Hintergrundbild: nur Position &amp; Zoom, kein Drehen/Spiegeln."
 msgstr "Bakgrunnsbilde: bare posisjon &amp; zoom, ingen rotering/speiling."
 
 #. TRANSLATORS: Section title; "&" must stay as "&amp;" in Pango markup
-#: src/disc_printer/gui/window.py:615
+#: src/disc_printer/gui/window.py:623
 msgid "Bild-Position & Zoom"
 msgstr "Bildeposisjon & zoom"
 
-#: src/disc_printer/gui/window.py:620
+#: src/disc_printer/gui/window.py:628
 msgid "Zoom:"
 msgstr "Zoom:"
 
-#: src/disc_printer/gui/window.py:648
+#: src/disc_printer/gui/window.py:656
 msgid "⌂ Zentrieren"
 msgstr "⌂ Sentrer"
 
-#: src/disc_printer/gui/window.py:649 src/disc_printer/gui/window.py:2034
+#: src/disc_printer/gui/window.py:657 src/disc_printer/gui/window.py:2042
 msgid "Zurücksetzen"
 msgstr "Tilbakestill"
 
-#: src/disc_printer/gui/window.py:657
+#: src/disc_printer/gui/window.py:665
 msgid "Bild ziehen = verschieben · Mausrad = Zoom"
 msgstr "Dra = flytt · Musehjul = zoom"
 
-#: src/disc_printer/gui/window.py:671
+#: src/disc_printer/gui/window.py:679
 msgid "Text-Elemente"
 msgstr "Tekstelementer"
 
-#: src/disc_printer/gui/window.py:674 src/disc_printer/gui/window.py:1070
+#: src/disc_printer/gui/window.py:682 src/disc_printer/gui/window.py:1078
 msgid "+ Hinzufügen"
 msgstr "+ Legg til"
 
-#: src/disc_printer/gui/window.py:675
+#: src/disc_printer/gui/window.py:683
 msgid "Neues Text-Element hinzufügen"
 msgstr "Legg til nytt tekstelement"
 
-#: src/disc_printer/gui/window.py:684
+#: src/disc_printer/gui/window.py:692
 msgid "Keine Text-Elemente"
 msgstr "Ingen tekstelementer"
 
-#: src/disc_printer/gui/window.py:695
+#: src/disc_printer/gui/window.py:703
 msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
 msgstr "Klikk = velg · Dobbeltklikk = rediger · Dra = flytt"
 
-#: src/disc_printer/gui/window.py:722 src/disc_printer/gui/window.py:1139
+#: src/disc_printer/gui/window.py:730 src/disc_printer/gui/window.py:1147
 msgid "Sichtbarkeit umschalten"
 msgstr "Vis / skjul"
 
-#: src/disc_printer/gui/window.py:731 src/disc_printer/gui/window.py:1148
+#: src/disc_printer/gui/window.py:739 src/disc_printer/gui/window.py:1156
 msgid "Sperren / Entsperren"
 msgstr "Lås / lås opp"
 
-#: src/disc_printer/gui/window.py:739 src/disc_printer/gui/window.py:1156
+#: src/disc_printer/gui/window.py:747 src/disc_printer/gui/window.py:1164
 msgid "Element duplizieren"
 msgstr "Dupliser element"
 
-#: src/disc_printer/gui/window.py:752 src/disc_printer/gui/window.py:1174
+#: src/disc_printer/gui/window.py:760 src/disc_printer/gui/window.py:1182
 msgid "Element löschen"
 msgstr "Slett element"
 
-#: src/disc_printer/gui/window.py:797
+#: src/disc_printer/gui/window.py:805
 msgid "(Kein Disc-Drucker gefunden)"
 msgstr "(Ingen disc-skriver funnet)"
 
-#: src/disc_printer/gui/window.py:800
+#: src/disc_printer/gui/window.py:808
 msgid "Kein Disc-fähiger Drucker erkannt."
 msgstr "Ingen disc-kompatibel skriver oppdaget."
 
-#: src/disc_printer/gui/window.py:804
+#: src/disc_printer/gui/window.py:812
 msgid "Kein Disc-fähiger Drucker gefunden"
 msgstr "Ingen disc-kompatibel skriver funnet"
 
-#: src/disc_printer/gui/window.py:843
+#: src/disc_printer/gui/window.py:851
 msgid "Prüfe Status …"
 msgstr "Kontrollerer status …"
 
 #. TRANSLATORS: Placeholder for the file name in the print command shown
 #. below the printer selection ("lp -d PRINTER ... <file>"). One short
 #. lowercase word, as in command-line help texts.
-#: src/disc_printer/gui/window.py:851
+#: src/disc_printer/gui/window.py:859
 msgid "datei"
 msgstr "fil"
 
-#: src/disc_printer/gui/window.py:864
+#: src/disc_printer/gui/window.py:872
 msgid "Design speichern"
 msgstr "Lagre design"
 
-#: src/disc_printer/gui/window.py:866 src/disc_printer/gui/window.py:905
+#: src/disc_printer/gui/window.py:874 src/disc_printer/gui/window.py:913
 msgid "DiscPrint-Design (*.discprint)"
 msgstr "DiscPrint-design (*.discprint)"
 
-#: src/disc_printer/gui/window.py:869 src/disc_printer/gui/window.py:908
-#: src/disc_printer/gui/window.py:1248 src/disc_printer/gui/window.py:1775
+#: src/disc_printer/gui/window.py:877 src/disc_printer/gui/window.py:916
+#: src/disc_printer/gui/window.py:1256 src/disc_printer/gui/window.py:1783
 msgid "Alle Dateien"
 msgstr "Alle filer"
 
-#: src/disc_printer/gui/window.py:893
+#: src/disc_printer/gui/window.py:901
 #, python-format
 msgid ""
 "Design konnte nicht gespeichert werden:\n"
@@ -326,11 +326,11 @@ msgstr ""
 "Designet kunne ikke lagres:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:903
+#: src/disc_printer/gui/window.py:911
 msgid "Design öffnen"
 msgstr "Åpne design"
 
-#: src/disc_printer/gui/window.py:928
+#: src/disc_printer/gui/window.py:936
 #, python-format
 msgid ""
 "Design konnte nicht geöffnet werden:\n"
@@ -339,81 +339,81 @@ msgstr ""
 "Designet kunne ikke åpnes:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:992 src/disc_printer/gui/window.py:1820
-#: src/disc_printer/gui/window.py:1869
+#: src/disc_printer/gui/window.py:1000 src/disc_printer/gui/window.py:1828
+#: src/disc_printer/gui/window.py:1877
 msgid "(aus Datei geladen)"
 msgstr "(lastet inn fra fil)"
 
-#: src/disc_printer/gui/window.py:1030
+#: src/disc_printer/gui/window.py:1038
 msgid "Ungespeicherte Änderungen verwerfen?"
 msgstr "Forkaste endringer som ikke er lagret?"
 
-#: src/disc_printer/gui/window.py:1031
+#: src/disc_printer/gui/window.py:1039
 msgid "Das aktuelle Design wurde seit dem letzten Speichern geändert."
 msgstr "Gjeldende design er endret siden det sist ble lagret."
 
-#: src/disc_printer/gui/window.py:1032
+#: src/disc_printer/gui/window.py:1040
 msgid "Speichern …"
 msgstr "Lagre …"
 
-#: src/disc_printer/gui/window.py:1032
+#: src/disc_printer/gui/window.py:1040
 msgid "Verwerfen"
 msgstr "Forkast"
 
-#: src/disc_printer/gui/window.py:1067
+#: src/disc_printer/gui/window.py:1075
 msgid "Bild-Elemente"
 msgstr "Bildeelementer"
 
-#: src/disc_printer/gui/window.py:1071
+#: src/disc_printer/gui/window.py:1079
 msgid "Bild-Element hinzufügen"
 msgstr "Legg til bildeelement"
 
-#: src/disc_printer/gui/window.py:1078
+#: src/disc_printer/gui/window.py:1086
 msgid "H spiegeln"
 msgstr "Speil H"
 
-#: src/disc_printer/gui/window.py:1082
+#: src/disc_printer/gui/window.py:1090
 msgid "V spiegeln"
 msgstr "Speil V"
 
-#: src/disc_printer/gui/window.py:1092
+#: src/disc_printer/gui/window.py:1100
 msgid "Keine Bild-Elemente"
 msgstr "Ingen bildeelementer"
 
-#: src/disc_printer/gui/window.py:1162
+#: src/disc_printer/gui/window.py:1170
 msgid "Ebene nach oben"
 msgstr "Flytt lag opp"
 
-#: src/disc_printer/gui/window.py:1168
+#: src/disc_printer/gui/window.py:1176
 msgid "Ebene nach unten"
 msgstr "Flytt lag ned"
 
-#: src/disc_printer/gui/window.py:1193
+#: src/disc_printer/gui/window.py:1201
 msgid "Zurücksetzen auf 100 %"
 msgstr "Tilbakestill til 100 %"
 
-#: src/disc_printer/gui/window.py:1201
+#: src/disc_printer/gui/window.py:1209
 msgid "Opazität:"
 msgstr "Opasitet:"
 
-#: src/disc_printer/gui/window.py:1214
+#: src/disc_printer/gui/window.py:1222
 msgid "Helligkeit:"
 msgstr "Lysstyrke:"
 
-#: src/disc_printer/gui/window.py:1220
+#: src/disc_printer/gui/window.py:1228
 msgid "Kontrast:"
 msgstr "Kontrast:"
 
-#: src/disc_printer/gui/window.py:1241 src/disc_printer/gui/window.py:1296
+#: src/disc_printer/gui/window.py:1249 src/disc_printer/gui/window.py:1304
 msgid "Bild hinzufügen"
 msgstr "Legg til bilde"
 
 #. TRANSLATORS: File filter label in the image chooser dialog
-#: src/disc_printer/gui/window.py:1243 src/disc_printer/gui/window.py:1770
+#: src/disc_printer/gui/window.py:1251 src/disc_printer/gui/window.py:1778
 msgid "Bilder (PNG, JPG, WEBP …)"
 msgstr "Bilder (PNG, JPG, WEBP …)"
 
-#: src/disc_printer/gui/window.py:1299 src/disc_printer/gui/window.py:1847
+#: src/disc_printer/gui/window.py:1307 src/disc_printer/gui/window.py:1855
 #, python-format
 msgid ""
 "Bild konnte nicht geladen werden:\n"
@@ -422,117 +422,117 @@ msgstr ""
 "Bildet kunne ikke lastes inn:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:1336
+#: src/disc_printer/gui/window.py:1344
 msgid "Opazität"
 msgstr "Opasitet"
 
-#: src/disc_printer/gui/window.py:1378
+#: src/disc_printer/gui/window.py:1386
 msgid "Helligkeit"
 msgstr "Lysstyrke"
 
-#: src/disc_printer/gui/window.py:1420
+#: src/disc_printer/gui/window.py:1428
 msgid "Kontrast"
 msgstr "Kontrast"
 
-#: src/disc_printer/gui/window.py:1453
+#: src/disc_printer/gui/window.py:1461
 msgid "Helligkeit zurücksetzen"
 msgstr "Tilbakestill lysstyrke"
 
-#: src/disc_printer/gui/window.py:1482
+#: src/disc_printer/gui/window.py:1490
 msgid "Kontrast zurücksetzen"
 msgstr "Tilbakestill kontrast"
 
-#: src/disc_printer/gui/window.py:1499
+#: src/disc_printer/gui/window.py:1507
 msgid "Ebene"
 msgstr "Lag"
 
-#: src/disc_printer/gui/window.py:1527
+#: src/disc_printer/gui/window.py:1535
 msgid "Bild löschen"
 msgstr "Slett bilde"
 
-#: src/disc_printer/gui/window.py:1556
+#: src/disc_printer/gui/window.py:1564
 msgid "H-Spiegeln"
 msgstr "Speil vannrett"
 
-#: src/disc_printer/gui/window.py:1570
+#: src/disc_printer/gui/window.py:1578
 msgid "V-Spiegeln"
 msgstr "Speil loddrett"
 
-#: src/disc_printer/gui/window.py:1589 src/disc_printer/gui/window.py:1668
+#: src/disc_printer/gui/window.py:1597 src/disc_printer/gui/window.py:1676
 msgid "Sichtbarkeit"
 msgstr "Synlighet"
 
-#: src/disc_printer/gui/window.py:1608 src/disc_printer/gui/window.py:1687
+#: src/disc_printer/gui/window.py:1616 src/disc_printer/gui/window.py:1695
 msgid "Sperren"
 msgstr "Lås"
 
-#: src/disc_printer/gui/window.py:1651
+#: src/disc_printer/gui/window.py:1659
 msgid "Bild duplizieren"
 msgstr "Dupliser bilde"
 
-#: src/disc_printer/gui/window.py:1726
+#: src/disc_printer/gui/window.py:1734
 msgid "Text duplizieren"
 msgstr "Dupliser tekst"
 
-#: src/disc_printer/gui/window.py:1767
+#: src/disc_printer/gui/window.py:1775
 msgid "Hintergrundbild wählen"
 msgstr "Velg bakgrunnsbilde"
 
-#: src/disc_printer/gui/window.py:1844
+#: src/disc_printer/gui/window.py:1852
 msgid "Hintergrundbild laden"
 msgstr "Last inn bakgrunnsbilde"
 
-#: src/disc_printer/gui/window.py:1920 src/disc_printer/gui/window.py:2452
+#: src/disc_printer/gui/window.py:1928 src/disc_printer/gui/window.py:2460
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/disc_printer/gui/window.py:2019 src/disc_printer/gui/window.py:2395
-#: src/disc_printer/gui/window.py:2420
+#: src/disc_printer/gui/window.py:2027 src/disc_printer/gui/window.py:2403
+#: src/disc_printer/gui/window.py:2428
 msgid "Bewegen"
 msgstr "Flytt"
 
-#: src/disc_printer/gui/window.py:2167
+#: src/disc_printer/gui/window.py:2175
 msgid "Text löschen"
 msgstr "Slett tekst"
 
-#: src/disc_printer/gui/window.py:2185
+#: src/disc_printer/gui/window.py:2193
 msgid "Bereit"
 msgstr "Klar"
 
-#: src/disc_printer/gui/window.py:2188
+#: src/disc_printer/gui/window.py:2196
 msgid "Deaktiviert / gestoppt"
 msgstr "Deaktivert / stoppet"
 
-#: src/disc_printer/gui/window.py:2191
+#: src/disc_printer/gui/window.py:2199
 msgid "Status unbekannt"
 msgstr "Ukjent status"
 
-#: src/disc_printer/gui/window.py:2193
+#: src/disc_printer/gui/window.py:2201
 msgid "Nicht erreichbar (Timeout)"
 msgstr "Ikke tilgjengelig (tidsavbrudd)"
 
-#: src/disc_printer/gui/window.py:2196
+#: src/disc_printer/gui/window.py:2204
 #, python-format
 msgid "Fehler: %s"
 msgstr "Feil: %s"
 
-#: src/disc_printer/gui/window.py:2208
+#: src/disc_printer/gui/window.py:2216
 msgid "Im Netzwerk verfügbar (treiberlos)"
 msgstr "Tilgjengelig i nettverket (driverløs)"
 
-#: src/disc_printer/gui/window.py:2213
+#: src/disc_printer/gui/window.py:2221
 msgid "Nicht mehr im Netzwerk gefunden (treiberlos)"
 msgstr "Ikke lenger funnet i nettverket (driverløs)"
 
-#: src/disc_printer/gui/window.py:2230
+#: src/disc_printer/gui/window.py:2238
 msgid "Kein Drucker ausgewählt."
 msgstr "Ingen skriver valgt."
 
-#: src/disc_printer/gui/window.py:2235
+#: src/disc_printer/gui/window.py:2243
 msgid "Disc drucken?"
 msgstr "Skrive ut disc?"
 
-#: src/disc_printer/gui/window.py:2239
+#: src/disc_printer/gui/window.py:2247
 #, python-format
 msgid ""
 "Drucker:    %(name)s\n"
@@ -545,11 +545,11 @@ msgstr ""
 "\n"
 "%(cmd)s"
 
-#: src/disc_printer/gui/window.py:2243
+#: src/disc_printer/gui/window.py:2251
 msgid "Drucken"
 msgstr "Skriv ut"
 
-#: src/disc_printer/gui/window.py:2268
+#: src/disc_printer/gui/window.py:2276
 #, python-format
 msgid ""
 "Render-Fehler:\n"
@@ -558,11 +558,11 @@ msgstr ""
 "Gjengivelsesfeil:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:2304
+#: src/disc_printer/gui/window.py:2312
 msgid "Timeout: Drucker antwortet nicht (>30 s)."
 msgstr "Tidsavbrudd: skriveren svarer ikke (>30 s)."
 
-#: src/disc_printer/gui/window.py:2307 src/disc_printer/printer.py:45
+#: src/disc_printer/gui/window.py:2315 src/disc_printer/printer.py:45
 #, python-format
 msgid ""
 "Druckfehler:\n"
@@ -571,19 +571,19 @@ msgstr ""
 "Utskriftsfeil:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:2317
+#: src/disc_printer/gui/window.py:2325
 msgid "Druckauftrag gesendet"
 msgstr "Utskriftsjobb sendt"
 
-#: src/disc_printer/gui/window.py:2319
+#: src/disc_printer/gui/window.py:2327
 msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
 msgstr "Utskriftsjobb lagt i kø."
 
-#: src/disc_printer/gui/window.py:2397
+#: src/disc_printer/gui/window.py:2405
 msgid "Drehen"
 msgstr "Roter"
 
-#: src/disc_printer/gui/window.py:2399
+#: src/disc_printer/gui/window.py:2407
 msgid "Skalieren"
 msgstr "Skaler"
 
