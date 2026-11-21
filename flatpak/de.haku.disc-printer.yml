@@ -116,6 +116,13 @@ modules:
           /app/share/metainfo/de.haku.disc-printer.metainfo.xml
       - install -Dm644 de.haku.disc-printer.svg
           /app/share/icons/hicolor/scalable/apps/de.haku.disc-printer.svg
+      # Simplified drawing for small sizes; the SVG goes unchanged into the
+      # fixed-size hicolor directories (GTK picks it for 16-32 px, 2x too)
+      - |
+        for s in 16 22 24 32; do
+          install -Dm644 de.haku.disc-printer-klein.svg \
+            /app/share/icons/hicolor/${s}x${s}/apps/de.haku.disc-printer.svg
+        done
     sources:
       - type: archive
         url: https://github.com/MrHaku81/disc-printer/archive/refs/tags/v0.2.0.tar.gz
@@ -127,3 +134,5 @@ modules:
         path: de.haku.disc-printer.metainfo.xml
       - type: file
         path: de.haku.disc-printer.svg
+      - type: file
+        path: de.haku.disc-printer-klein.svg

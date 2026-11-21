@@ -62,6 +62,28 @@ Flatpak-Bundle, AUR 0.1.3-1).
 8. Aufräumen: Bauordner, Test-Installation, `/var/tmp`-Ablage. Die Runtime im
    Konto bleibt für den nächsten Bau.
 
+## AUR-Paket hängt am Ordner `flatpak/`
+
+Seit dem 2026-11-21 installiert das AUR-Paket Menüeintrag, Symbol und
+Metainfo aus dem Ordner `flatpak/` des Quellarchivs:
+`flatpak/de.haku.disc-printer.desktop`, `flatpak/de.haku.disc-printer.svg`,
+`flatpak/de.haku.disc-printer.metainfo.xml`. **Diese Dateien nicht umbenennen
+oder verschieben**, sonst bricht der AUR-Bau. Wer es doch tut, muss das
+PKGBUILD im selben Zug anpassen.
+
+Symbolname, App-ID und Menüeintrag hängen zusammen (geprüft durch
+`tests/test_desktop_integration.py`): App-ID `de.haku.disc-printer` =
+Wayland-`app_id` = Name der `.desktop`-Datei = `Icon=` = Symboldateiname.
+`StartupWMClass=disc-printer` passt zum X11-`WM_CLASS`-Namen, den GTK aus dem
+Programmnamen `disc-printer` (Startskript) bildet. Das Fenster setzt keinen
+eigenen Symbolnamen (siehe `MainWindow.__init__`).
+
+Neu auf `feat/new-icon`: `flatpak/de.haku.disc-printer-klein.svg` (vereinfachte
+Fassung für 16, 22, 24, 32 px). Das Flatpak installiert sie unverändert nach
+`hicolor/<n>x<n>/apps/de.haku.disc-printer.svg`. Das AUR-Paket braucht dafür
+eigene Zeilen im PKGBUILD (siehe Bericht zum Zweig); ohne sie fehlt nur die
+kleine Fassung, GTK skaliert dann die große.
+
 ## Offene Punkte
 
 - **Mini-Discs (80 mm):** einstellbar (außen 70–80 mm), aber nicht am Drucker

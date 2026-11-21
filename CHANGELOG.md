@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Neues Programmsymbol:** eine Disc in Schrägansicht mit Klecksen in
+  Magenta, Cyan und Gelb, darüber fällt ein schwarzer Tropfen. Entworfen von
+  Klaus mit Claude, Lizenz MIT wie das Projekt. Für 16, 22, 24 und 32 Pixel
+  gibt es eine vereinfachte Fassung (`de.haku.disc-printer-klein.svg`), die
+  unverändert in die festen hicolor-Größenordner installiert wird
+
+### Fixed
+- **Rotes Platzhaltersymbol in der Titelleiste:** Das Fenster fragte nach dem
+  Symbol `disc-printer`, installiert ist es aber als `de.haku.disc-printer`.
+  GTK fand nichts und zeigte `image-missing`. Das Fenster setzt jetzt keinen
+  eigenen Namen mehr; GTK nimmt die App-ID, sobald das Symbol installiert ist
+
 ## [0.2.0] – 2026-11-21
 
 Zuerst die Korrektur beim Druck, dann die Änderungen, die man beim Arbeiten mit
