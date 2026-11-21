@@ -36,7 +36,10 @@ class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, app: Gtk.Application):
         super().__init__(application=app, title="Disc Printer")
         self.set_default_size(900, 720)
-        self.set_icon_name("disc-printer")
+        # Kein set_icon_name(): Gtk.Application setzt den Standard-Symbolnamen
+        # selbst auf die App-ID (de.haku.disc-printer), aber nur, wenn das
+        # Symbol installiert ist. Ein eigener Name überschreibt das; bis 0.2.0
+        # stand hier "disc-printer", das es nicht gibt (rotes image-missing).
 
         self._printers:          list[DiscPrinter] = []
         self._selected:          DiscPrinter | None = None
