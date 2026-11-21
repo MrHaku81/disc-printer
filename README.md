@@ -70,7 +70,7 @@ Until a CUPS release with the fix is available, set the printer up as a permanen
 - Inner and outer print diameter adjustable below the preview, each with a slider
   (0.5 mm steps) and a number field (0.1 mm; inches with two decimals): inner
   18–50 mm, outer 70–120 mm — for blanks with a different print start and for
-  80 mm mini discs
+  80 mm mini discs (not yet tested on a printer — feedback welcome)
 - Presets as shortcuts: **Standard** (inner 50, outer 118 mm) and **Full face**
   (inner 33, outer 118 mm, hub-printable blanks); the matching preset is highlighted
 - mm | in switch for all measurements in the app, remembered between starts; the
@@ -79,6 +79,13 @@ Until a CUPS release with the fix is available, set the printer up as a permanen
   (outer above 118 mm, inner below 21 mm): ink may end up on the disc tray
 - The print is masked to the print area: the hub and everything outside the outer
   diameter stay white (no ink); the preview hides the same areas
+
+> **Versions up to 0.1.3 printed into the centre of the disc.** The background and
+> artwork reached through the hub; only the outer edge was trimmed at 118 mm. The
+> printer does not leave the centre out by itself (confirmed on a Canon TS705a: ink
+> residue in the middle of the disc tray), so ink could end up on the hub and, through
+> the centre hole, on the tray. 0.2.0 fixes this. If you printed discs with an earlier
+> version, clean the centre of the disc tray so dried ink is not transferred to new discs.
 
 ### Per-element controls
 | Control | Images | Text |
@@ -119,6 +126,14 @@ Until a CUPS release with the fix is available, set the printer up as a permanen
 Danish, Dutch, English, Finnish, French, German, Greek, Hebrew, Hindi, Hungarian,
 Indonesian, Italian, Japanese, Korean, Norwegian Bokmål, Persian, Polish, Portuguese,
 Romanian, Russian, Serbian, Slovak, Spanish, Swedish, Thai, Turkish, Ukrainian, Vietnamese
+
+#### Translation fixes welcome
+German is the source language; the other 33 translations were created by machine and
+may contain mistakes or clumsy wording. Corrections are very welcome. The translations
+live in `src/disc_printer/locale/<language>/LC_MESSAGES/disc_printer.po` (template:
+`src/disc_printer/locale/disc_printer.pot`). You do not need to edit files or send a pull
+request — an [issue](https://github.com/MrHaku81/disc-printer/issues) naming the language,
+the wrong text and your suggestion is enough.
 
 ## Requirements
 
