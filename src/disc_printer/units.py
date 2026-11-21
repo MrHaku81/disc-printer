@@ -30,6 +30,16 @@ def decimal_sep(lang: str) -> str:
     return "," if lang in _COMMA_LANGS else "."
 
 
+def shown_value(mm: float, unit: str) -> float:
+    """Wert so, wie ihn die Anzeige in ``unit`` zeigt (gerundet wie format_number).
+
+    Hinweis und Hervorhebung der Voreinstellungen vergleichen diese Werte: was
+    in der gewählten Einheit gleich angezeigt wird, gilt als gleich.
+    """
+    value = mm if unit == "mm" else mm_to_inch(mm)
+    return float(f"{value:.{_DIGITS[unit]}f}")
+
+
 def format_number(mm: float, unit: str, lang: str, trim: bool = False) -> str:
     """Wert in der gewählten Einheit, ohne Einheitszeichen.
 
@@ -43,8 +53,13 @@ def format_number(mm: float, unit: str, lang: str, trim: bool = False) -> str:
     return text.replace(".", decimal_sep(lang))
 
 
-def parse_number(text: str, unit: str) -> float | None:
+def parse_number(text: str, unit: str, grid: float = 0.5) -> float | None:
     """Eingabe in der gewählten Einheit lesen; Ergebnis in mm (0,1 mm genau).
+
+    Zoll: Liegt ein Vielfaches von ``grid`` mm (Raster der Regler) auf
+    demselben angezeigten Zoll-Wert, gilt dieses („4,65 in“ → 118,0 mm statt
+    118,1 mm); sonst der exakte Wert auf 0,1 mm. So entspricht eine Eingabe,
+    die wie eine Voreinstellung oder Schwelle aussieht, ihr auch in mm.
 
     Komma und Punkt (auch das arabische Dezimalzeichen) gelten beide als
     Dezimalzeichen; Leerzeichen und ein angehängtes „mm“/„in“/„"“ werden
@@ -64,7 +79,12 @@ def parse_number(text: str, unit: str) -> float | None:
         return None
     if value != value or value in (float("inf"), float("-inf")):
         return None
-    mm = value if unit == "mm" else value * MM_PER_INCH
+    if unit == "mm":
+        return round(value, 1)
+    mm = value * MM_PER_INCH
+    on_grid = snap(mm, grid)
+    if shown_value(on_grid, "in") == shown_value(mm, "in"):
+        return on_grid
     return round(mm, 1)
 
 

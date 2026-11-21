@@ -27,7 +27,7 @@ from ..printer import DiscPrinter, lp_error_message
 from ..detection import detect_disc_printers
 from ..model import TextElement, ImageElement, DesignState, design_fingerprint
 from ..image_utils import pixbuf_to_cairo, write_print_png
-from ..units import UNITS, clamp, format_number, parse_number, snap
+from ..units import UNITS, clamp, format_number, parse_number, shown_value, snap
 from .canvas import DiscCanvas
 from .dialogs import TextEditDialog
 
@@ -397,14 +397,22 @@ class MainWindow(Gtk.ApplicationWindow):
         box.append(self._area_hint)
         return frame              # Werte setzt _build_ui über _sync_area_widgets
 
+    # Hinweis und Hervorhebung vergleichen die angezeigten Werte: was in der
+    # gewählten Einheit gleich aussieht wie Schwelle oder Voreinstellung, gilt
+    # als gleich (z. B. 118,1 mm = „4,65 in“ in Zoll).
+    def _shown(self, mm: float) -> float:
+        return shown_value(mm, self._unit)
+
     def _area_outside_usual(self) -> bool:
         st = self._state
-        return st.inner_mm < HINT_INNER_MIN_MM or st.outer_mm > HINT_OUTER_MAX_MM
+        return (self._shown(st.inner_mm) < self._shown(HINT_INNER_MIN_MM)
+                or self._shown(st.outer_mm) > self._shown(HINT_OUTER_MAX_MM))
 
     def _preset_matches(self, key: str) -> bool:
         inner, outer = self._PRESETS[key]
         st = self._state
-        return abs(st.inner_mm - inner) < 0.05 and abs(st.outer_mm - outer) < 0.05
+        return (self._shown(st.inner_mm) == self._shown(inner)
+                and self._shown(st.outer_mm) == self._shown(outer))
 
     def _sync_area_widgets(self) -> None:
         """Regler, Felder, Voreinstellungen, Einheit und Hinweis nach dem Modell."""
@@ -498,7 +506,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if entry.get_text().strip() == format_number(old, self._unit,
                                                      _i18n.effective_lang()):
             return                           # unverändert (Zoll: keine Rundung)
-        mm = parse_number(entry.get_text(), self._unit)
+        mm = parse_number(entry.get_text(), self._unit, SLIDER_STEP_MM)
         if mm is not None:
             mm = round(clamp(mm, *self._AREA_RANGE[kind]), 1)
         if mm is None or mm == old:

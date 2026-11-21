@@ -10,7 +10,8 @@ import tempfile
 import unittest
 
 from disc_printer.units import (
-    MM_PER_INCH, clamp, decimal_sep, format_number, mm_to_inch, parse_number, snap,
+    MM_PER_INCH, clamp, decimal_sep, format_number, mm_to_inch, parse_number,
+    shown_value, snap,
 )
 
 LOCALE_DIR = os.path.join(os.path.dirname(__file__), os.pardir,
@@ -66,7 +67,7 @@ class ParseTests(unittest.TestCase):
 
     def test_rounded_to_tenth_of_millimetre(self):
         self.assertEqual(parse_number("41,26", "mm"), 41.3)
-        self.assertEqual(parse_number("4,65", "in"), 118.1)       # 118,11 mm
+        self.assertEqual(parse_number("4,66", "in"), 118.4)       # 118,36 mm
         self.assertEqual(parse_number("1.3", "in"), 33.0)         # 33,02 mm
         self.assertEqual(parse_number('4.5"', "in"), 114.3)
         self.assertEqual(parse_number("4,5 in", "in"), 114.3)
@@ -78,6 +79,37 @@ class ParseTests(unittest.TestCase):
         for text in ("", " ", "abc", "1,2,3", "1.2.3", "nan", "inf", "-", ","):
             with self.subTest(text=text):
                 self.assertIsNone(parse_number(text, "mm"))
+
+    def test_inch_input_on_slider_grid_when_shown_equal(self):
+        # „4,65 in“ = 118,11 mm, zeigt aber dasselbe wie 118,0 mm → 118,0
+        for text, mm in (("4,65", 118.0), ("1,97", 50.0), ("1,30", 33.0),
+                         ("0,83", 21.0), ("0,71", 18.0), ("4,72", 120.0),
+                         ("2,76", 70.0), ("3,15", 80.0)):
+            with self.subTest(text=text):
+                self.assertEqual(parse_number(text, "in"), mm)
+        # liegt kein Rasterwert auf derselben Anzeige: exakt auf 0,1 mm
+        for text, mm in (("4,66", 118.4), ("4,64", 117.9), ("0,82", 20.8),
+                         ("4,6", 116.8), ("4,5", 114.3)):
+            with self.subTest(text=text):
+                self.assertEqual(parse_number(text, "in"), mm)
+        # mm-Eingaben bleiben exakt
+        self.assertEqual(parse_number("118,1", "mm"), 118.1)
+
+    def test_every_grid_value_survives_inches_exactly(self):
+        # Regler-/Voreinstellungswerte: Anzeige in Zoll und Eingabe derselben
+        # Zahl ergibt genau den mm-Wert (kein 118,0 → 118,1)
+        for k in range(36, 241):                    # 18,0 … 120,0 mm
+            mm = k / 2
+            for lang in ("de", "en"):
+                with self.subTest(mm=mm, lang=lang):
+                    self.assertEqual(parse_number(format_number(mm, "in", lang), "in"), mm)
+
+    def test_inch_input_is_shown_as_typed(self):
+        # jede Zoll-Eingabe mit zwei Stellen wird wieder genau so angezeigt
+        for k in range(70, 473):                    # 0,70 … 4,72 in
+            text = f"{k / 100:.2f}"
+            with self.subTest(text=text):
+                self.assertEqual(shown_value(parse_number(text, "in"), "in"), k / 100)
 
     def test_round_trip_in_inches(self):
         # Anzeige in Zoll und erneute Eingabe ändert den Wert höchstens um 0,1 mm

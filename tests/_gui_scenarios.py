@@ -1236,6 +1236,47 @@ def scenario_print_area(win):
     w2.destroy()
     win._unit_btns["mm"].set_active(True)
 
+    # 6b. Gleich angezeigt = gleich (Hinweis und Hervorhebung), beide Einheiten
+    win._unit_btns["in"].set_active(True)
+    n = U()
+    type_in(win, "inner", "1,97"); type_in(win, "outer", "4,65")
+    assert area(win) == PRESET_STANDARD, area(win)          # nicht 50,0/118,1
+    assert area_widgets(win) == ("1,97", "4,65")
+    assert highlighted(win) == ["standard"] and not _hint(win)
+    type_in(win, "outer", "4,66")
+    assert area(win)[1] == 118.4 and highlighted(win) == [] and _hint(win)
+    type_in(win, "outer", "4,65"); type_in(win, "inner", "0,83")
+    assert area(win) == (21.0, 118.0) and not _hint(win), area(win)   # Innenschwelle
+    type_in(win, "inner", "0,82")
+    assert area(win)[0] == 20.8 and _hint(win)
+    type_in(win, "inner", "1,30")
+    assert area(win) == PRESET_FULL and highlighted(win) == ["full"] and not _hint(win)
+    win._unit_btns["mm"].set_active(True)                    # nach mm: dieselben Werte
+    assert area_widgets(win) == ("33,0", "118,0") and highlighted(win) == ["full"]
+    assert not _hint(win)
+    # in mm feiner eingegeben, in Zoll gleich angezeigt
+    type_in(win, "inner", "50"); type_in(win, "outer", "118,1")
+    assert _hint(win) and highlighted(win) == []
+    fp0 = fp()
+    win._unit_btns["in"].set_active(True)
+    assert area_widgets(win) == ("1,97", "4,65")
+    assert not _hint(win) and highlighted(win) == ["standard"], "Zoll: 4,65 = Schwelle/Standard"
+    assert fp() == fp0 and area(win) == (50.0, 118.1)
+    win._unit_btns["mm"].set_active(True)
+    assert _hint(win) and highlighted(win) == []
+    type_in(win, "inner", "20,9")                            # Innenschwelle in mm
+    assert _hint(win)
+    win._unit_btns["in"].set_active(True)
+    assert area_widgets(win)[0] == "0,82" and _hint(win)    # in Zoll ebenfalls darunter
+    type_in(win, "inner", "1,97")
+    m = U()
+    preset(win, "standard")                                  # hervorgehoben, Werte leicht anders
+    assert area(win) == PRESET_STANDARD and U() == m + 1
+    preset(win, "standard")
+    assert U() == m + 1
+    win._unit_btns["mm"].set_active(True)
+    type_in(win, "inner", "21"); type_in(win, "outer", "118")
+
     # 7. Laufende Reglergeste bei „Neues Design“/Öffnen: kein verspäteter Eintrag
     slide(win, "outer", 90)
     win._reset_design()
@@ -1425,8 +1466,8 @@ def scenario_area_lang(win):
     assert win._preset_btns["standard"].get_label() == _expected_ui("en", "Standard")
     assert win._preset_btns["full"].get_label() == _expected_ui("en", "Vollflächig")
     assert highlighted(win) == []
-    type_in(win, "outer", "4,65")                    # Komma auch auf Englisch
-    assert area(win)[1] == 118.1
+    type_in(win, "outer", "4,66")                    # Komma auch auf Englisch
+    assert area(win)[1] == 118.4
     type_in(win, "outer", "4.60")
     assert area(win)[1] == 116.8
 
