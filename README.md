@@ -7,7 +7,8 @@ Disc Printer detects compatible printers automatically by analysing their instal
 files for disc-tray media support (Canon, Epson, and others); driverless network printers
 without a permanent CUPS queue are additionally detected via IPP (see
 [Driverless printers](#driverless-printers-no-permanent-cups-queue)). The print output is a
-300 DPI PNG rendered at the exact printable area of the disc, sent to CUPS via `lp`.
+300 DPI PNG of the 120 mm disc, masked to the adjustable print area (inner and outer
+diameter), sent to CUPS via `lp`.
 
 ## Who is this for?
 
@@ -64,8 +65,20 @@ Until a CUPS release with the fix is available, set the printer up as a permanen
 - Mouse-wheel zoom on the selected image element
 - Text elements with full font, size, style, and colour control
 - Double-click a text element on the canvas to edit it in-place
-- Disc, printable area, and hub diameters shown in millimetres and inches
-  (e.g. "Ø 120 mm / 4.72 in"), on the canvas and in the hub-size selection
+
+### Print area
+- Inner and outer print diameter adjustable below the preview, each with a slider
+  (0.5 mm steps) and a number field (0.1 mm; inches with two decimals): inner
+  18–50 mm, outer 70–120 mm — for blanks with a different print start and for
+  80 mm mini discs
+- Presets as shortcuts: **Standard** (inner 50, outer 118 mm) and **Full face**
+  (inner 33, outer 118 mm, hub-printable blanks); the matching preset is highlighted
+- mm | in switch for all measurements in the app, remembered between starts; the
+  decimal separator follows the UI language, input accepts comma and point
+- A hint (not a lock) appears when the values leave the usual printable area
+  (outer above 118 mm, inner below 21 mm): ink may end up on the disc tray
+- The print is masked to the print area: the hub and everything outside the outer
+  diameter stay white (no ink); the preview hides the same areas
 
 ### Per-element controls
 | Control | Images | Text |
@@ -81,22 +94,25 @@ Until a CUPS release with the fix is available, set the printer up as a permanen
 
 ### Editing
 - **New design** (header bar, left of Open) — starts over as after a fresh start:
-  background, image and text elements, hub size and undo history are reset; the
+  background, image and text elements, print area and undo history are reset; the
   selected printer and the language stay
 - **Unsaved changes** — New, Open and closing the window ask first if the design has
   unsaved changes (Cancel / Discard / Save …); Cancel keeps the window open
 - **Undo / Redo** (Ctrl+Z / Ctrl+Y / Ctrl+Shift+Z) — command history of up to 50 steps
   covering every change to the design: canvas actions (move, scale, rotate, mouse-wheel
-  zoom), sliders, the background controls (zoom, arrow buttons, centre) and panel
-  operations. Sliders, mouse-wheel zoom and repeated arrow-button clicks count as one
-  step per gesture. Not in the history: printer selection and language (not part of the
-  design); New and Open replace the design and start a fresh history
+  zoom), sliders, the background controls (zoom, arrow buttons, centre), the print area
+  (presets, sliders, number fields) and panel operations. Sliders, mouse-wheel zoom and
+  repeated arrow-button clicks count as one step per gesture. Not in the history: printer
+  selection, language and unit (not part of the design); New and Open replace the design
+  and start a fresh history
 - Drag-and-drop images from a file manager directly onto the canvas
 - Background image with independent position and zoom controls
 
 ### File format
 - Save and load designs as `.discprint` files (ZIP archive containing `design.json` and
-  embedded PNG images) — forward and backward compatible across versions
+  embedded PNG images) — forward and backward compatible across versions. Since 0.2.0
+  the file also stores the outer diameter; older files open with 118 mm, and 0.1.3 opens
+  newer files but ignores the outer diameter
 
 ### Localisation
 34 UI languages: Arabic, Bulgarian, Chinese (Simplified & Traditional), Croatian, Czech,
@@ -237,9 +253,11 @@ the log file off.
    [Driverless printers](#driverless-printers-no-permanent-cups-queue)). Only matching
    printers are shown in the dropdown.
 2. **Design** — place images and text on the circular canvas. The canvas represents the
-   full 120 mm disc; the printable ring (outer–hub boundary) is highlighted.
-3. **Print** — clicking Print renders the design to a 300 DPI PNG and submits it to CUPS
-   with the correct media and tray options extracted from the PPD.
+   full 120 mm disc; the hub and the ring outside the outer print diameter are covered,
+   exactly as in the print.
+3. **Print** — clicking Print renders the design to a 300 DPI PNG of the 120 mm disc,
+   masked to the print area (white inside the inner and outside the outer diameter), and
+   submits it to CUPS with the correct media and tray options extracted from the PPD.
 
 ## Project layout
 
@@ -252,7 +270,7 @@ src/disc_printer/
 │   ├── canvas.py      # Cairo drawing area, handles, drag/rotate/scale
 │   ├── dialogs.py     # Text-edit dialog
 │   └── window.py      # Main GTK4 window, panel, undo/redo wiring, main()
-├── constants.py       # Disc/hub sizes, print resolution, app ID
+├── constants.py       # Disc size, print-area ranges/presets/hints, print resolution, app ID
 ├── detection.py       # Printer discovery (lpstat, PPD, lpoptions, CUPS HTTP, IPP)
 ├── file_format.py     # .discprint save / load (ZIP + JSON)
 ├── history.py         # Command-pattern undo/redo stack
@@ -263,12 +281,13 @@ src/disc_printer/
 ├── paths.py           # Design folder (XDG documents dir, legacy ~/Dokumente), log file path
 ├── printer.py         # DiscPrinter dataclass + lp options
 ├── settings.py        # User settings (~/.config/disc-printer/settings.json)
-├── units.py           # mm / inch conversion for displayed dimensions
+├── units.py           # mm / inch display and input (decimal separator per language)
 └── locale/            # 33 translations (.po; .mo compiled at build time),
                        # disc_printer.pot template, LINGUAS;
                        # German is the source language
-tests/                 # unit tests (detection, print errors, i18n, units,
-                       # design folder, log file, start without display)
+tests/                 # unit tests (detection, print errors, i18n, units, print area,
+                       # design folder, log file, start without display) and GUI
+                       # scenarios on a private Broadway server
 ```
 
 ## License

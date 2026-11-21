@@ -7,6 +7,77 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+#### Einstellbarer Druckbereich (#3, Vorschlag von JPinTX)
+- Neuer Bereich „Druckbereich“ unter der Vorschau: Innen- und Außendurchmesser
+  sind frei einstellbar, je mit Schieberegler (0,5-mm-Schritte) und Zahlenfeld
+  (0,1 mm genau, in Zoll zwei Nachkommastellen). Innen 18–50 mm, außen
+  70–120 mm. Damit lassen sich Rohlinge mit anderem Druckbeginn und
+  Mini-Discs (80 mm) einstellen
+- Zwei Voreinstellungen als Abkürzung: „Standard“ (innen 50, außen 118 mm) und
+  „Vollflächig“ (innen 33, außen 118 mm). Hervorgehoben ist ein Knopf, wenn die
+  aktuellen Werte seiner Voreinstellung entsprechen, auch nach
+  Hand-Einstellung oder nach dem Laden einer Datei
+- Schalter mm | in: gilt für alle Maßangaben der App (auch die Tooltips der
+  Pfeilknöpfe), wird gespeichert, beim ersten Start mm. Das Dezimalzeichen
+  folgt der Sprache der Oberfläche; Eingaben mit Komma und Punkt werden beide
+  verstanden. Die Einheit gehört nicht zum Design (kein Undo-Schritt, keine
+  ungespeicherte Änderung)
+- Hinweis, keine Sperre: außen über 118 mm oder innen unter 21 mm erscheint
+  „Außerhalb des üblichen Druckbereichs … Tinte kann auf dem Disc-Fach landen“
+- Jede Reglerbewegung, jede Feldeingabe und jeder Klick auf eine
+  Voreinstellung ist genau ein Undo-Schritt
+
+### Changed
+
+#### Verhaltensänderung beim Druck: die Disc-Mitte bleibt jetzt frei
+- **Bisher wurde der Hub im Druck nicht ausgespart**: Hintergrundfarbe und
+  Motive gingen bis in die Mitte, beschnitten wurde nur außen bei 118 mm. Jetzt
+  wird das Druckbild mit dem eingestellten Innen- und Außendurchmesser
+  maskiert; innen und außen bleibt es weiß (keine Tinte). Seitengröße
+  (120 × 120 mm, 300 DPI) und lp-Optionen sind unverändert
+- Die Vorschau zeigt genau das: Motive im Hub und außerhalb des
+  Außendurchmessers sind verdeckt, der nicht bedruckte Ring am Rand ist
+  schraffiert
+
+#### Vorschau und Seitenleiste
+- Die Maßtexte auf der Vorschau (Ø 120 mm, Hub-Maß, „bedruckbar“) sind
+  entfallen; sie verdeckten das Motiv. Hub und Außenrand bleiben als Flächen
+  sichtbar
+- Der Bereich „Disc-Optionen / Hub-Größe“ in der rechten Spalte entfällt; er
+  ist im Druckbereich aufgegangen
+
+#### Neue Elemente richten sich nach dem Druckbereich
+- Neue Texte starten in der Mitte des sichtbaren Rings (oben, jeder weitere
+  Text 45° weiter) statt teils im Hub
+- Neue Bilder starten mit 60 % des eingestellten Außendurchmessers statt fest
+  60 % von 118 mm. Das Hintergrundbild wird weiterhin fest auf 118 mm
+  eingepasst; bestehende Designs sehen unverändert aus
+
+#### Dateiformat
+- `.discprint` speichert zusätzlich `outer_diameter`; der Innendurchmesser steht
+  weiter unter `hub_size`. Formatversion bleibt 2. Ältere Dateien laden mit
+  118 mm außen. 0.1.3 öffnet neue Dateien ohne Fehler, ignoriert aber den
+  Außendurchmesser und zeigt einen Innendurchmesser ungleich 50 mm unter dem
+  33-mm-Knopf an
+- Werte außerhalb der einstellbaren Bereiche oder ungültige Werte in einer
+  Datei werden begrenzt bzw. durch die Vorgabe ersetzt (mit Eintrag im Log)
+
+### Technisches
+- `DesignState` enthält `inner_mm`/`outer_mm`; `design_fingerprint`,
+  `file_format.save/load` und `DiscCanvas.render_for_print` nehmen keinen
+  Hub-Parameter mehr. `PRINTABLE_MM`, `HUB_LARGE_MM`, `HUB_SMALL_MM` und
+  `units.format_dimension` sind entfernt; neu sind die Bereichs-, Voreinstellungs-
+  und Hinweis-Konstanten in `constants.py` und Zahlenformat/-eingabe in
+  `units.py`
+- Übersetzungen: 16 neue Texte in allen 33 Sprachen, 11 nicht mehr gebrauchte
+  entfernt (Maßtexte, Hub-Größe, „5 mm links“ usw.)
+- Tests: GUI-Szenarien `print_area` und `area_lang` (Voreinstellungen und
+  Hervorhebung, Regler und Felder in mm und Zoll, Undo, Speichern/Laden alt und
+  neu, Sprachwechsel, Druckmaske über den echten Druckweg, Vorschau-Maske); der
+  Undo-Prüftest deckt Voreinstellung, Regler und Felder ab
+
 ## [0.1.3] – 2026-11-19
 
 Zuerst die Änderungen, die man beim Arbeiten mit der App bemerkt; danach
