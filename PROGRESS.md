@@ -1,9 +1,12 @@
 # Arbeitsstand und Release-Notizen
 
-Stand: 0.1.3 veröffentlicht am 2026-11-19 (GitHub-Release mit Flatpak-Bundle,
-AUR 0.1.3-1).
+Stand: 0.2.0 vorbereitet am 2026-11-21: main, Tag `v0.2.0`, Manifest mit
+Archiv-Prüfsumme, Flatpak-Bundle in `/var/tmp/disc-printer-0.2.0/` zum Test
+durch Klaus. GitHub-Release und AUR stehen noch aus (Schritt 7 unten erst nach
+dem Test). Zuletzt veröffentlicht: 0.1.3 am 2026-11-19 (GitHub-Release mit
+Flatpak-Bundle, AUR 0.1.3-1).
 
-## Release-Ablauf (so lief 0.1.3)
+## Release-Ablauf (so lief 0.1.3, für 0.2.0 wiederholt)
 
 1. **Vorbereiten auf einem Zweig** (`prep/<version>`): Version in
    `pyproject.toml`, `make pot` und `make update-po` (übernimmt die Version in
@@ -39,6 +42,12 @@ AUR 0.1.3-1).
    selbst), Läufe mit einem Scratch-`HOME`. Prüfen: Start ohne Anzeige gibt
    die einzeilige Meldung mit Exit 1; numpy, Pillow und `PIL.ImageCms`
    importierbar; alle `.mo` enthalten. sha256 des Bundles notieren.
+   Die Version steht im Flatpak nur in der Metainfo (das Paket wird ohne
+   `dist-info` kopiert); zusätzlich das installierte Paket per `diff -r` mit
+   den Quellen aus dem Archiv vergleichen. Seit 0.2.0 außerdem: Druckbild über
+   `MainWindow._print_thread` mit abgefangenem `lp` erzeugen und die Maske
+   innen und außen per Pixel prüfen (Skript mit `--filesystem=<tmp>` und
+   `--command=python3` im Sandbox-Python).
 6. **Ablage für den Tester** (Benutzer `haku`): Die Homes sind `700`, eine
    gemeinsame Gruppe gibt es nicht, `/tmp` ist tmpfs. Deshalb
    `/var/tmp/disc-printer-<version>/` (Ordner `755`, Dateien `644`) mit
@@ -52,6 +61,21 @@ AUR 0.1.3-1).
    prüfen, CHANGELOG-Link samt Sprungmarke prüfen.
 8. Aufräumen: Bauordner, Test-Installation, `/var/tmp`-Ablage. Die Runtime im
    Konto bleibt für den nächsten Bau.
+
+## Offene Punkte
+
+- **Mini-Discs (80 mm):** einstellbar (außen 70–80 mm), aber nicht am Drucker
+  getestet. Der Canon TS705a nimmt nur 12-cm-Discs; JPinTX will am Epson
+  prüfen, ob der Druck zentriert landet (#3).
+- Notiz, nicht geplant: Idee eines 80-mm-Adapters für das Canon-Fach, um
+  Mini-Discs auch hier testen zu können.
+
+## Befunde
+
+- Der Canon TS705a (treiberlos, IPP Everywhere) spart die Disc-Mitte nicht
+  selbst aus: Klaus fand Tintenreste in der Mitte des Fachs. Alle Versionen bis
+  0.1.3 haben durch den Hub gedruckt; seit 0.2.0 maskiert die App das
+  Druckbild innen und außen. Ein Probedruck mit 0.2.0 ließ die Mitte frei.
 
 ## Offene Kleinigkeiten
 
