@@ -8,10 +8,8 @@ from gi.repository import Gtk, Gdk, Gio, Pango, PangoCairo
 
 from .._log import log
 from ..constants import (
-    DISC_MM, PRINTABLE_MM, HUB_LARGE_MM, PREVIEW_PX, PRINT_PPM, PRINT_PX,
+    BG_FIT_MM, DISC_MM, PREVIEW_PX, PRINT_PPM, PRINT_PX,
 )
-from ..i18n import _
-from ..units import format_dimension
 from ..model import TextElement, ImageElement, DesignState
 from ..image_utils import boost_cairo_surface, is_image_path
 
@@ -116,7 +114,6 @@ class DiscCanvas(Gtk.DrawingArea):
                  on_img_zoom_cb=None):
         super().__init__()
         self._state               = state
-        self._hub_mm              = HUB_LARGE_MM
         self._on_file_drop_cb     = on_file_drop_cb
         self._on_scale_changed_cb = on_scale_changed_cb
         self._on_edit_text_cb     = on_edit_text_cb
@@ -126,7 +123,6 @@ class DiscCanvas(Gtk.DrawingArea):
 
         self._cx:      float = 0.0
         self._cy:      float = 0.0
-        self._r_print: float = 0.0
         self._ppm:     float = 1.0
 
         # Drag-Zustand
@@ -150,14 +146,6 @@ class DiscCanvas(Gtk.DrawingArea):
         self._setup_controllers()
 
     # ── Public API ────────────────────────────────────────────────────────────
-
-    @property
-    def hub_mm(self) -> float:
-        return self._hub_mm
-
-    def set_hub(self, mm: float) -> None:
-        self._hub_mm = mm
-        self.queue_draw()
 
     def refresh(self) -> None:
         self.queue_draw()
@@ -208,11 +196,12 @@ class DiscCanvas(Gtk.DrawingArea):
         self._cx      = cx
         self._cy      = cy
         self._ppm     = ppm
-        self._r_print = PRINTABLE_MM / 2 * ppm
 
-        r_disc  = DISC_MM      / 2 * ppm
-        r_print = PRINTABLE_MM / 2 * ppm
-        r_hub   = self._hub_mm / 2 * ppm
+        st      = self._state
+        r_disc  = DISC_MM     / 2 * ppm
+        r_outer = st.outer_mm / 2 * ppm
+        r_inner = st.inner_mm / 2 * ppm
+        r_fit   = BG_FIT_MM   / 2 * ppm
 
         # 1 ── Canvas-Hintergrund
         cr.set_source_rgb(0.14, 0.14, 0.16)
@@ -223,16 +212,15 @@ class DiscCanvas(Gtk.DrawingArea):
         cr.arc(cx, cy, r_disc, 0, 2 * math.pi)
         cr.fill()
 
-        # 3 ── Bedruckbare Zone (geclippt)
+        # 3 ── Druckbereich: dieselbe Maske wie beim Druck
         cr.save()
-        cr.arc(cx, cy, r_print, 0, 2 * math.pi)
-        cr.clip()
+        DiscCanvas._clip_print_area(cr, cx, cy, r_inner, r_outer)
 
         cr.set_source_rgba(*self._state.bg_color)
         cr.paint()
 
         if self._state.bg_surface is not None:
-            DiscCanvas._draw_bg_image(cr, self._state, cx, cy, r_print, ppm)
+            DiscCanvas._draw_bg_image(cr, self._state, cx, cy, r_fit, ppm)
 
         # Alle Ebenen nach z sortiert rendern (unsichtbare überspringen)
         for elem in self._state.all_sorted():
@@ -245,24 +233,28 @@ class DiscCanvas(Gtk.DrawingArea):
 
         cr.restore()
 
-        # 4 ── Hub
-        DiscCanvas._draw_hub(cr, cx, cy, r_hub)
+        # 4 ── Ring außerhalb des Außendurchmessers: wird nicht bedruckt
+        if r_outer < r_disc:
+            DiscCanvas._draw_unprinted_ring(cr, cx, cy, r_outer, r_disc)
 
-        # 5 ── Führungslinie bedruckbare Zone
+        # 5 ── Hub (Innendurchmesser), deckend wie die Maske im Druck
+        DiscCanvas._draw_hub(cr, cx, cy, r_inner)
+
+        # 6 ── Führungslinie Außendurchmesser
         cr.set_source_rgba(0.45, 0.45, 0.50, 0.45)
         cr.set_line_width(0.8)
         cr.set_dash([5.0, 4.0])
-        cr.arc(cx, cy, r_print, 0, 2 * math.pi)
+        cr.arc(cx, cy, r_outer, 0, 2 * math.pi)
         cr.stroke()
         cr.set_dash([])
 
-        # 6 ── Außenrand
+        # 7 ── Außenrand
         cr.set_source_rgba(0.50, 0.50, 0.55, 0.50)
         cr.set_line_width(1.2)
         cr.arc(cx, cy, r_disc, 0, 2 * math.pi)
         cr.stroke()
 
-        # 7 ── Selektionsrahmen / Handles (außerhalb Clip)
+        # 8 ── Selektionsrahmen / Handles (außerhalb Clip)
         for elem in self._state.elements:
             if elem.selected and elem._bbox and elem.visible:
                 self._draw_text_selection(cr, elem._bbox, locked=elem.locked)
@@ -293,9 +285,6 @@ class DiscCanvas(Gtk.DrawingArea):
                 self._img_handles = []
         else:
             self._img_handles = []
-
-        # 8 ── Maß-Labels
-        self._labels(cr, cx, cy, size, r_disc, r_hub)
 
     # ── Bild-Element Rendering ────────────────────────────────────────────────
 
@@ -429,11 +418,12 @@ class DiscCanvas(Gtk.DrawingArea):
     @staticmethod
     def _draw_bg_image(cr: cairo.Context, state: DesignState,
                        cx: float, cy: float,
-                       r_print: float, ppm: float) -> None:
+                       r_fit: float, ppm: float) -> None:
+        # Eingepasst auf BG_FIT_MM, nicht auf den eingestellten Druckbereich
         surf = state.bg_surface
         iw   = surf.get_width()
         ih   = surf.get_height()
-        diam = r_print * 2
+        diam = r_fit * 2
         base = max(diam / iw, diam / ih)
         sc   = base * state.bg_img_scale
         ox   = state.bg_img_x_mm * ppm
@@ -496,6 +486,40 @@ class DiscCanvas(Gtk.DrawingArea):
         cr.set_dash([])
         cr.restore()
 
+    # ── Druckbereich ──────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _clip_print_area(cr: cairo.Context, cx: float, cy: float,
+                         r_inner: float, r_outer: float) -> None:
+        """Clip auf den Ring zwischen Innen- und Außendurchmesser."""
+        cr.new_path()
+        cr.arc(cx, cy, r_outer, 0, 2 * math.pi)
+        cr.new_sub_path()
+        cr.arc(cx, cy, r_inner, 0, 2 * math.pi)
+        rule = cr.get_fill_rule()
+        cr.set_fill_rule(cairo.FILL_RULE_EVEN_ODD)
+        cr.clip()
+        cr.set_fill_rule(rule)
+
+    @staticmethod
+    def _draw_unprinted_ring(cr: cairo.Context, cx: float, cy: float,
+                             r_outer: float, r_disc: float) -> None:
+        """Ring zwischen Außendurchmesser und Disc-Rand: dunkel, schraffiert."""
+        cr.save()
+        DiscCanvas._clip_print_area(cr, cx, cy, r_outer, r_disc)
+        cr.set_source_rgb(0.16, 0.16, 0.18)
+        cr.paint()
+        cr.set_source_rgba(0.50, 0.50, 0.55, 0.35)
+        cr.set_line_width(1.0)
+        step = 6.0
+        d = -2 * r_disc
+        while d <= 2 * r_disc:
+            cr.move_to(cx + d - r_disc, cy - r_disc)
+            cr.line_to(cx + d + r_disc, cy + r_disc)
+            d += step
+        cr.stroke()
+        cr.restore()
+
     # ── Hub ───────────────────────────────────────────────────────────────────
 
     @staticmethod
@@ -523,20 +547,21 @@ class DiscCanvas(Gtk.DrawingArea):
     # ── Druck-Rendering ───────────────────────────────────────────────────────
 
     @staticmethod
-    def render_for_print(state: DesignState, hub_mm: float) -> cairo.ImageSurface:
+    def render_for_print(state: DesignState) -> cairo.ImageSurface:
+        """Druckbild 120×120 mm; außerhalb des Druckbereichs weiß (keine Tinte)."""
         size    = PRINT_PX
         surf    = cairo.ImageSurface(cairo.FORMAT_RGB24, size, size)
         cr      = cairo.Context(surf)
         cx = cy = size / 2.0
         ppm     = PRINT_PPM
-        r_print = PRINTABLE_MM / 2 * ppm
+        r_fit   = BG_FIT_MM / 2 * ppm
 
         cr.set_source_rgb(1.0, 1.0, 1.0)
         cr.paint()
 
         cr.save()
-        cr.arc(cx, cy, r_print, 0, 2 * math.pi)
-        cr.clip()
+        DiscCanvas._clip_print_area(cr, cx, cy, state.inner_mm / 2 * ppm,
+                                    state.outer_mm / 2 * ppm)
 
         cr.set_source_rgba(*state.bg_color)
         cr.paint()
@@ -544,7 +569,7 @@ class DiscCanvas(Gtk.DrawingArea):
         if state.bg_surface is not None:
             orig = state.bg_surface
             state.bg_surface = boost_cairo_surface(orig)
-            DiscCanvas._draw_bg_image(cr, state, cx, cy, r_print, ppm)
+            DiscCanvas._draw_bg_image(cr, state, cx, cy, r_fit, ppm)
             state.bg_surface = orig
 
         for elem in state.all_sorted():
@@ -561,64 +586,6 @@ class DiscCanvas(Gtk.DrawingArea):
 
         cr.restore()
         return surf
-
-    # ── Maß-Labels ────────────────────────────────────────────────────────────
-
-    def _labels(self, cr: cairo.Context,
-                cx: float, cy: float, size: float,
-                r_disc: float, r_hub: float) -> None:
-        fp = max(10.0, size * 0.038)
-        cr.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
-
-        def label(text: str, y: float, fs: float = fp,
-                  bg_alpha: float = 0.52) -> None:
-            cr.set_font_size(fs)
-            te    = cr.text_extents(text)
-            tx    = cx - te.width / 2 - te.x_bearing
-            pad_x = fs * 0.50
-            pad_y = fs * 0.28
-            rx    = cx - te.width / 2 - pad_x
-            ry    = y + te.y_bearing - pad_y
-            rw    = te.width  + 2 * pad_x
-            rh    = te.height + 2 * pad_y
-            rc    = rh / 2
-
-            cr.save()
-            cr.set_source_rgba(0.0, 0.0, 0.0, bg_alpha)
-            cr.new_path()
-            cr.arc(rx + rc,      ry + rc,      rc, math.pi,            3*math.pi/2)
-            cr.arc(rx + rw - rc, ry + rc,      rc, 3*math.pi/2,        2*math.pi)
-            cr.arc(rx + rw - rc, ry + rh - rc, rc, 0,                  math.pi/2)
-            cr.arc(rx + rc,      ry + rh - rc, rc, math.pi/2,          math.pi)
-            cr.close_path()
-            cr.fill()
-            cr.set_source_rgba(1.0, 1.0, 1.0, 0.92)
-            cr.move_to(tx, y)
-            cr.show_text(text)
-            cr.restore()
-
-        # Im Hub zweizeilig: einzeilig wäre „Ø 33 mm / 1.30 in“ breiter als der 33-mm-Hub.
-        # TRANSLATORS: Hub diameter inside the disc preview, two lines (millimetres,
-        # then inches). Keep both placeholders and the line break.
-        hub_lines = format_dimension(_("Ø %(mm).0f mm\n%(inch).2f in"),
-                                     self._hub_mm).split("\n")
-        y = cy + fp * 0.35 - fp * 0.6 * (len(hub_lines) - 1)
-        for i, line in enumerate(hub_lines):
-            label(line, y, fp if i == 0 else fp * 0.82)
-            y += fp * 1.2
-        label(_("Hub · nicht bedruckbar"),       y + fp * 0.05, fp * 0.72, 0.40)
-
-        py = cy + r_hub + fp * 2.5
-        if py + fp < cy + r_disc - fp * 0.5:
-            # TRANSLATORS: Printable diameter in the disc preview, e.g.
-            # "Ø 118 mm / 4.65 in (printable)". Keep both placeholders.
-            label(format_dimension(_("Ø %(mm).0f mm / %(inch).2f in (bedruckbar)"),
-                                   PRINTABLE_MM), py, fp * 0.78)
-
-        # TRANSLATORS: Disc or hub diameter, e.g. "Ø 120 mm / 4.72 in".
-        # Keep both placeholders; the order may be changed.
-        label(format_dimension(_("Ø %(mm).0f mm / %(inch).2f in"), DISC_MM),
-              cy - r_disc + fp * 1.8, fp * 0.82)
 
     # ── Hit-Testing ───────────────────────────────────────────────────────────
 

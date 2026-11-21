@@ -9,10 +9,17 @@ import cairo
 from gi.repository import Pango
 
 from ._log import log
+from .constants import (
+    DEFAULT_INNER_MM, DEFAULT_OUTER_MM,
+    INNER_MIN_MM, INNER_MAX_MM, OUTER_MIN_MM, OUTER_MAX_MM,
+)
 from .model import DesignState, TextElement, ImageElement
+from .units import clamp
 
 
 DESIGN_JSON    = "design.json"
+# Version 2 seit 0.1.0. „outer_diameter“ (seit 0.2.0) ist ein zusätzlicher
+# Schlüssel: ältere Versionen ignorieren ihn und lesen die Datei weiter.
 FORMAT_VERSION = 2
 
 
@@ -27,7 +34,7 @@ def _hex_to_rgb(h: str) -> tuple[float, float, float]:
     return int(h[0:2], 16) / 255.0, int(h[2:4], 16) / 255.0, int(h[4:6], 16) / 255.0
 
 
-def save(path: str | Path, state: DesignState, hub_mm: float) -> None:
+def save(path: str | Path, state: DesignState) -> None:
     """Speichert DesignState als .discprint ZIP-Datei (Format v2)."""
     img_files: dict[str, bytes] = {}
     elements:  list[dict]       = []
@@ -75,7 +82,9 @@ def save(path: str | Path, state: DesignState, hub_mm: float) -> None:
     bg_r, bg_g, bg_b, _ = state.bg_color
     design: dict = {
         "version":          FORMAT_VERSION,
-        "hub_size":         hub_mm,
+        # Innendurchmesser unter dem alten Schlüssel, damit 0.1.x ihn liest
+        "hub_size":         state.inner_mm,
+        "outer_diameter":   state.outer_mm,
         "background_color": _rgb_to_hex(bg_r, bg_g, bg_b),
         "elements":         elements,
     }
@@ -100,8 +109,25 @@ def save(path: str | Path, state: DesignState, hub_mm: float) -> None:
     log.info(f"Design saved: {path}")
 
 
-def load(path: str | Path) -> tuple[DesignState, float]:
-    """Lädt eine .discprint Datei. Gibt (DesignState, hub_mm) zurück."""
+def _diameter(design: dict, key: str, default: float,
+              lo: float, hi: float) -> float:
+    """Durchmesser aus der Datei, auf den einstellbaren Bereich begrenzt."""
+    raw = design.get(key, default)
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        value = float("nan")
+    if value != value or value in (float("inf"), float("-inf")):
+        log.warning(f"Design file: invalid {key}={raw!r}, using {default}")
+        return default
+    limited = round(clamp(value, lo, hi), 1)
+    if limited != value:
+        log.warning(f"Design file: {key}={value} outside {lo}–{hi} mm, using {limited}")
+    return limited
+
+
+def load(path: str | Path) -> DesignState:
+    """Lädt eine .discprint Datei (Druckbereich im DesignState)."""
     with zipfile.ZipFile(path, "r") as zf:
         design: dict = json.loads(zf.read(DESIGN_JSON))
         img_data: dict[str, bytes] = {
@@ -111,10 +137,14 @@ def load(path: str | Path) -> tuple[DesignState, float]:
         }
 
     version  = int(design.get("version", 1))
-    hub_mm   = float(design.get("hub_size", 50))
     bg_r, bg_g, bg_b = _hex_to_rgb(design.get("background_color", "#ffffff"))
 
     state = DesignState()
+    # Dateien vor 0.2.0: nur hub_size (50 oder 33), außen immer 118 mm
+    state.inner_mm = _diameter(design, "hub_size", DEFAULT_INNER_MM,
+                               INNER_MIN_MM, INNER_MAX_MM)
+    state.outer_mm = _diameter(design, "outer_diameter", DEFAULT_OUTER_MM,
+                               OUTER_MIN_MM, OUTER_MAX_MM)
     state.set_bg_color(bg_r, bg_g, bg_b, 1.0)
 
     # Legacy Hintergrundbild (v2: eigener Schlüssel; v1: erstes type="image" Element)
@@ -189,6 +219,7 @@ def load(path: str | Path) -> tuple[DesignState, float]:
     n_txt = len(state.elements)
     log.info(
         f"Design loaded: {path} "
-        f"(v{version}, hub={hub_mm}mm, {n_img} image(s), {n_txt} text(s))"
+        f"(v{version}, inner={state.inner_mm}mm, outer={state.outer_mm}mm, "
+        f"{n_img} image(s), {n_txt} text(s))"
     )
-    return state, hub_mm
+    return state

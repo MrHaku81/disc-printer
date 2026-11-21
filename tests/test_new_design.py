@@ -23,14 +23,19 @@ def _surf(v=0):
 
 
 class FingerprintTests(unittest.TestCase):
-    def fp(self, s, hub=50.0):
-        return design_fingerprint(s, hub)
+    def fp(self, s):
+        return design_fingerprint(s)
 
     def test_fresh_states_equal(self):
         self.assertEqual(self.fp(DesignState()), self.fp(DesignState()))
 
-    def test_hub_counts(self):
-        self.assertNotEqual(self.fp(DesignState(), 50.0), self.fp(DesignState(), 33.0))
+    def test_print_area_counts(self):
+        base = self.fp(DesignState())
+        for attr, value in (("inner_mm", 33.0), ("outer_mm", 117.5)):
+            s = DesignState()
+            setattr(s, attr, value)
+            with self.subTest(attr=attr):
+                self.assertNotEqual(self.fp(s), base)
 
     def test_each_kind_of_change_detected(self):
         base = self.fp(DesignState())

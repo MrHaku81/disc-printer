@@ -1,5 +1,6 @@
 import io
 import itertools
+import math
 import os
 import subprocess
 import sys
@@ -11,7 +12,11 @@ import cairo
 from gi.repository import Gtk, GLib, Gdk, Gio, GdkPixbuf
 
 from .._log import log, FILE_ONLY
-from ..constants import APP_ID, PRINT_PX, HUB_LARGE_MM, HUB_SMALL_MM
+from ..constants import (
+    APP_ID, PRINT_PX, PRINT_PPM,
+    INNER_MIN_MM, INNER_MAX_MM, OUTER_MIN_MM, OUTER_MAX_MM, SLIDER_STEP_MM,
+    PRESET_STANDARD, PRESET_FULL, HINT_INNER_MIN_MM, HINT_OUTER_MAX_MM,
+)
 from ..history import History, Command
 from ..i18n import _
 from .. import i18n as _i18n
@@ -22,7 +27,7 @@ from ..printer import DiscPrinter, lp_error_message
 from ..detection import detect_disc_printers
 from ..model import TextElement, ImageElement, DesignState, design_fingerprint
 from ..image_utils import pixbuf_to_cairo, write_print_png
-from ..units import format_dimension
+from ..units import UNITS, clamp, format_number, parse_number, snap
 from .canvas import DiscCanvas
 from .dialogs import TextEditDialog
 
@@ -44,7 +49,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._history              = History()
         self._block_opacity_signal = False
         self._block_color_signal   = False
-        self._block_hub_signal     = False
+        self._block_area_signal    = False
         self._block_bc_signal      = False
         self._block_printer_signal = False
         # Hintergrund-Gesten (Zoom: Regler/Mausrad, Verschieben: Pfeilknöpfe):
@@ -66,6 +71,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self._contrast_timer:    dict[int, int]             = {}
         self._scroll_before:     dict[int, tuple[float, float]] = {}
         self._scroll_timer:      dict[int, int]             = {}
+        # Druckbereich-Regler (innen/außen): ein Undo-Eintrag je Geste
+        self._area_timer:  dict[str, int]   = {}
+        self._area_before: dict[str, float] = {}
+        self._area_seq:    dict[str, int]   = {}
+        # Anzeige-Einheit (mm/in): Einstellung, nicht Teil des Designs
+        unit = _settings.load().get("unit", "mm")
+        self._unit = unit if unit in UNITS else "mm"
 
         # Druckerstatus als (Farbe, Text-Funktion): folgt einem Sprachwechsel
         self._led_state: tuple[str, object] = ("gray", lambda: _("Initialisierung …"))
@@ -160,7 +172,10 @@ class MainWindow(Gtk.ApplicationWindow):
             on_img_zoom_cb      = self._on_canvas_zoom,
         )
         ci.append(self._canvas)
-        paned.set_start_child(canvas_frame)
+        left = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        left.append(canvas_frame)
+        left.append(self._build_area_section())
+        paned.set_start_child(left)
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -175,13 +190,12 @@ class MainWindow(Gtk.ApplicationWindow):
         panel.set_margin_end(12)
         sw.set_child(panel)
 
-        panel.append(self._build_disc_section())
-        panel.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
         panel.append(self._build_background_section())
         panel.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
         panel.append(self._build_image_section())
         panel.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
         panel.append(self._build_text_section())
+        self._sync_area_widgets()
 
     # ── Sprachauswahl ─────────────────────────────────────────────────────────
 
@@ -234,9 +248,8 @@ class MainWindow(Gtk.ApplicationWindow):
         den Widgets. Undo-Einträge greifen über self auf die (neuen) Widgets zu.
         """
         self._flush_gestures()               # laufende Geste als Eintrag sichern
-        hub_mm = self._canvas.hub_mm
         self._build_ui()
-        self._sync_widgets_from_state(hub_mm)
+        self._sync_widgets_from_state()
         self._on_canvas_img_selected(self._state.selected_image)   # Markierung
         self._restore_printer_ui()
         self._on_history_changed()           # Undo/Redo-Tooltips neu übersetzen
@@ -286,35 +299,258 @@ class MainWindow(Gtk.ApplicationWindow):
         pbox.append(self._build_lang_selector())
         return frame
 
-    # ── Disc-Optionen ─────────────────────────────────────────────────────────
+    # ── Druckbereich ──────────────────────────────────────────────────────────
 
-    def _build_disc_section(self) -> Gtk.Box:
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        title = Gtk.Label(xalign=0.0)
-        title.set_markup(f"<b>{_('Disc-Optionen')}</b>")
-        box.append(title)
+    _PRESETS = {"standard": PRESET_STANDARD, "full": PRESET_FULL}
+    _AREA_RANGE = {"inner": (INNER_MIN_MM, INNER_MAX_MM),
+                   "outer": (OUTER_MIN_MM, OUTER_MAX_MM)}
 
-        hub_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        hub_row.set_margin_start(4)
-        hub_row.append(Gtk.Label(label=_("Hub-Größe:"), xalign=0.0))
+    @staticmethod
+    def _preset_name(key: str) -> str:
+        # TRANSLATORS: Print area presets: "Standard" = inner 50 mm, outer 118 mm
+        # (regular discs); "Vollflächig" = inner 33 mm (hub-printable discs).
+        return _("Standard") if key == "standard" else _("Vollflächig")
 
-        # TRANSLATORS: Disc or hub diameter, e.g. "Ø 120 mm / 4.72 in".
-        # Keep both placeholders; the order may be changed.
-        dim = _("Ø %(mm).0f mm / %(inch).2f in")
-        self._r50 = Gtk.CheckButton(label=format_dimension(dim, HUB_LARGE_MM))
-        self._r33 = Gtk.CheckButton(label=format_dimension(dim, HUB_SMALL_MM))
-        self._r33.set_group(self._r50)
-        self._r50.set_active(True)
-        self._r50.connect("toggled", self._on_hub_toggled)
-        self._r33.connect("toggled", self._on_hub_toggled)
-        # Untereinander: mit Zoll-Angabe wären zwei Buttons nebeneinander breiter
-        # als die Seitenleiste.
-        hub_choices = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-        hub_choices.append(self._r50)
-        hub_choices.append(self._r33)
-        hub_row.append(hub_choices)
-        box.append(hub_row)
-        return box
+    @staticmethod
+    def _area_name(kind: str) -> str:
+        return _("Innendurchmesser") if kind == "inner" else _("Außendurchmesser")
+
+    @staticmethod
+    def _unit_symbol(unit: str) -> str:
+        if unit == "mm":
+            # TRANSLATORS: Unit symbol for millimetres, as in "5 mm". Use the
+            # usual symbol of your language.
+            return _("mm")
+        # TRANSLATORS: Unit symbol for inches, as in "0.20 in". Use the usual
+        # symbol of your language.
+        return _("in")
+
+    def _length_text(self, mm: float) -> str:
+        """Maß in der gewählten Einheit, z. B. „5 mm“ oder „0,20 in“."""
+        num = format_number(mm, self._unit, _i18n.effective_lang(), trim=True)
+        return f"{num}\u00a0{self._unit_symbol(self._unit)}"
+
+    def _build_area_section(self) -> Gtk.Frame:
+        frame = Gtk.Frame(label=f"  {_('Druckbereich')}  ")
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        box.set_margin_top(6);  box.set_margin_bottom(8)
+        box.set_margin_start(10); box.set_margin_end(10)
+        frame.set_child(box)
+
+        top = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        self._preset_btns: dict[str, Gtk.ToggleButton] = {}
+        for key in ("standard", "full"):
+            b = Gtk.ToggleButton(label=self._preset_name(key))
+            b.connect("clicked", lambda _b, k=key: self._on_preset_clicked(k))
+            top.append(b)
+            self._preset_btns[key] = b
+        spacer = Gtk.Box()
+        spacer.set_hexpand(True)
+        top.append(spacer)
+        units = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        units.add_css_class("linked")
+        units.set_tooltip_text(_("Maßeinheit"))
+        self._unit_btns: dict[str, Gtk.ToggleButton] = {}
+        for u in UNITS:
+            b = Gtk.ToggleButton(label=self._unit_symbol(u))
+            if self._unit_btns:
+                b.set_group(self._unit_btns["mm"])
+            b.connect("toggled", lambda btn, uu=u: self._on_unit_toggled(btn, uu))
+            units.append(b)
+            self._unit_btns[u] = b
+        top.append(units)
+        box.append(top)
+
+        self._area_widgets: dict[str, tuple] = {}
+        for kind, label in (("inner", _("Innen:")), ("outer", _("Außen:"))):
+            lo, hi = self._AREA_RANGE[kind]
+            row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+            row.set_tooltip_text(self._area_name(kind))
+            row.append(Gtk.Label(label=label, xalign=0.0, width_chars=7))
+            sl = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, lo, hi,
+                                          SLIDER_STEP_MM)
+            sl.set_draw_value(False)
+            sl.set_hexpand(True)
+            sl.set_value(getattr(self._state, f"{kind}_mm"))
+            sl.connect("value-changed", lambda w, k=kind: self._on_area_slider(k, w))
+            row.append(sl)
+            entry = Gtk.Entry()
+            entry.set_width_chars(6)
+            entry.set_max_width_chars(6)
+            entry.set_alignment(1.0)
+            entry.set_input_purpose(Gtk.InputPurpose.NUMBER)
+            entry.connect("activate", lambda e, k=kind: self._on_area_entry(k, e))
+            focus = Gtk.EventControllerFocus()
+            focus.connect("leave", lambda _c, e=entry, k=kind: self._on_area_entry(k, e))
+            entry.add_controller(focus)
+            row.append(entry)
+            unit_lbl = Gtk.Label(xalign=0.0, width_chars=4)
+            row.append(unit_lbl)
+            box.append(row)
+            self._area_widgets[kind] = (sl, entry, unit_lbl)
+
+        self._area_hint = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        self._area_hint.append(Gtk.Image.new_from_icon_name("dialog-warning-symbolic"))
+        self._area_hint_lbl = Gtk.Label(xalign=0.0, wrap=True)
+        self._area_hint_lbl.set_hexpand(True)
+        self._area_hint.append(self._area_hint_lbl)
+        box.append(self._area_hint)
+        return frame              # Werte setzt _build_ui über _sync_area_widgets
+
+    def _area_outside_usual(self) -> bool:
+        st = self._state
+        return st.inner_mm < HINT_INNER_MIN_MM or st.outer_mm > HINT_OUTER_MAX_MM
+
+    def _preset_matches(self, key: str) -> bool:
+        inner, outer = self._PRESETS[key]
+        st = self._state
+        return abs(st.inner_mm - inner) < 0.05 and abs(st.outer_mm - outer) < 0.05
+
+    def _sync_area_widgets(self) -> None:
+        """Regler, Felder, Voreinstellungen, Einheit und Hinweis nach dem Modell."""
+        st = self._state
+        lang = _i18n.effective_lang()
+        self._block_area_signal = True
+        try:
+            for kind, (sl, entry, unit_lbl) in self._area_widgets.items():
+                v = getattr(st, f"{kind}_mm")
+                sl.set_value(v)
+                entry.set_text(format_number(v, self._unit, lang))
+                unit_lbl.set_text(self._unit_symbol(self._unit))
+            for key, btn in self._preset_btns.items():
+                btn.set_active(self._preset_matches(key))
+                inner, outer = self._PRESETS[key]
+                # TRANSLATORS: Tooltip of a print area preset, e.g.
+                # "Inner 50 mm, outer 118 mm"
+                btn.set_tooltip_text(_("Innen %(inner)s, außen %(outer)s") % {
+                    "inner": self._length_text(inner),
+                    "outer": self._length_text(outer)})
+            for u, btn in self._unit_btns.items():
+                btn.set_active(u == self._unit)
+        finally:
+            self._block_area_signal = False
+        # TRANSLATORS: Hint below the print area controls; %(inner)s and
+        # %(outer)s are lengths such as "21 mm" and "118 mm".
+        self._area_hint_lbl.set_markup("<small>" + GLib.markup_escape_text(
+            _("Außerhalb des üblichen Druckbereichs (innen ab %(inner)s, außen bis "
+              "%(outer)s): Tinte kann auf dem Disc-Fach landen.") % {
+                "inner": self._length_text(HINT_INNER_MIN_MM),
+                "outer": self._length_text(HINT_OUTER_MAX_MM)}) + "</small>")
+        self._area_hint.set_visible(self._area_outside_usual())
+        self._sync_nudge_tooltips()
+        self._canvas.refresh()
+
+    def _apply_area(self, inner: float | None = None,
+                    outer: float | None = None) -> None:
+        if inner is not None:
+            self._state.inner_mm = float(inner)
+        if outer is not None:
+            self._state.outer_mm = float(outer)
+        self._sync_area_widgets()
+
+    def _area_command(self, label, before: dict, after: dict) -> Command:
+        return Command(label,
+                       undo_fn=lambda: self._apply_area(**before),
+                       redo_fn=lambda: self._apply_area(**after))
+
+    def _log_area(self, how: str) -> None:
+        st = self._state
+        log.info(f"Print area ({how}): inner {st.inner_mm:.1f} mm, "
+                 f"outer {st.outer_mm:.1f} mm")
+
+    def _on_area_slider(self, kind: str, sl: Gtk.Scale) -> None:
+        if self._block_area_signal:
+            return
+        raw = sl.get_value()
+        v = snap(raw, SLIDER_STEP_MM)
+        if v != raw:                         # Regler in 0,5-mm-Schritten
+            self._block_area_signal = True
+            sl.set_value(v)
+            self._block_area_signal = False
+        old = getattr(self._state, f"{kind}_mm")
+        if v == old:
+            return
+        if kind not in self._area_before:
+            self._area_before[kind] = old
+            self._area_seq[kind] = next(self._bg_seq)
+        self._apply_area(**{kind: v})
+        if self._area_timer.get(kind):
+            GLib.source_remove(self._area_timer[kind])
+        self._area_timer[kind] = GLib.timeout_add(
+            600, lambda k=kind: self._commit_area(k))
+
+    def _commit_area(self, kind: str) -> bool:
+        self._area_timer[kind] = 0
+        before = self._area_before.pop(kind, None)
+        self._area_seq.pop(kind, None)
+        after = getattr(self._state, f"{kind}_mm")
+        if before is None or before == after:
+            return GLib.SOURCE_REMOVE
+        self._log_area("slider")
+        self._push_gesture(self._area_command(
+            lambda k=kind: self._area_name(k), {kind: before}, {kind: after}))
+        return GLib.SOURCE_REMOVE
+
+    def _on_area_entry(self, kind: str, entry: Gtk.Entry) -> None:
+        if self._block_area_signal or self._area_widgets.get(kind, (None, None))[1] is not entry:
+            return                           # altes Feld nach Sprachwechsel
+        old = getattr(self._state, f"{kind}_mm")
+        if entry.get_text().strip() == format_number(old, self._unit,
+                                                     _i18n.effective_lang()):
+            return                           # unverändert (Zoll: keine Rundung)
+        mm = parse_number(entry.get_text(), self._unit)
+        if mm is not None:
+            mm = round(clamp(mm, *self._AREA_RANGE[kind]), 1)
+        if mm is None or mm == old:
+            self._sync_area_widgets()        # Anzeige wiederherstellen/normieren
+            return
+        self._flush_gestures()               # laufende Reglergeste zuerst
+        old = getattr(self._state, f"{kind}_mm")
+        self._apply_area(**{kind: mm})
+        self._log_area("field")
+        self._history.push(self._area_command(
+            lambda k=kind: self._area_name(k), {kind: old}, {kind: mm}))
+
+    def _on_preset_clicked(self, key: str) -> None:
+        if self._block_area_signal:
+            return
+        self._flush_gestures()
+        st = self._state
+        inner, outer = self._PRESETS[key]
+        before = {"inner": st.inner_mm, "outer": st.outer_mm}
+        if before == {"inner": inner, "outer": outer}:
+            self._sync_area_widgets()        # Hervorhebung bleibt
+            return
+        self._apply_area(inner, outer)
+        self._log_area(f"preset {key}")
+        self._history.push(self._area_command(
+            lambda k=key: _("Druckbereich") + ": " + self._preset_name(k),
+            before, {"inner": inner, "outer": outer}))
+
+    _NUDGE_MM = 5.0
+
+    def _sync_nudge_tooltips(self) -> None:
+        length = self._length_text(self._NUDGE_MM)
+        texts = {
+            # TRANSLATORS: Tooltips of the arrow buttons that move the background
+            # image; %(length)s is the step, e.g. "5 mm" or "0.20 in".
+            "left":  _("%(length)s links"),
+            "right": _("%(length)s rechts"),
+            "up":    _("%(length)s oben"),
+            "down":  _("%(length)s unten"),
+        }
+        for btn, direction in getattr(self, "_nudge_btns", []):
+            btn.set_tooltip_text(texts[direction] % {"length": length})
+
+    def _on_unit_toggled(self, btn: Gtk.ToggleButton, unit: str) -> None:
+        if self._block_area_signal or not btn.get_active() or unit == self._unit:
+            return
+        self._unit = unit
+        s = _settings.load()
+        s["unit"] = unit
+        _settings.save(s)
+        log.info(f"Unit changed: {unit}")
+        self._sync_area_widgets()
 
     # ── Hintergrund-Bereich ───────────────────────────────────────────────────
 
@@ -397,15 +633,15 @@ class MainWindow(Gtk.ApplicationWindow):
 
         nudge_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         nudge_row.set_margin_start(4)
-        # TRANSLATORS: Arrow keys for nudging the image; keep the arrow symbols
-        for lbl, tip, cb in [
-            ("←", _("5 mm links"),  lambda _btn: self._nudge(-5, 0)),
-            ("→", _("5 mm rechts"), lambda _btn: self._nudge( 5, 0)),
-            ("↑", _("5 mm oben"),   lambda _btn: self._nudge( 0, -5)),
-            ("↓", _("5 mm unten"),  lambda _btn: self._nudge( 0,  5)),
+        self._nudge_btns: list[tuple[Gtk.Button, str]] = []
+        for lbl, direction, cb in [
+            ("←", "left",  lambda _btn: self._nudge(-self._NUDGE_MM, 0)),
+            ("→", "right", lambda _btn: self._nudge( self._NUDGE_MM, 0)),
+            ("↑", "up",    lambda _btn: self._nudge( 0, -self._NUDGE_MM)),
+            ("↓", "down",  lambda _btn: self._nudge( 0,  self._NUDGE_MM)),
         ]:
             b = Gtk.Button(label=lbl)
-            b.set_tooltip_text(tip)
+            self._nudge_btns.append((b, direction))
             b.set_hexpand(True)
             b.connect("clicked", cb)
             nudge_row.append(b)
@@ -618,28 +854,6 @@ class MainWindow(Gtk.ApplicationWindow):
             f"{' '.join(p.lp_options)} &lt;{placeholder}&gt;</tt></small>"
         )
 
-    def _on_hub_toggled(self, btn: Gtk.CheckButton) -> None:
-        if not btn.get_active() or self._block_hub_signal:
-            return
-        new_mm = HUB_LARGE_MM if btn is self._r50 else HUB_SMALL_MM
-        old_mm = self._canvas.hub_mm
-        if old_mm == new_mm:
-            return
-        self._canvas.set_hub(new_mm)
-        log.info(f"Hub size: {new_mm:.0f} mm")
-
-        def set_hub(mm: float) -> None:
-            self._block_hub_signal = True
-            (self._r50 if mm == HUB_LARGE_MM else self._r33).set_active(True)
-            self._block_hub_signal = False
-            self._canvas.set_hub(mm)
-
-        self._history.push(Command(
-            lambda: _("Hub-Größe"),
-            undo_fn=lambda: set_hub(old_mm),
-            redo_fn=lambda: set_hub(new_mm),
-        ))
-
     # ── Datei Speichern / Öffnen ──────────────────────────────────────────────
 
     def _on_save_clicked(self, _btn) -> None:
@@ -673,7 +887,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if path.suffix.lower() != ".discprint":
             path = path.with_suffix(".discprint")
         try:
-            _fmt.save(path, self._state, self._canvas.hub_mm)  # loggt selbst
+            _fmt.save(path, self._state)  # loggt selbst
         except Exception as e:
             log.error(f"Save failed: {e}")
             self._show_error(_("Design konnte nicht gespeichert werden:\n%s") % e)
@@ -708,8 +922,7 @@ class MainWindow(Gtk.ApplicationWindow):
             return
         path = gfile.get_path()
         try:
-            loaded_state, hub_mm = _fmt.load(path)
-            self._apply_loaded_design(loaded_state, hub_mm)  # load() loggt
+            self._apply_loaded_design(_fmt.load(path))  # load() loggt
         except Exception as e:
             log.error(f"Open failed: {e}")
             self._show_error(_("Design konnte nicht geöffnet werden:\n%s") % e)
@@ -726,6 +939,12 @@ class MainWindow(Gtk.ApplicationWindow):
                 GLib.source_remove(tid)
             timers.clear()
             before.clear()
+        for tid in self._area_timer.values():
+            if tid:
+                GLib.source_remove(tid)
+        self._area_timer.clear()
+        self._area_before.clear()
+        self._area_seq.clear()
         for attr in ("_bg_zoom_timer", "_bg_nudge_timer"):
             if getattr(self, attr):
                 GLib.source_remove(getattr(self, attr))
@@ -734,10 +953,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self._bg_nudge_before = None
         self._img_gestures.clear()
 
-    def _apply_loaded_design(self, loaded: DesignState, hub_mm: float) -> None:
+    def _apply_loaded_design(self, loaded: DesignState) -> None:
         self._cancel_pending_timers()
 
         s = self._state
+        s.inner_mm         = loaded.inner_mm
+        s.outer_mm         = loaded.outer_mm
         s.bg_color         = loaded.bg_color
         s.bg_surface       = loaded.bg_surface
         s.bg_path          = loaded.bg_path
@@ -749,20 +970,14 @@ class MainWindow(Gtk.ApplicationWindow):
         s.selected_element = None
         s.selected_image   = None
 
-        self._sync_widgets_from_state(hub_mm)
+        self._sync_widgets_from_state()
         self._history.clear()
         self._clean_fp = self._current_fingerprint()
 
-    def _sync_widgets_from_state(self, hub_mm: float) -> None:
-        """Widgets nach Modell und Hub einstellen (ohne Undo-Einträge)."""
+    def _sync_widgets_from_state(self) -> None:
+        """Widgets nach dem Modell einstellen (ohne Undo-Einträge)."""
         s = self._state
-        self._block_hub_signal = True
-        if abs(hub_mm - HUB_LARGE_MM) < 1.0:
-            self._r50.set_active(True)
-        else:
-            self._r33.set_active(True)
-        self._block_hub_signal = False
-        self._canvas.set_hub(hub_mm)
+        self._sync_area_widgets()
         self._canvas._img_handles = []
 
         self._block_color_signal = True
@@ -789,14 +1004,14 @@ class MainWindow(Gtk.ApplicationWindow):
     # ── Neues Design / ungespeicherte Änderungen ──────────────────────────────
 
     def _current_fingerprint(self) -> str:
-        return design_fingerprint(self._state, self._canvas.hub_mm)
+        return design_fingerprint(self._state)
 
     def _has_unsaved_changes(self) -> bool:
         return self._current_fingerprint() != self._clean_fp
 
     def _reset_design(self) -> None:
         """Zustand wie nach frischem Start. Drucker und Sprache bleiben."""
-        self._apply_loaded_design(DesignState(), HUB_LARGE_MM)
+        self._apply_loaded_design(DesignState())
         log.info("New design")
 
     def _on_new_clicked(self, _btn) -> None:
@@ -1050,8 +1265,8 @@ class MainWindow(Gtk.ApplicationWindow):
         try:
             pixbuf  = GdkPixbuf.Pixbuf.new_from_file(path)
             surface = pixbuf_to_cairo(pixbuf)
-            from ..constants import PRINTABLE_MM, PRINT_PPM
-            target_px  = PRINTABLE_MM * 0.6 * PRINT_PPM
+            # Startbreite: 60 % des eingestellten Außendurchmessers
+            target_px  = self._state.outer_mm * 0.6 * PRINT_PPM
             iw = surface.get_width()
             init_scale = target_px / iw if iw > 0 else 1.0
             next_z = max((i.z for i in self._state.images), default=-1) + 1
@@ -1730,8 +1945,8 @@ class MainWindow(Gtk.ApplicationWindow):
     def _flush_gestures(self) -> None:
         """Offene Gesten sofort als Undo-Einträge abschließen.
 
-        Hintergrund (Zoom, Pfeilknöpfe) und Bilder (Deckkraft, Helligkeit,
-        Kontrast, Mausrad-Zoom). Läuft vor jedem anderen Undo-Eintrag und vor
+        Hintergrund (Zoom, Pfeilknöpfe), Bilder (Deckkraft, Helligkeit,
+        Kontrast, Mausrad-Zoom) und Druckbereich (Regler innen/außen). Läuft vor jedem anderen Undo-Eintrag und vor
         Undo/Redo (History.before_change); offene Gesten in Startreihenfolge.
         """
         pending = []
@@ -1748,6 +1963,12 @@ class MainWindow(Gtk.ApplicationWindow):
             GLib.source_remove(self._bg_nudge_timer)
             self._bg_nudge_timer = 0
             pending.append((self._bg_nudge_seq, self._commit_bg_nudge))
+        for kind, tid in list(self._area_timer.items()):
+            if tid:
+                GLib.source_remove(tid)
+                self._area_timer[kind] = 0
+                pending.append((self._area_seq.get(kind, 0),
+                                lambda k=kind: self._commit_area(k)))
         for _seq, commit in sorted(pending, key=lambda p: p[0]):
             commit()
 
@@ -1822,10 +2043,17 @@ class MainWindow(Gtk.ApplicationWindow):
         dlg.connect("close-request", lambda w: self._on_add_dialog_closed(w))
         dlg.present()
 
+    def _new_text_position(self) -> tuple[float, float]:
+        """Mitte des sichtbaren Rings, oben beginnend, je Text 45° weiter."""
+        st = self._state
+        r = (st.inner_mm + st.outer_mm) / 4
+        a = math.radians(-90 + 45 * (len(st.elements) % 8))
+        return round(r * math.cos(a), 1), round(r * math.sin(a), 1)
+
     def _on_add_dialog_closed(self, dlg: TextEditDialog) -> bool:
         if dlg.result:
             r = dlg.result
-            offset = len(self._state.elements) * 5.0
+            x_mm, y_mm = self._new_text_position()
             elem = TextElement(
                 text         = r["text"],
                 font_family  = r["font_family"],
@@ -1833,8 +2061,8 @@ class MainWindow(Gtk.ApplicationWindow):
                 bold         = r["bold"],
                 italic       = r["italic"],
                 color        = r["color"],
-                x_mm         = offset % 30 - 15,
-                y_mm         = offset % 20 - 10,
+                x_mm         = x_mm,
+                y_mm         = y_mm,
             )
             self._state.elements.append(elem)
             self._add_element_row(elem)
@@ -2027,14 +2255,14 @@ class MainWindow(Gtk.ApplicationWindow):
             log.info("Printing cancelled")
             return
 
-        p      = self._selected
-        hub_mm = self._canvas.hub_mm
+        p  = self._selected
+        st = self._state
         log.info(
             f"Rendering design for print: {PRINT_PX}×{PRINT_PX} px, "
-            f"hub={hub_mm:.0f} mm, printer={p.name}"
+            f"inner={st.inner_mm:.1f} mm, outer={st.outer_mm:.1f} mm, printer={p.name}"
         )
         try:
-            surf = DiscCanvas.render_for_print(self._state, hub_mm)
+            surf = DiscCanvas.render_for_print(st)
         except Exception as e:
             log.error(f"Render error: {e}")
             self._show_error(_("Render-Fehler:\n%s") % e)

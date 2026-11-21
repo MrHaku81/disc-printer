@@ -18,7 +18,7 @@ import cairo
 from gi.repository import Gdk, Gio, GLib
 
 from disc_printer import i18n
-from disc_printer.constants import HUB_LARGE_MM, HUB_SMALL_MM
+from disc_printer.constants import PRESET_FULL, PRESET_STANDARD
 from disc_printer.gui import window as w
 from disc_printer.model import DesignState, TextElement, design_fingerprint
 from disc_printer.printer import DiscPrinter
@@ -52,7 +52,7 @@ def first_row(listbox):
 
 
 def fresh_fp() -> str:
-    return design_fingerprint(DesignState(), HUB_LARGE_MM)
+    return design_fingerprint(DesignState())
 
 
 class FakeOpenDialog:
@@ -79,6 +79,39 @@ class FakeChoice:
         return self._idx
 
 
+# ── Druckbereich: Bedienung über die echten Widgets ──────────────────────────
+
+def preset(win, key):
+    """Voreinstellungs-Knopf anklicken."""
+    win._preset_btns[key].emit("clicked")
+
+
+def slide(win, kind, *values):
+    """Regler bewegen (value-changed wie beim Ziehen)."""
+    for v in values:
+        win._area_widgets[kind][0].set_value(v)
+
+
+def type_in(win, kind, text):
+    """Text ins Zahlenfeld tippen und Enter drücken."""
+    entry = win._area_widgets[kind][1]
+    entry.set_text(text)
+    entry.emit("activate")
+
+
+def area(win):
+    return (win._state.inner_mm, win._state.outer_mm)
+
+
+def highlighted(win):
+    return [k for k, b in win._preset_btns.items() if b.get_active()]
+
+
+def area_widgets(win):
+    """Angezeigte Feldwerte (innen, außen)."""
+    return tuple(win._area_widgets[k][1].get_text() for k in ("inner", "outer"))
+
+
 def make_dirty(win) -> dict:
     """Alles ändern, was zum Design gehört; Regler-Timer laufen lassen."""
     win._on_detection_done([PRINTER])
@@ -87,7 +120,7 @@ def make_dirty(win) -> dict:
     elem = TextElement("Hallo", "Sans", 20, False, False, (0, 0, 0, 1))
     win._state.elements.append(elem)
     win._rebuild_panel()
-    win._r33.set_active(True)                       # Hub 33 mm (mit Undo-Eintrag)
+    preset(win, "full")                             # Druckbereich (mit Undo-Eintrag)
     red = Gdk.RGBA()
     red.red, red.green, red.blue, red.alpha = 1, 0, 0, 1
     win._color_btn.set_rgba(red)                   # Hintergrundfarbe
@@ -99,10 +132,11 @@ def make_dirty(win) -> dict:
     win._on_canvas_zoom(img, 1.0, 1.0, 1.5, 1.5)   # Scroll-Zoom → Timer
     win._scale_slider.set_value(1.4)               # Hintergrund-Zoom → Timer
     win._nudge(5, 0)                               # Pfeilknopf → Timer
+    slide(win, "outer", 116)                       # Außen-Regler → Timer
     tids = (list(win._opacity_timer.values()) + list(win._brightness_timer.values())
             + list(win._contrast_timer.values()) + list(win._scroll_timer.values())
-            + [win._bg_zoom_timer, win._bg_nudge_timer])
-    assert all(tids) and len(tids) == 6, f"erwartet 6 laufende Timer: {tids}"
+            + [win._bg_zoom_timer, win._bg_nudge_timer, win._area_timer["outer"]])
+    assert all(tids) and len(tids) == 7, f"erwartet 7 laufende Timer: {tids}"
     assert win._history.can_undo
     assert win._has_unsaved_changes()
     return {"tids": tids}
@@ -122,14 +156,17 @@ def scenario_reset(win):
     win._reset_design()
 
     s = win._state
-    assert design_fingerprint(s, win._canvas.hub_mm) == fresh_fp(), "Design nicht frisch"
+    assert design_fingerprint(s) == fresh_fp(), "Design nicht frisch"
     assert s.images == [] and s.elements == [] and s.bg_surface is None
     assert s.bg_path == "" and s.bg_color == (1.0, 1.0, 1.0, 1.0)
     assert (s.bg_img_x_mm, s.bg_img_y_mm, s.bg_img_scale) == (0.0, 0.0, 1.0)
     assert s.selected_image is None and s.selected_element is None
     rgba = win._color_btn.get_rgba()
     assert (rgba.red, rgba.green, rgba.blue, rgba.alpha) == (1, 1, 1, 1), "Farbknopf"
-    assert win._canvas.hub_mm == HUB_LARGE_MM and win._r50.get_active()
+    assert area(win) == PRESET_STANDARD and highlighted(win) == ["standard"]
+    assert area_widgets(win) == ("50,0", "118,0"), area_widgets(win)
+    assert win._area_timer == {"outer": 0} or not any(win._area_timer.values())
+    assert win._area_before == {}
     assert first_row(win._img_list) is None and first_row(win._elem_list) is None
     assert win._img_rows == []
     assert win._bg_file_label.get_text() == i18n._("(kein Bild)")
@@ -160,7 +197,7 @@ def scenario_reset(win):
 
 def scenario_dirty_detection(win):
     assert not win._has_unsaved_changes(), "frischer Start gilt als geändert"
-    win._r33.set_active(True)
+    preset(win, "full")
     assert win._has_unsaved_changes()
     win._do_undo()
     assert not win._has_unsaved_changes(), "Undo zurück auf gespeicherten Stand"
@@ -175,10 +212,9 @@ def scenario_dirty_detection(win):
                              lambda: called.append(1))
     assert called == [1] and not win._has_unsaved_changes()
     # Öffnen: sauber
-    win._r33.set_active(True)
+    preset(win, "full")
     from disc_printer import file_format as fmt
-    st, hub = fmt.load(WORK / "d.discprint")
-    win._apply_loaded_design(st, hub)
+    win._apply_loaded_design(fmt.load(WORK / "d.discprint"))
     assert not win._has_unsaved_changes()
 
 
@@ -384,8 +420,7 @@ def scenario_save_logged_once(win):
     win._on_save_dialog_done(FakeSaveDialog(WORK / "x.discprint"), None)
     assert len(log_lines("Design saved:")) == 1, log_lines("Design saved")
     from disc_printer import file_format as fmt
-    st, hub = fmt.load(WORK / "x.discprint")
-    win._apply_loaded_design(st, hub)
+    win._apply_loaded_design(fmt.load(WORK / "x.discprint"))
     assert len(log_lines("Design loaded:")) == 1
 
 
@@ -701,7 +736,8 @@ def scenario_lang_selector(win):
     from disc_printer import file_format
     st = DesignState(); st.elements.append(TextElement("x", "Sans", 20, False, False, (0, 0, 0, 1)))
     f = WORK / "l.discprint"
-    file_format.save(f, st, HUB_SMALL_MM)
+    st.inner_mm = 33.0
+    file_format.save(f, st)
     win._on_open_dialog_done(FakeOpenDialog(f), None)
     assert win._state.elements and win._state.elements[0].text == "x"
     check_lang(win, "Öffnen")
@@ -715,7 +751,7 @@ def scenario_lang_selector(win):
 # ── Sprachwechsel behält das Design (ein Fenster, keine Rückfrage) ──────────
 
 def _fp(win):
-    return design_fingerprint(win._state, win._canvas.hub_mm)
+    return design_fingerprint(win._state)
 
 
 def _switch(win, code):
@@ -766,7 +802,7 @@ def scenario_lang_switch(win):
         fps = [_fp(win)]
         win._add_image_from_path(png("a.png")); fps.append(_fp(win))
         win._load_bg_image(png("bg.png", (0, 0, 1))); fps.append(_fp(win))
-        win._r33.set_active(True); fps.append(_fp(win))
+        preset(win, "full"); fps.append(_fp(win))
         red = Gdk.RGBA(); red.red, red.green, red.blue, red.alpha = 1, 0, 0, 1
         win._color_btn.set_rgba(red); fps.append(_fp(win))
         img = win._state.images[0]
@@ -777,10 +813,15 @@ def scenario_lang_switch(win):
         assert _fp(win) == fps[-2]
         name = img.display_name
         spec = [("Bild hinzufügen", None), ("Hintergrundbild laden", None),
-                ("Hub-Größe", None), ("Hintergrundfarbe", None), ("Opazität", name)]
+                ("Druckbereich", ("Vollflächig",)), ("Hintergrundfarbe", None),
+                ("Opazität", name)]
 
         def expected(code):
-            return [_expected_ui(code, m) + (f": {n}" if n else "") for m, n in spec]
+            def tail(n):
+                if isinstance(n, tuple):            # übersetzter Zusatz
+                    n = _expected_ui(code, n[0])
+                return f": {n}" if n else ""
+            return [_expected_ui(code, m) + tail(n) for m, n in spec]
 
         assert labels(win) == expected("de"), labels(win)
         fp_before, clean_before = _fp(win), win._clean_fp
@@ -792,7 +833,9 @@ def scenario_lang_switch(win):
         assert win._has_unsaved_changes()
         assert win._state.selected_image is img and win._flip_box.get_visible()
         # Widgets zeigen das Design
-        assert win._r33.get_active() and win._canvas.hub_mm == HUB_SMALL_MM
+        assert highlighted(win) == ["full"] and area(win) == PRESET_FULL
+        assert area_widgets(win) == ("33,0", "118,0"), area_widgets(win)
+        assert win._preset_btns["full"].get_label() == _expected_ui("fr", "Vollflächig")
         assert _rgba(win._color_btn) == (1, 0, 0, 1)
         assert win._bg_file_label.get_text() == "bg.png"
         assert win._clear_img_btn.get_sensitive() and win._transform_box.get_sensitive()
@@ -822,13 +865,13 @@ def scenario_lang_switch(win):
             assert _fp(win) == fps[k - 1], f"Undo {k}"
             if k == 5: assert win._find_img_row(img)[3].get_value() == 1.0
             if k == 4: assert _rgba(win._color_btn) == (1, 1, 1, 1)
-            if k == 3: assert win._r50.get_active() and win._canvas.hub_mm == HUB_LARGE_MM
+            if k == 3: assert highlighted(win) == ["standard"] and area(win) == PRESET_STANDARD
             if k == 2: assert win._bg_file_label.get_text() == _expected_ui("fr", "(kein Bild)")
         assert not win._history.can_undo
         assert not win._has_unsaved_changes(), "Ausgangsstand gilt wieder als gespeichert"
         for k in range(1, len(fps)):
             win._do_redo(); assert _fp(win) == fps[k], f"Redo {k}"
-        assert win._r33.get_active() and _rgba(win._color_btn) == (1, 0, 0, 1)
+        assert highlighted(win) == ["full"] and _rgba(win._color_btn) == (1, 0, 0, 1)
         assert win._has_unsaved_changes()
 
         # 4. Laufende Geste beim Wechsel wird ein Eintrag (in der neuen Sprache)
@@ -847,8 +890,8 @@ def scenario_lang_switch(win):
         assert not win._has_unsaved_changes()
         _switch(win, "de")
         assert not win._has_unsaved_changes()
-        assert win._r33.get_active()
-        win._r50.set_active(True)                       # Änderung danach erkannt
+        assert highlighted(win) == ["full"]
+        preset(win, "standard")                         # Änderung danach erkannt
         assert win._has_unsaved_changes()
 
     assert spy.calls == [], f"Rückfrage beim Sprachwechsel: {spy.calls}"
@@ -937,7 +980,12 @@ def scenario_undo_audit(win):
         c._select_image(i)
 
     actions = [
-        ("Hub-Größe", lambda: (win._r33 if win._r50.get_active() else win._r50).set_active(True)),
+        ("Voreinstellung", lambda: preset(win, "standard" if highlighted(win) == ["full"]
+                                          else "full")),
+        ("Innen-Regler", lambda: slide(win, "inner", 40, 38.3, 36)),
+        ("Außen-Regler", lambda: slide(win, "outer", 110, 105.5)),
+        ("Innen-Feld", lambda: type_in(win, "inner", "41,7")),
+        ("Außen-Feld", lambda: type_in(win, "outer", "119.2")),
         ("Hintergrundfarbe", color),
         ("Farbe zurücksetzen", lambda: win._on_reset_color(None)),
         ("Hintergrundbild laden", lambda: win._load_bg_image(png("bg.png"))),
@@ -971,7 +1019,7 @@ def scenario_undo_audit(win):
         ("Text sperren", lambda: win._toggle_element_locked(text(), w.Gtk.Button())),
         ("Text löschen", lambda: win._delete_element(text(), win._elem_list.get_row_at_index(0))),
     ]
-    gestures = {"Hintergrund-Zoom (Regler)", "Hintergrund-Zoom (Mausrad)",
+    gestures = {"Innen-Regler", "Außen-Regler", "Hintergrund-Zoom (Regler)", "Hintergrund-Zoom (Mausrad)",
                 "Hintergrund Pfeilknöpfe", "Opazität", "Helligkeit", "Kontrast",
                 "Bild Mausrad-Zoom"}
     for name, action in actions:
@@ -1004,7 +1052,14 @@ def scenario_undo_audit(win):
         c = win._color_btn.get_rgba()
         assert (c.red, c.green, c.blue, c.alpha) == pytest_approx(st.bg_color), "Farbknopf"
         assert win._scale_slider.get_value() == pytest_approx(st.bg_img_scale), "Zoom-Regler"
-        assert win._r50.get_active() == (win._canvas.hub_mm == HUB_LARGE_MM), "Hub"
+        for k in ("inner", "outer"):
+            sl, entry, _u = win._area_widgets[k]
+            v = getattr(st, f"{k}_mm")
+            assert sl.get_value() == pytest_approx(v), f"Regler {k}"
+            assert w.parse_number(entry.get_text(), win._unit) == pytest_approx(v, 0.06), \
+                f"Feld {k}: {entry.get_text()!r} statt {v}"
+        assert highlighted(win) == [k for k in ("standard", "full") if win._preset_matches(k)], \
+            "Hervorhebung der Voreinstellungen"
         for im in st.images:
             r = win._find_img_row(im)
             assert r is not None, "Bildzeile fehlt"
@@ -1019,6 +1074,380 @@ def scenario_undo_audit(win):
         assert fp() == ref[k], f"Redo nach Sprachwechsel ({k})"
         widgets_match_model()
     print(f"Audit nach Sprachwechsel: {n} Einträge rückgängig/wiederhergestellt", flush=True)
+
+
+# ── Druckbereich ─────────────────────────────────────────────────────────────
+
+def _settings_unit():
+    import json
+    f = Path(os.environ["HOME"]) / ".config" / "disc-printer" / "settings.json"
+    return json.loads(f.read_text()).get("unit") if f.exists() else None
+
+
+def _saved_standard(win):
+    """Datei mit frischem Design (Standard) anlegen, ohne das Fenster zu ändern."""
+    from disc_printer import file_format as fmt
+    p = WORK / "standard.discprint"
+    fmt.save(p, DesignState())
+    return p
+
+
+def _hint(win):
+    return win._area_hint.get_visible()
+
+
+def scenario_print_area(win):
+    import json
+    import zipfile
+    from disc_printer import file_format as fmt
+    _ = i18n._
+    U = lambda: len(win._history._undo)
+    fp = win._current_fingerprint
+    sensitive = lambda: all(b.get_sensitive() for b in win._preset_btns.values())
+
+    # 1. Erster Start (ohne Einstellungsdatei): mm, Standard, kein Hinweis
+    f = Path(os.environ["HOME"]) / ".config" / "disc-printer" / "settings.json"
+    f.unlink(missing_ok=True)
+    i18n.switch_language(None)                      # Deutsch: Dezimalkomma
+    app = win.get_application()
+    w.MainWindow(app).present(); win.close(); pump(50)
+    win = _main_window(app)
+    assert _settings_unit() is None
+    assert win._unit == "mm" and win._unit_btns["mm"].get_active()
+    assert not win._unit_btns["in"].get_active()
+    assert area(win) == PRESET_STANDARD and highlighted(win) == ["standard"]
+    assert area_widgets(win) == ("50,0", "118,0"), area_widgets(win)
+    assert [win._area_widgets[k][2].get_text() for k in ("inner", "outer")] == ["mm", "mm"]
+    assert not _hint(win) and sensitive()
+    for k, lo, hi in (("inner", 18, 50), ("outer", 70, 120)):
+        adj = win._area_widgets[k][0].get_adjustment()
+        assert (adj.get_lower(), adj.get_upper()) == (lo, hi), k
+
+    # 2. Voreinstellungen: ein Schritt je Klick, Hervorhebung nach Werten
+    preset(win, "full")
+    assert area(win) == PRESET_FULL and highlighted(win) == ["full"] and U() == 1
+    assert area_widgets(win) == ("33,0", "118,0")
+    assert win._history.undo_label == _("Druckbereich") + ": " + _("Vollflächig")
+    preset(win, "full")                              # schon eingestellt
+    assert U() == 1 and highlighted(win) == ["full"] and sensitive()
+    win._do_undo()
+    assert area(win) == PRESET_STANDARD and highlighted(win) == ["standard"]
+    win._do_redo()
+    assert area(win) == PRESET_FULL and highlighted(win) == ["full"]
+    slide(win, "inner", 40); pump(700)
+    assert highlighted(win) == [] and sensitive()
+    slide(win, "inner", 50); pump(700)
+    assert highlighted(win) == ["standard"], "Hand-Einstellung = Standard"
+    type_in(win, "outer", "117,9")
+    assert highlighted(win) == []
+    type_in(win, "outer", "118")
+    assert highlighted(win) == ["standard"]
+    assert U() == 5, U()
+
+    # 3. Regler: 0,5-mm-Raster, eine Geste = ein Schritt, Undo mitten in der Geste
+    n = U()
+    slide(win, "outer", 110.2, 108.3, 105.6)
+    assert area(win)[1] == 105.5 and area_widgets(win)[1] == "105,5"
+    assert win._area_widgets["outer"][0].get_value() == 105.5
+    assert U() == n, "Eintrag vor Ende der Geste"
+    pump(700)
+    assert U() == n + 1 and win._history.undo_label == _("Außendurchmesser")
+    win._do_undo()
+    assert area(win)[1] == 118.0 and area_widgets(win)[1] == "118,0"
+    assert win._area_widgets["outer"][0].get_value() == 118.0
+    win._do_redo()
+    assert area(win)[1] == 105.5
+    slide(win, "inner", 30, 29)
+    win._do_undo()                                  # Geste läuft noch
+    assert area(win)[0] == 50.0 and win._area_widgets["inner"][0].get_value() == 50.0
+    pump(700)
+    assert win._history.redo_label == _("Innendurchmesser"), "Geste nach Undo erneut eingetragen"
+    win._do_redo()
+    assert area(win)[0] == 29.0
+    # Geste, dann andere Aktion: Geste zuerst
+    n = U()
+    slide(win, "inner", 31)
+    preset(win, "standard")
+    assert [c.description for c in win._history._undo[n:]] == [
+        _("Innendurchmesser"), _("Druckbereich") + ": " + _("Standard")]
+    win._do_undo()
+    assert area(win) == (31.0, 105.5)
+    win._do_redo()
+
+    # 4. Felder in mm: Komma/Punkt, Rundung, Begrenzung, ungültige Eingabe
+    n = U()
+    type_in(win, "inner", "22.5")
+    assert area(win)[0] == 22.5 and area_widgets(win)[0] == "22,5" and U() == n + 1
+    assert win._area_widgets["inner"][0].get_value() == 22.5
+    type_in(win, "inner", "22,46")                  # = 22,5: kein Schritt
+    assert U() == n + 1 and area_widgets(win)[0] == "22,5"
+    type_in(win, "inner", "22,44")
+    assert area(win)[0] == 22.4 and U() == n + 2
+    assert win._area_widgets["inner"][0].get_value() == 22.4, "Feldwert nicht ins Raster"
+    type_in(win, "outer", "200")
+    assert area(win)[1] == 120.0 and area_widgets(win)[1] == "120,0"
+    type_in(win, "inner", "5")
+    assert area(win)[0] == 18.0
+    n = U()
+    for bad in ("abc", "", "1,2,3"):
+        type_in(win, "outer", bad)
+        assert area(win)[1] == 120.0 and area_widgets(win)[1] == "120,0", bad
+    win._area_widgets["outer"][1].emit("activate")  # unverändert
+    assert U() == n
+    win._do_undo(); assert area(win)[0] == 22.4
+    win._do_undo(); assert area(win)[1] == 118.0    # vor "200" (Standard)
+    win._do_redo(); win._do_redo()
+
+    # 5. Hinweis: außen über 118, innen unter 21
+    for inner, outer, want in (("21", "118", False), ("21", "118,1", True),
+                               ("20,9", "118", True), ("21", "70", False),
+                               ("50", "118", False), ("18", "120", True)):
+        type_in(win, "inner", inner); type_in(win, "outer", outer)
+        assert _hint(win) == want, (inner, outer)
+        assert sensitive()
+    type_in(win, "inner", "21"); type_in(win, "outer", "118")
+
+    # 6. Einheit: kein Undo, keine Änderung am Design, Regler bleiben stehen
+    fp0, n, dirty0 = fp(), U(), win._has_unsaved_changes()
+    win._unit_btns["in"].set_active(True)
+    assert win._unit == "in" and _settings_unit() == "in"
+    assert U() == n and fp() == fp0 and win._has_unsaved_changes() == dirty0
+    assert area_widgets(win) == ("0,83", "4,65"), area_widgets(win)
+    assert [win._area_widgets[k][2].get_text() for k in ("inner", "outer")] == ["in", "in"]
+    assert [win._area_widgets[k][0].get_value() for k in ("inner", "outer")] == [21.0, 118.0]
+    assert not win._unit_btns["mm"].get_active()
+    win._area_widgets["outer"][1].emit("activate")  # unverändert, nicht 118,1
+    assert area(win) == (21.0, 118.0) and U() == n
+    type_in(win, "outer", "4,5")
+    assert area(win)[1] == 114.3 and area_widgets(win)[1] == "4,50" and U() == n + 1
+    type_in(win, "inner", '1.3"')
+    assert area(win)[0] == 33.0 and area_widgets(win)[0] == "1,30"
+    slide(win, "outer", 100.2); pump(700)
+    assert area(win)[1] == 100.0 and area_widgets(win)[1] == "3,94"
+    win._do_undo()
+    assert area(win)[1] == 114.3 and area_widgets(win)[1] == "4,50"
+    win._do_redo()
+    win._unit_btns["mm"].set_active(True)
+    assert win._unit == "mm" and _settings_unit() == "mm" and area_widgets(win) == ("33,0", "100,0")
+    win._unit_btns["in"].set_active(True)
+    w2 = w.MainWindow(app)
+    assert w2._unit == "in" and w2._unit_btns["in"].get_active(), "Einheit nicht gespeichert"
+    assert area_widgets(w2) == ("1,97", "4,65")
+    w2.destroy()
+    win._unit_btns["mm"].set_active(True)
+
+    # 7. Laufende Reglergeste bei „Neues Design“/Öffnen: kein verspäteter Eintrag
+    slide(win, "outer", 90)
+    win._reset_design()
+    assert area(win) == PRESET_STANDARD and highlighted(win) == ["standard"] and U() == 0
+    pump(800)
+    assert U() == 0 and area(win) == PRESET_STANDARD, "verspäteter Regler-Commit nach Neu"
+    slide(win, "inner", 30)
+    win._on_open_dialog_done(FakeOpenDialog(_saved_standard(win)), None)
+    pump(800)
+    assert U() == 0 and area(win) == PRESET_STANDARD, "verspäteter Regler-Commit nach Öffnen"
+
+    # 8. Speichern/Laden neu und alt
+    win._reset_design()
+    type_in(win, "inner", "41,5"); type_in(win, "outer", "117")
+    f = WORK / "new.discprint"
+    win._on_save_dialog_done(FakeSaveDialog(f), None)
+    d = json.loads(zipfile.ZipFile(f).read("design.json"))
+    assert d["version"] == 2 and d["hub_size"] == 41.5 and d["outer_diameter"] == 117.0, d
+    assert not win._has_unsaved_changes()
+    win._reset_design()
+    win._on_open_dialog_done(FakeOpenDialog(f), None)
+    assert area(win) == (41.5, 117.0) and area_widgets(win) == ("41,5", "117,0")
+    assert highlighted(win) == [] and not win._has_unsaved_changes() and U() == 0
+    type_in(win, "outer", "116")
+    assert win._has_unsaved_changes()
+    win._do_undo()
+    assert not win._has_unsaved_changes()
+
+    def old_file(name, design):
+        p = WORK / name
+        with zipfile.ZipFile(p, "w") as z:
+            z.writestr("design.json", json.dumps(design))
+        return p
+
+    for hub, want in ((50, "standard"), (33, "full")):
+        p = old_file(f"old{hub}.discprint", {"version": 2, "hub_size": hub,
+                                             "background_color": "#ffffff", "elements": []})
+        win._on_open_dialog_done(FakeOpenDialog(p), None)
+        assert area(win) == (float(hub), 118.0), area(win)
+        assert highlighted(win) == [want] and not win._has_unsaved_changes()
+    p = old_file("v1.discprint", {"version": 1, "hub_size": 33})
+    win._on_open_dialog_done(FakeOpenDialog(p), None)
+    assert area(win) == PRESET_FULL
+    p = old_file("odd.discprint", {"version": 2, "hub_size": 5, "outer_diameter": 300})
+    win._on_open_dialog_done(FakeOpenDialog(p), None)
+    assert area(win) == (18.0, 120.0) and _hint(win)
+
+    # 9. Neue Elemente: Bildgröße nach Außendurchmesser, Text im Ring
+    from disc_printer.constants import PRINT_PPM
+    import math
+    win._reset_design()
+    for inner, outer in (("50", "118"), ("40", "100"), ("33", "78")):
+        type_in(win, "inner", inner); type_in(win, "outer", outer)
+        win._add_image_from_path(png("a.png"))
+        im = win._state.images[-1]
+        width_mm = im.surface.get_width() * im.scale_x / PRINT_PPM
+        assert abs(width_mm - 0.6 * float(outer)) < 0.01, width_mm
+        for _i in range(3):
+            win._on_add_dialog_closed(FakeTextDialog("T"))
+            t = win._state.elements[-1]
+            r = math.hypot(t.x_mm, t.y_mm)
+            assert float(inner) / 2 < r < float(outer) / 2, (inner, outer, r)
+            assert abs(r - (float(inner) + float(outer)) / 4) < 0.1
+
+    # 10. Druckbild über den echten Druckweg: Maske innen und außen
+    import threading
+    red = Gdk.RGBA(); red.red, red.green, red.blue, red.alpha = 1, 0, 0, 1
+    win._reset_design()
+    win._color_btn.set_rgba(red)
+    win._on_detection_done([PRINTER])
+    captured = []
+
+    def fake_lp(cmd, **_kw):
+        import shutil, subprocess
+        dst = WORK / f"print{len(captured)}.png"
+        shutil.copy(cmd[-1], dst)
+        captured.append((cmd, dst))
+        return subprocess.CompletedProcess(cmd, 0, "request id is X-1", "")
+
+    def printed(inner, outer):
+        type_in(win, "inner", inner); type_in(win, "outer", outer)
+        n = len(captured)
+        with mock.patch.object(w.subprocess, "run", fake_lp), \
+             mock.patch.object(w.MainWindow, "_on_print_success", lambda *a: False):
+            win._on_print_confirmed(FakeChoice(1), None)
+            end = time.monotonic() + 20
+            while len(captured) == n and time.monotonic() < end:
+                pump(50)
+        assert len(captured) == n + 1, "kein Druck"
+        cmd, path = captured[-1]
+        assert cmd[:3] == ["lp", "-d", PRINTER.name] and cmd[3:-1] == PRINTER.lp_options
+        return cairo.ImageSurface.create_from_png(str(path))
+
+    def pixel(surf, r_mm):
+        import struct
+        size = surf.get_width()
+        x = round(size / 2 + r_mm * PRINT_PPM)
+        y = size // 2
+        surf.flush()
+        b, g, r_, _a = surf.get_data()[y * surf.get_stride() + 4 * x:][:4]
+        return (r_, g, b)
+
+    WHITE, RED = (255, 255, 255), (255, 0, 0)
+    for inner, outer in ((50, 118), (33, 118), (40, 100), (18, 120), (21, 78)):
+        surf = printed(str(inner), str(outer))
+        assert surf.get_width() == surf.get_height() == w.PRINT_PX, "Seitengröße"
+        ri, ro = inner / 2, outer / 2
+        for r_mm, want in ((0, WHITE), (ri - 0.5, WHITE), (ri + 0.5, RED),
+                           ((ri + ro) / 2, RED), (ro - 0.5, RED)):
+            assert pixel(surf, r_mm) == want, (inner, outer, r_mm, pixel(surf, r_mm))
+        if ro + 0.5 < 60:
+            assert pixel(surf, ro + 0.5) == WHITE, (inner, outer, "außen")
+        assert pixel(surf, 59.9) == (WHITE if outer < 119.8 else RED), (inner, outer, 59.9)
+
+    # 11. Vorschau verdeckt dieselben Bereiche
+    type_in(win, "inner", "40"); type_in(win, "outer", "100")
+    size = 456
+    surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, size, size)
+    win._canvas._draw(None, cairo.Context(surf), size, size)
+    ppm = (size - 2 * win._canvas._PAD) / 120
+    surf.flush()
+    data, stride = surf.get_data(), surf.get_stride()
+
+    def prev(r_mm):
+        x = round(size / 2 + r_mm * ppm); y = size // 2
+        b, g, r_, _a = data[y * stride + 4 * x:][:4]
+        return (r_, g, b)
+    for r_mm in (0.5, 10, 19):
+        assert prev(r_mm) != RED and prev(r_mm)[0] < 240, ("Hub", r_mm, prev(r_mm))
+    for r_mm in (21, 35, 49):
+        assert prev(r_mm) == RED, ("Ring", r_mm, prev(r_mm))
+    for r_mm in (51, 55, 59):
+        assert prev(r_mm)[0] < 120, ("außen", r_mm, prev(r_mm))
+
+
+def scenario_area_lang(win):
+    """Dezimalzeichen und Einheit in Tooltips und Feldern, Sprachwechsel."""
+    app = win.get_application()
+    i18n._LOCALE_DIR = _compile_locales(["en", "fr"])
+    i18n.switch_language(None)
+    w.MainWindow(app).present(); win.close(); pump(50)
+    win = _main_window(app)
+    _KEYS["n"] = _key_ctrls(win)
+    NB = " "
+
+    def tips():
+        return [b.get_tooltip_text() for b, _d in win._nudge_btns]
+
+    def want_tips(code, length):
+        return [_expected_ui(code, m) % {"length": length}
+                for m in ("%(length)s links", "%(length)s rechts",
+                          "%(length)s oben", "%(length)s unten")]
+
+    def preset_tip(code, inner, outer):
+        return _expected_ui(code, "Innen %(inner)s, außen %(outer)s") % {
+            "inner": inner, "outer": outer}
+
+    # Deutsch, mm und in
+    assert tips() == want_tips("de", f"5{NB}mm") == [
+        f"5{NB}mm links", f"5{NB}mm rechts", f"5{NB}mm oben", f"5{NB}mm unten"], tips()
+    assert win._preset_btns["full"].get_tooltip_text() == \
+        preset_tip("de", f"33{NB}mm", f"118{NB}mm")
+    win._unit_btns["in"].set_active(True)
+    assert tips() == want_tips("de", f"0,20{NB}in"), tips()
+    assert tips()[0] == f"0,20{NB}in links"
+    assert area_widgets(win) == ("1,97", "4,65")
+    assert win._preset_btns["full"].get_tooltip_text() == \
+        preset_tip("de", f"1,30{NB}in", f"4,65{NB}in")
+    assert f"0,83{NB}in" in win._area_hint_lbl.get_text(), win._area_hint_lbl.get_text()
+
+    # Werte ändern, Geste läuft beim Wechsel
+    preset(win, "full")
+    type_in(win, "outer", "4,6")                     # 116,8 mm
+    slide(win, "inner", 30.5)
+    fp0 = design_fingerprint(win._state)
+    n = len(win._history._undo)
+
+    # Englisch, in: Punkt, Werte und Einheit bleiben
+    _switch(win, "en")
+    assert win._unit == "in" and win._unit_btns["in"].get_active()
+    assert area(win) == (30.5, 116.8) and design_fingerprint(win._state) == fp0
+    assert len(win._history._undo) == n + 1, "laufende Geste nicht eingetragen"
+    assert win._history.undo_label == _expected_ui("en", "Innendurchmesser")
+    assert area_widgets(win) == ("1.20", "4.60"), area_widgets(win)
+    assert [win._area_widgets[k][0].get_value() for k in ("inner", "outer")] == [30.5, 116.8]
+    assert tips() == want_tips("en", f"0.20{NB}in") and tips()[0] == f"0.20{NB}in left", tips()
+    assert win._preset_btns["standard"].get_label() == _expected_ui("en", "Standard")
+    assert win._preset_btns["full"].get_label() == _expected_ui("en", "Vollflächig")
+    assert highlighted(win) == []
+    type_in(win, "outer", "4,65")                    # Komma auch auf Englisch
+    assert area(win)[1] == 118.1
+    type_in(win, "outer", "4.60")
+    assert area(win)[1] == 116.8
+
+    # Englisch, mm
+    win._unit_btns["mm"].set_active(True)
+    assert tips() == want_tips("en", f"5{NB}mm") and tips()[0] == f"5{NB}mm left", tips()
+    assert area_widgets(win) == ("30.5", "116.8")
+    assert win._preset_btns["full"].get_tooltip_text() == \
+        preset_tip("en", f"33{NB}mm", f"118{NB}mm")
+
+    # Undo nach dem Wechsel wirkt auf die neuen Widgets
+    win._do_undo(); win._do_undo(); win._do_undo()
+    assert area(win) == (33.0, 116.8) and area_widgets(win) == ("33.0", "116.8")
+    win._do_undo(); win._do_undo()
+    assert area(win) == PRESET_STANDARD and highlighted(win) == ["standard"]
+
+    # Französisch: Komma
+    _switch(win, "fr")
+    assert area_widgets(win) == ("50,0", "118,0")
+    _switch(win, "de")
+    assert area_widgets(win) == ("50,0", "118,0") and win._unit == "mm"
 
 
 def pytest_approx(v, tol=1e-3):

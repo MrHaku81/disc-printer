@@ -6,6 +6,8 @@ from pathlib import Path
 import cairo
 from gi.repository import Pango
 
+from .constants import DEFAULT_INNER_MM, DEFAULT_OUTER_MM
+
 
 class TextElement:
     """Ein Text-Label auf der Disc. Positions- und Größenangaben in mm bzw. pt."""
@@ -107,6 +109,10 @@ class DesignState:
     """Hält den gesamten Designzustand (Hintergrund + Bilder + Text-Elemente)."""
 
     def __init__(self):
+        # Druckbereich in mm: innerhalb von inner_mm und außerhalb von outer_mm
+        # wird nichts gedruckt (und die Vorschau verdeckt das Motiv dort).
+        self.inner_mm:   float = DEFAULT_INNER_MM
+        self.outer_mm:   float = DEFAULT_OUTER_MM
         self.bg_color:   tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
         # Legacy Hintergrundbild (einfaches bg ohne Rotation/Flip)
         self.bg_surface: cairo.ImageSurface | None = None
@@ -181,9 +187,8 @@ def _fp_obj(h, obj) -> None:
         _fp_value(h, getattr(obj, k))
 
 
-def design_fingerprint(state: DesignState, hub_mm: float) -> str:
-    """Kurzer Hash über den gespeicherten Designinhalt (inkl. Hub-Größe)."""
+def design_fingerprint(state: DesignState) -> str:
+    """Kurzer Hash über den gespeicherten Designinhalt (inkl. Druckbereich)."""
     h = hashlib.blake2b(digest_size=16)
-    h.update(b"hub=" + repr(float(hub_mm)).encode() + b";")
     _fp_obj(h, state)
     return h.hexdigest()
