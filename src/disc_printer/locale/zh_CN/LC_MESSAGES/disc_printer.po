@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: disc-printer 0.1.3\n"
 "Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
-"POT-Creation-Date: 2026-11-19 21:31+0100\n"
+"POT-Creation-Date: 2026-11-21 12:55+0100\n"
 "PO-Revision-Date: 2026-04-24 14:00+0000\n"
 "Last-Translator: Claude AI\n"
 "Language-Team: Simplified Chinese\n"
@@ -15,41 +15,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#. TRANSLATORS: Hub diameter inside the disc preview, two lines (millimetres,
-#. then inches). Keep both placeholders and the line break.
-#: src/disc_printer/gui/canvas.py:603
-#, python-format
-msgid ""
-"Ø %(mm).0f mm\n"
-"%(inch).2f in"
-msgstr ""
-"Ø %(mm).0f mm\n"
-"%(inch).2f in"
-
-#: src/disc_printer/gui/canvas.py:609
-msgid "Hub · nicht bedruckbar"
-msgstr "轴心 · 不可打印"
-
-#. TRANSLATORS: Printable diameter in the disc preview, e.g.
-#. "Ø 118 mm / 4.65 in (printable)". Keep both placeholders.
-#: src/disc_printer/gui/canvas.py:615
-#, python-format
-msgid "Ø %(mm).0f mm / %(inch).2f in (bedruckbar)"
-msgstr "Ø %(mm).0f mm / %(inch).2f in (可打印)"
-
-#. TRANSLATORS: Disc or hub diameter, e.g. "Ø 120 mm / 4.72 in".
-#. Keep both placeholders; the order may be changed.
-#: src/disc_printer/gui/canvas.py:620 src/disc_printer/gui/window.py:303
-#, python-format
-msgid "Ø %(mm).0f mm / %(inch).2f in"
-msgstr "Ø %(mm).0f mm / %(inch).2f in"
-
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:509
-#: src/disc_printer/gui/window.py:1911
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:745
+#: src/disc_printer/gui/window.py:2139
 msgid "Text bearbeiten"
 msgstr "编辑文本"
 
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:1857
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:2085
 msgid "Text hinzufügen"
 msgstr "添加文本"
 
@@ -69,228 +40,284 @@ msgstr "字体："
 msgid "Textfarbe"
 msgstr "文字颜色"
 
-#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:329
+#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:565
 msgid "Farbe:"
 msgstr "颜色："
 
-#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:817
-#: src/disc_printer/gui/window.py:2015
+#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:1032
+#: src/disc_printer/gui/window.py:2243
 msgid "Abbrechen"
 msgstr "取消"
 
-#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:2093
+#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:2321
 msgid "OK"
 msgstr "确定"
 
-#: src/disc_printer/gui/window.py:71 src/disc_printer/gui/window.py:275
+#: src/disc_printer/gui/window.py:83 src/disc_printer/gui/window.py:288
 msgid "Initialisierung …"
 msgstr "正在初始化 …"
 
-#: src/disc_printer/gui/window.py:93
+#: src/disc_printer/gui/window.py:105
 msgid "Neues Design"
 msgstr "新建设计"
 
-#: src/disc_printer/gui/window.py:98
+#: src/disc_printer/gui/window.py:110
 msgid "Design öffnen …"
 msgstr "打开设计 …"
 
-#: src/disc_printer/gui/window.py:103
+#: src/disc_printer/gui/window.py:115
 msgid "Design speichern …"
 msgstr "保存设计 …"
 
-#: src/disc_printer/gui/window.py:108 src/disc_printer/gui/window.py:2109
+#: src/disc_printer/gui/window.py:120 src/disc_printer/gui/window.py:2337
 msgid "Rückgängig"
 msgstr "撤销"
 
-#: src/disc_printer/gui/window.py:114 src/disc_printer/gui/window.py:2112
+#: src/disc_printer/gui/window.py:126 src/disc_printer/gui/window.py:2340
 msgid "Wiederherstellen"
 msgstr "重做"
 
-#: src/disc_printer/gui/window.py:120
+#: src/disc_printer/gui/window.py:132
 msgid "Drucken …"
 msgstr "打印 …"
 
-#: src/disc_printer/gui/window.py:142
+#: src/disc_printer/gui/window.py:154
 msgid "Disc-Vorschau"
 msgstr "光盘预览"
 
-#: src/disc_printer/gui/window.py:191
+#: src/disc_printer/gui/window.py:205
 msgid "Sprache:"
 msgstr "语言："
 
-#: src/disc_printer/gui/window.py:248
+#: src/disc_printer/gui/window.py:261
 msgid "Drucker"
 msgstr "打印机"
 
-#: src/disc_printer/gui/window.py:255
+#: src/disc_printer/gui/window.py:268
 msgid "Drucker:"
 msgstr "打印机："
 
-#: src/disc_printer/gui/window.py:259 src/disc_printer/gui/window.py:532
+#: src/disc_printer/gui/window.py:272 src/disc_printer/gui/window.py:768
 msgid "Erkenne Drucker …"
 msgstr "正在检测打印机 …"
 
-#: src/disc_printer/gui/window.py:267
+#: src/disc_printer/gui/window.py:280
 msgid "Drucker neu erkennen"
 msgstr "重新检测打印机"
 
-#: src/disc_printer/gui/window.py:294
-msgid "Disc-Optionen"
-msgstr "光盘选项"
+#. TRANSLATORS: Print area presets: "Standard" = inner 50 mm, outer 118 mm
+#. (regular discs); "Vollflächig" = inner 33 mm (hub-printable discs).
+#: src/disc_printer/gui/window.py:312
+msgid "Standard"
+msgstr "标准"
 
-#: src/disc_printer/gui/window.py:299
-msgid "Hub-Größe:"
-msgstr "轴心大小："
+#: src/disc_printer/gui/window.py:312
+msgid "Vollflächig"
+msgstr "全幅"
 
-#: src/disc_printer/gui/window.py:324 src/disc_printer/gui/window.py:1705
-#: src/disc_printer/gui/window.py:1798 src/disc_printer/gui/window.py:1813
+#: src/disc_printer/gui/window.py:316
+msgid "Außendurchmesser"
+msgstr "外径"
+
+#: src/disc_printer/gui/window.py:316
+msgid "Innendurchmesser"
+msgstr "内径"
+
+#. TRANSLATORS: Unit symbol for millimetres, as in "5 mm". Use the
+#. usual symbol of your language.
+#: src/disc_printer/gui/window.py:323
+msgid "mm"
+msgstr "mm"
+
+#. TRANSLATORS: Unit symbol for inches, as in "0.20 in". Use the usual
+#. symbol of your language.
+#: src/disc_printer/gui/window.py:326
+msgid "in"
+msgstr "in"
+
+#: src/disc_printer/gui/window.py:334 src/disc_printer/gui/window.py:527
+msgid "Druckbereich"
+msgstr "打印区域"
+
+#: src/disc_printer/gui/window.py:352
+msgid "Maßeinheit"
+msgstr "单位"
+
+#: src/disc_printer/gui/window.py:365
+msgid "Außen:"
+msgstr "外径："
+
+#: src/disc_printer/gui/window.py:365
+msgid "Innen:"
+msgstr "内径："
+
+#. TRANSLATORS: Tooltip of a print area preset, e.g.
+#. "Inner 50 mm, outer 118 mm"
+#: src/disc_printer/gui/window.py:425
+#, python-format
+msgid "Innen %(inner)s, außen %(outer)s"
+msgstr "内径 %(inner)s，外径 %(outer)s"
+
+#: src/disc_printer/gui/window.py:435
+#, python-format
+msgid ""
+"Außerhalb des üblichen Druckbereichs (innen ab %(inner)s, außen bis "
+"%(outer)s): Tinte kann auf dem Disc-Fach landen."
+msgstr ""
+"超出常规可打印区域（内径不小于 %(inner)s，外径不大于 %(outer)s）：墨水可能会"
+"沾到光盘托盘上。"
+
+#. TRANSLATORS: Tooltips of the arrow buttons that move the background
+#. image; %(length)s is the step, e.g. "5 mm" or "0.20 in".
+#: src/disc_printer/gui/window.py:537
+#, python-format
+msgid "%(length)s links"
+msgstr "向左 %(length)s"
+
+#: src/disc_printer/gui/window.py:538
+#, python-format
+msgid "%(length)s rechts"
+msgstr "向右 %(length)s"
+
+#: src/disc_printer/gui/window.py:539
+#, python-format
+msgid "%(length)s oben"
+msgstr "向上 %(length)s"
+
+#: src/disc_printer/gui/window.py:540
+#, python-format
+msgid "%(length)s unten"
+msgstr "向下 %(length)s"
+
+#: src/disc_printer/gui/window.py:560 src/disc_printer/gui/window.py:1920
+#: src/disc_printer/gui/window.py:2019 src/disc_printer/gui/window.py:2034
 msgid "Hintergrund"
 msgstr "背景"
 
-#: src/disc_printer/gui/window.py:330 src/disc_printer/gui/window.py:1541
+#: src/disc_printer/gui/window.py:566 src/disc_printer/gui/window.py:1756
 msgid "Hintergrundfarbe"
 msgstr "背景颜色"
 
-#: src/disc_printer/gui/window.py:338
+#: src/disc_printer/gui/window.py:574
 msgid "Zurücksetzen auf Weiß"
 msgstr "重置为白色"
 
-#: src/disc_printer/gui/window.py:345
+#: src/disc_printer/gui/window.py:581
 msgid "Bild:"
 msgstr "图像："
 
-#: src/disc_printer/gui/window.py:346
+#: src/disc_printer/gui/window.py:582
 msgid "Laden …"
 msgstr "加载 …"
 
-#: src/disc_printer/gui/window.py:354 src/disc_printer/gui/window.py:781
-#: src/disc_printer/gui/window.py:1612 src/disc_printer/gui/window.py:1641
-#: src/disc_printer/gui/window.py:1664
+#: src/disc_printer/gui/window.py:590 src/disc_printer/gui/window.py:996
+#: src/disc_printer/gui/window.py:1827 src/disc_printer/gui/window.py:1856
+#: src/disc_printer/gui/window.py:1879
 msgid "(kein Bild)"
 msgstr "（无图像）"
 
-#: src/disc_printer/gui/window.py:359 src/disc_printer/gui/window.py:1671
+#: src/disc_printer/gui/window.py:595 src/disc_printer/gui/window.py:1886
 msgid "Hintergrundbild entfernen"
 msgstr "删除背景图像"
 
-#: src/disc_printer/gui/window.py:367
+#: src/disc_printer/gui/window.py:603
 msgid "Hintergrundbild: nur Position &amp; Zoom, kein Drehen/Spiegeln."
 msgstr "背景图像：仅可调整位置 &amp; 缩放，不可旋转/翻转。"
 
 #. TRANSLATORS: Section title; "&" must stay as "&amp;" in Pango markup
-#: src/disc_printer/gui/window.py:379
+#: src/disc_printer/gui/window.py:615
 msgid "Bild-Position & Zoom"
 msgstr "图像位置 & 缩放"
 
-#: src/disc_printer/gui/window.py:384
+#: src/disc_printer/gui/window.py:620
 msgid "Zoom:"
 msgstr "缩放："
 
-#: src/disc_printer/gui/window.py:402
-msgid "5 mm links"
-msgstr "向左 5 mm"
-
-#: src/disc_printer/gui/window.py:403
-msgid "5 mm rechts"
-msgstr "向右 5 mm"
-
-#: src/disc_printer/gui/window.py:404
-msgid "5 mm oben"
-msgstr "向上 5 mm"
-
-#: src/disc_printer/gui/window.py:405
-msgid "5 mm unten"
-msgstr "向下 5 mm"
-
-#: src/disc_printer/gui/window.py:412
+#: src/disc_printer/gui/window.py:648
 msgid "⌂ Zentrieren"
 msgstr "⌂ 居中"
 
-#: src/disc_printer/gui/window.py:413 src/disc_printer/gui/window.py:1813
+#: src/disc_printer/gui/window.py:649 src/disc_printer/gui/window.py:2034
 msgid "Zurücksetzen"
 msgstr "重置"
 
-#: src/disc_printer/gui/window.py:421
+#: src/disc_printer/gui/window.py:657
 msgid "Bild ziehen = verschieben · Mausrad = Zoom"
 msgstr "拖动 = 移动 · 滚轮 = 缩放"
 
-#: src/disc_printer/gui/window.py:435
+#: src/disc_printer/gui/window.py:671
 msgid "Text-Elemente"
 msgstr "文本元素"
 
-#: src/disc_printer/gui/window.py:438 src/disc_printer/gui/window.py:855
+#: src/disc_printer/gui/window.py:674 src/disc_printer/gui/window.py:1070
 msgid "+ Hinzufügen"
 msgstr "+ 添加"
 
-#: src/disc_printer/gui/window.py:439
+#: src/disc_printer/gui/window.py:675
 msgid "Neues Text-Element hinzufügen"
 msgstr "添加新文本元素"
 
-#: src/disc_printer/gui/window.py:448
+#: src/disc_printer/gui/window.py:684
 msgid "Keine Text-Elemente"
 msgstr "无文本元素"
 
-#: src/disc_printer/gui/window.py:459
+#: src/disc_printer/gui/window.py:695
 msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
 msgstr "点击 = 选择 · 双击 = 编辑 · 拖动 = 移动"
 
-#: src/disc_printer/gui/window.py:486 src/disc_printer/gui/window.py:924
+#: src/disc_printer/gui/window.py:722 src/disc_printer/gui/window.py:1139
 msgid "Sichtbarkeit umschalten"
 msgstr "切换可见性"
 
-#: src/disc_printer/gui/window.py:495 src/disc_printer/gui/window.py:933
+#: src/disc_printer/gui/window.py:731 src/disc_printer/gui/window.py:1148
 msgid "Sperren / Entsperren"
 msgstr "锁定 / 解锁"
 
-#: src/disc_printer/gui/window.py:503 src/disc_printer/gui/window.py:941
+#: src/disc_printer/gui/window.py:739 src/disc_printer/gui/window.py:1156
 msgid "Element duplizieren"
 msgstr "复制元素"
 
-#: src/disc_printer/gui/window.py:516 src/disc_printer/gui/window.py:959
+#: src/disc_printer/gui/window.py:752 src/disc_printer/gui/window.py:1174
 msgid "Element löschen"
 msgstr "删除元素"
 
-#: src/disc_printer/gui/window.py:561
+#: src/disc_printer/gui/window.py:797
 msgid "(Kein Disc-Drucker gefunden)"
 msgstr "（未找到光盘打印机）"
 
-#: src/disc_printer/gui/window.py:564
+#: src/disc_printer/gui/window.py:800
 msgid "Kein Disc-fähiger Drucker erkannt."
 msgstr "未检测到支持光盘打印的打印机。"
 
-#: src/disc_printer/gui/window.py:568
+#: src/disc_printer/gui/window.py:804
 msgid "Kein Disc-fähiger Drucker gefunden"
 msgstr "未找到支持光盘打印的打印机"
 
-#: src/disc_printer/gui/window.py:607
+#: src/disc_printer/gui/window.py:843
 msgid "Prüfe Status …"
 msgstr "正在检查状态 …"
 
 #. TRANSLATORS: Placeholder for the file name in the print command shown
 #. below the printer selection ("lp -d PRINTER ... <file>"). One short
 #. lowercase word, as in command-line help texts.
-#: src/disc_printer/gui/window.py:615
+#: src/disc_printer/gui/window.py:851
 msgid "datei"
 msgstr "文件"
 
-#: src/disc_printer/gui/window.py:638
-msgid "Hub-Größe"
-msgstr "轴心大小"
-
-#: src/disc_printer/gui/window.py:650
+#: src/disc_printer/gui/window.py:864
 msgid "Design speichern"
 msgstr "保存设计"
 
-#: src/disc_printer/gui/window.py:652 src/disc_printer/gui/window.py:691
+#: src/disc_printer/gui/window.py:866 src/disc_printer/gui/window.py:905
 msgid "DiscPrint-Design (*.discprint)"
 msgstr "DiscPrint 设计 (*.discprint)"
 
-#: src/disc_printer/gui/window.py:655 src/disc_printer/gui/window.py:694
-#: src/disc_printer/gui/window.py:1033 src/disc_printer/gui/window.py:1560
+#: src/disc_printer/gui/window.py:869 src/disc_printer/gui/window.py:908
+#: src/disc_printer/gui/window.py:1248 src/disc_printer/gui/window.py:1775
 msgid "Alle Dateien"
 msgstr "所有文件"
 
-#: src/disc_printer/gui/window.py:679
+#: src/disc_printer/gui/window.py:893
 #, python-format
 msgid ""
 "Design konnte nicht gespeichert werden:\n"
@@ -299,11 +326,11 @@ msgstr ""
 "无法保存设计：\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:689
+#: src/disc_printer/gui/window.py:903
 msgid "Design öffnen"
 msgstr "打开设计"
 
-#: src/disc_printer/gui/window.py:715
+#: src/disc_printer/gui/window.py:928
 #, python-format
 msgid ""
 "Design konnte nicht geöffnet werden:\n"
@@ -312,81 +339,81 @@ msgstr ""
 "无法打开设计：\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:777 src/disc_printer/gui/window.py:1605
-#: src/disc_printer/gui/window.py:1654
+#: src/disc_printer/gui/window.py:992 src/disc_printer/gui/window.py:1820
+#: src/disc_printer/gui/window.py:1869
 msgid "(aus Datei geladen)"
 msgstr "（从文件加载）"
 
-#: src/disc_printer/gui/window.py:815
+#: src/disc_printer/gui/window.py:1030
 msgid "Ungespeicherte Änderungen verwerfen?"
 msgstr "放弃未保存的更改？"
 
-#: src/disc_printer/gui/window.py:816
+#: src/disc_printer/gui/window.py:1031
 msgid "Das aktuelle Design wurde seit dem letzten Speichern geändert."
 msgstr "当前设计自上次保存后已被修改。"
 
-#: src/disc_printer/gui/window.py:817
+#: src/disc_printer/gui/window.py:1032
 msgid "Speichern …"
 msgstr "保存 …"
 
-#: src/disc_printer/gui/window.py:817
+#: src/disc_printer/gui/window.py:1032
 msgid "Verwerfen"
 msgstr "放弃"
 
-#: src/disc_printer/gui/window.py:852
+#: src/disc_printer/gui/window.py:1067
 msgid "Bild-Elemente"
 msgstr "图像元素"
 
-#: src/disc_printer/gui/window.py:856
+#: src/disc_printer/gui/window.py:1071
 msgid "Bild-Element hinzufügen"
 msgstr "添加图像元素"
 
-#: src/disc_printer/gui/window.py:863
+#: src/disc_printer/gui/window.py:1078
 msgid "H spiegeln"
 msgstr "水平翻转"
 
-#: src/disc_printer/gui/window.py:867
+#: src/disc_printer/gui/window.py:1082
 msgid "V spiegeln"
 msgstr "垂直翻转"
 
-#: src/disc_printer/gui/window.py:877
+#: src/disc_printer/gui/window.py:1092
 msgid "Keine Bild-Elemente"
 msgstr "无图像元素"
 
-#: src/disc_printer/gui/window.py:947
+#: src/disc_printer/gui/window.py:1162
 msgid "Ebene nach oben"
 msgstr "上移一层"
 
-#: src/disc_printer/gui/window.py:953
+#: src/disc_printer/gui/window.py:1168
 msgid "Ebene nach unten"
 msgstr "下移一层"
 
-#: src/disc_printer/gui/window.py:978
+#: src/disc_printer/gui/window.py:1193
 msgid "Zurücksetzen auf 100 %"
 msgstr "重置为 100 %"
 
-#: src/disc_printer/gui/window.py:986
+#: src/disc_printer/gui/window.py:1201
 msgid "Opazität:"
 msgstr "不透明度："
 
-#: src/disc_printer/gui/window.py:999
+#: src/disc_printer/gui/window.py:1214
 msgid "Helligkeit:"
 msgstr "亮度："
 
-#: src/disc_printer/gui/window.py:1005
+#: src/disc_printer/gui/window.py:1220
 msgid "Kontrast:"
 msgstr "对比度："
 
-#: src/disc_printer/gui/window.py:1026 src/disc_printer/gui/window.py:1081
+#: src/disc_printer/gui/window.py:1241 src/disc_printer/gui/window.py:1296
 msgid "Bild hinzufügen"
 msgstr "添加图像"
 
 #. TRANSLATORS: File filter label in the image chooser dialog
-#: src/disc_printer/gui/window.py:1028 src/disc_printer/gui/window.py:1555
+#: src/disc_printer/gui/window.py:1243 src/disc_printer/gui/window.py:1770
 msgid "Bilder (PNG, JPG, WEBP …)"
 msgstr "图像 (PNG, JPG, WEBP …)"
 
-#: src/disc_printer/gui/window.py:1084 src/disc_printer/gui/window.py:1632
+#: src/disc_printer/gui/window.py:1299 src/disc_printer/gui/window.py:1847
 #, python-format
 msgid ""
 "Bild konnte nicht geladen werden:\n"
@@ -395,117 +422,117 @@ msgstr ""
 "无法加载图像：\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:1121
+#: src/disc_printer/gui/window.py:1336
 msgid "Opazität"
 msgstr "不透明度"
 
-#: src/disc_printer/gui/window.py:1163
+#: src/disc_printer/gui/window.py:1378
 msgid "Helligkeit"
 msgstr "亮度"
 
-#: src/disc_printer/gui/window.py:1205
+#: src/disc_printer/gui/window.py:1420
 msgid "Kontrast"
 msgstr "对比度"
 
-#: src/disc_printer/gui/window.py:1238
+#: src/disc_printer/gui/window.py:1453
 msgid "Helligkeit zurücksetzen"
 msgstr "重置亮度"
 
-#: src/disc_printer/gui/window.py:1267
+#: src/disc_printer/gui/window.py:1482
 msgid "Kontrast zurücksetzen"
 msgstr "重置对比度"
 
-#: src/disc_printer/gui/window.py:1284
+#: src/disc_printer/gui/window.py:1499
 msgid "Ebene"
 msgstr "图层"
 
-#: src/disc_printer/gui/window.py:1312
+#: src/disc_printer/gui/window.py:1527
 msgid "Bild löschen"
 msgstr "删除图像"
 
-#: src/disc_printer/gui/window.py:1341
+#: src/disc_printer/gui/window.py:1556
 msgid "H-Spiegeln"
 msgstr "水平翻转"
 
-#: src/disc_printer/gui/window.py:1355
+#: src/disc_printer/gui/window.py:1570
 msgid "V-Spiegeln"
 msgstr "垂直翻转"
 
-#: src/disc_printer/gui/window.py:1374 src/disc_printer/gui/window.py:1453
+#: src/disc_printer/gui/window.py:1589 src/disc_printer/gui/window.py:1668
 msgid "Sichtbarkeit"
 msgstr "可见性"
 
-#: src/disc_printer/gui/window.py:1393 src/disc_printer/gui/window.py:1472
+#: src/disc_printer/gui/window.py:1608 src/disc_printer/gui/window.py:1687
 msgid "Sperren"
 msgstr "锁定"
 
-#: src/disc_printer/gui/window.py:1436
+#: src/disc_printer/gui/window.py:1651
 msgid "Bild duplizieren"
 msgstr "复制图像"
 
-#: src/disc_printer/gui/window.py:1511
+#: src/disc_printer/gui/window.py:1726
 msgid "Text duplizieren"
 msgstr "复制文本"
 
-#: src/disc_printer/gui/window.py:1552
+#: src/disc_printer/gui/window.py:1767
 msgid "Hintergrundbild wählen"
 msgstr "选择背景图像"
 
-#: src/disc_printer/gui/window.py:1629
+#: src/disc_printer/gui/window.py:1844
 msgid "Hintergrundbild laden"
 msgstr "加载背景图像"
 
-#: src/disc_printer/gui/window.py:1705 src/disc_printer/gui/window.py:2224
+#: src/disc_printer/gui/window.py:1920 src/disc_printer/gui/window.py:2452
 msgid "Zoom"
 msgstr "缩放"
 
-#: src/disc_printer/gui/window.py:1798 src/disc_printer/gui/window.py:2167
-#: src/disc_printer/gui/window.py:2192
+#: src/disc_printer/gui/window.py:2019 src/disc_printer/gui/window.py:2395
+#: src/disc_printer/gui/window.py:2420
 msgid "Bewegen"
 msgstr "移动"
 
-#: src/disc_printer/gui/window.py:1939
+#: src/disc_printer/gui/window.py:2167
 msgid "Text löschen"
 msgstr "删除文本"
 
-#: src/disc_printer/gui/window.py:1957
+#: src/disc_printer/gui/window.py:2185
 msgid "Bereit"
 msgstr "就绪"
 
-#: src/disc_printer/gui/window.py:1960
+#: src/disc_printer/gui/window.py:2188
 msgid "Deaktiviert / gestoppt"
 msgstr "已禁用 / 已停止"
 
-#: src/disc_printer/gui/window.py:1963
+#: src/disc_printer/gui/window.py:2191
 msgid "Status unbekannt"
 msgstr "状态未知"
 
-#: src/disc_printer/gui/window.py:1965
+#: src/disc_printer/gui/window.py:2193
 msgid "Nicht erreichbar (Timeout)"
 msgstr "无法访问（超时）"
 
-#: src/disc_printer/gui/window.py:1968
+#: src/disc_printer/gui/window.py:2196
 #, python-format
 msgid "Fehler: %s"
 msgstr "错误：%s"
 
-#: src/disc_printer/gui/window.py:1980
+#: src/disc_printer/gui/window.py:2208
 msgid "Im Netzwerk verfügbar (treiberlos)"
 msgstr "网络中可用 (免驱动)"
 
-#: src/disc_printer/gui/window.py:1985
+#: src/disc_printer/gui/window.py:2213
 msgid "Nicht mehr im Netzwerk gefunden (treiberlos)"
 msgstr "网络中已找不到 (免驱动)"
 
-#: src/disc_printer/gui/window.py:2002
+#: src/disc_printer/gui/window.py:2230
 msgid "Kein Drucker ausgewählt."
 msgstr "未选择打印机。"
 
-#: src/disc_printer/gui/window.py:2007
+#: src/disc_printer/gui/window.py:2235
 msgid "Disc drucken?"
 msgstr "打印光盘？"
 
-#: src/disc_printer/gui/window.py:2011
+#: src/disc_printer/gui/window.py:2239
 #, python-format
 msgid ""
 "Drucker:    %(name)s\n"
@@ -518,11 +545,11 @@ msgstr ""
 "\n"
 "%(cmd)s"
 
-#: src/disc_printer/gui/window.py:2015
+#: src/disc_printer/gui/window.py:2243
 msgid "Drucken"
 msgstr "打印"
 
-#: src/disc_printer/gui/window.py:2040
+#: src/disc_printer/gui/window.py:2268
 #, python-format
 msgid ""
 "Render-Fehler:\n"
@@ -531,11 +558,11 @@ msgstr ""
 "渲染错误：\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:2076
+#: src/disc_printer/gui/window.py:2304
 msgid "Timeout: Drucker antwortet nicht (>30 s)."
 msgstr "超时：打印机无响应（>30 秒）。"
 
-#: src/disc_printer/gui/window.py:2079 src/disc_printer/printer.py:45
+#: src/disc_printer/gui/window.py:2307 src/disc_printer/printer.py:45
 #, python-format
 msgid ""
 "Druckfehler:\n"
@@ -544,19 +571,19 @@ msgstr ""
 "打印错误：\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:2089
+#: src/disc_printer/gui/window.py:2317
 msgid "Druckauftrag gesendet"
 msgstr "打印任务已发送"
 
-#: src/disc_printer/gui/window.py:2091
+#: src/disc_printer/gui/window.py:2319
 msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
 msgstr "打印任务已成功加入队列。"
 
-#: src/disc_printer/gui/window.py:2169
+#: src/disc_printer/gui/window.py:2397
 msgid "Drehen"
 msgstr "旋转"
 
-#: src/disc_printer/gui/window.py:2171
+#: src/disc_printer/gui/window.py:2399
 msgid "Skalieren"
 msgstr "调整大小"
 

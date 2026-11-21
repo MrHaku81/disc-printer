@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: disc-printer 0.1.3\n"
 "Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
-"POT-Creation-Date: 2026-11-19 21:31+0100\n"
+"POT-Creation-Date: 2026-11-21 12:55+0100\n"
 "PO-Revision-Date: 2026-04-24 14:00+0000\n"
 "Last-Translator: Claude AI\n"
 "Language-Team: Persian\n"
@@ -15,41 +15,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. TRANSLATORS: Hub diameter inside the disc preview, two lines (millimetres,
-#. then inches). Keep both placeholders and the line break.
-#: src/disc_printer/gui/canvas.py:603
-#, python-format
-msgid ""
-"Ø %(mm).0f mm\n"
-"%(inch).2f in"
-msgstr ""
-"Ø %(mm).0f میلی‌متر\n"
-"%(inch).2f اینچ"
-
-#: src/disc_printer/gui/canvas.py:609
-msgid "Hub · nicht bedruckbar"
-msgstr "هاب · قابل چاپ نیست"
-
-#. TRANSLATORS: Printable diameter in the disc preview, e.g.
-#. "Ø 118 mm / 4.65 in (printable)". Keep both placeholders.
-#: src/disc_printer/gui/canvas.py:615
-#, python-format
-msgid "Ø %(mm).0f mm / %(inch).2f in (bedruckbar)"
-msgstr "Ø %(mm).0f میلی‌متر / %(inch).2f اینچ (قابل چاپ)"
-
-#. TRANSLATORS: Disc or hub diameter, e.g. "Ø 120 mm / 4.72 in".
-#. Keep both placeholders; the order may be changed.
-#: src/disc_printer/gui/canvas.py:620 src/disc_printer/gui/window.py:303
-#, python-format
-msgid "Ø %(mm).0f mm / %(inch).2f in"
-msgstr "Ø %(mm).0f میلی‌متر / %(inch).2f اینچ"
-
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:509
-#: src/disc_printer/gui/window.py:1911
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:745
+#: src/disc_printer/gui/window.py:2139
 msgid "Text bearbeiten"
 msgstr "ویرایش متن"
 
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:1857
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:2085
 msgid "Text hinzufügen"
 msgstr "افزودن متن"
 
@@ -69,228 +40,284 @@ msgstr "قلم:"
 msgid "Textfarbe"
 msgstr "رنگ متن"
 
-#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:329
+#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:565
 msgid "Farbe:"
 msgstr "رنگ:"
 
-#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:817
-#: src/disc_printer/gui/window.py:2015
+#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:1032
+#: src/disc_printer/gui/window.py:2243
 msgid "Abbrechen"
 msgstr "لغو"
 
-#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:2093
+#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:2321
 msgid "OK"
 msgstr "تأیید"
 
-#: src/disc_printer/gui/window.py:71 src/disc_printer/gui/window.py:275
+#: src/disc_printer/gui/window.py:83 src/disc_printer/gui/window.py:288
 msgid "Initialisierung …"
 msgstr "در حال راه‌اندازی …"
 
-#: src/disc_printer/gui/window.py:93
+#: src/disc_printer/gui/window.py:105
 msgid "Neues Design"
 msgstr "طرح جدید"
 
-#: src/disc_printer/gui/window.py:98
+#: src/disc_printer/gui/window.py:110
 msgid "Design öffnen …"
 msgstr "باز کردن طرح …"
 
-#: src/disc_printer/gui/window.py:103
+#: src/disc_printer/gui/window.py:115
 msgid "Design speichern …"
 msgstr "ذخیره طرح …"
 
-#: src/disc_printer/gui/window.py:108 src/disc_printer/gui/window.py:2109
+#: src/disc_printer/gui/window.py:120 src/disc_printer/gui/window.py:2337
 msgid "Rückgängig"
 msgstr "واگرد"
 
-#: src/disc_printer/gui/window.py:114 src/disc_printer/gui/window.py:2112
+#: src/disc_printer/gui/window.py:126 src/disc_printer/gui/window.py:2340
 msgid "Wiederherstellen"
 msgstr "ازنو"
 
-#: src/disc_printer/gui/window.py:120
+#: src/disc_printer/gui/window.py:132
 msgid "Drucken …"
 msgstr "چاپ …"
 
-#: src/disc_printer/gui/window.py:142
+#: src/disc_printer/gui/window.py:154
 msgid "Disc-Vorschau"
 msgstr "پیش‌نمایش دیسک"
 
-#: src/disc_printer/gui/window.py:191
+#: src/disc_printer/gui/window.py:205
 msgid "Sprache:"
 msgstr "زبان:"
 
-#: src/disc_printer/gui/window.py:248
+#: src/disc_printer/gui/window.py:261
 msgid "Drucker"
 msgstr "چاپگر"
 
-#: src/disc_printer/gui/window.py:255
+#: src/disc_printer/gui/window.py:268
 msgid "Drucker:"
 msgstr "چاپگر:"
 
-#: src/disc_printer/gui/window.py:259 src/disc_printer/gui/window.py:532
+#: src/disc_printer/gui/window.py:272 src/disc_printer/gui/window.py:768
 msgid "Erkenne Drucker …"
 msgstr "شناسایی چاپگر …"
 
-#: src/disc_printer/gui/window.py:267
+#: src/disc_printer/gui/window.py:280
 msgid "Drucker neu erkennen"
 msgstr "شناسایی مجدد چاپگر"
 
-#: src/disc_printer/gui/window.py:294
-msgid "Disc-Optionen"
-msgstr "گزینه‌های دیسک"
+#. TRANSLATORS: Print area presets: "Standard" = inner 50 mm, outer 118 mm
+#. (regular discs); "Vollflächig" = inner 33 mm (hub-printable discs).
+#: src/disc_printer/gui/window.py:312
+msgid "Standard"
+msgstr "استاندارد"
 
-#: src/disc_printer/gui/window.py:299
-msgid "Hub-Größe:"
-msgstr "اندازه هاب:"
+#: src/disc_printer/gui/window.py:312
+msgid "Vollflächig"
+msgstr "تمام سطح"
 
-#: src/disc_printer/gui/window.py:324 src/disc_printer/gui/window.py:1705
-#: src/disc_printer/gui/window.py:1798 src/disc_printer/gui/window.py:1813
+#: src/disc_printer/gui/window.py:316
+msgid "Außendurchmesser"
+msgstr "قطر خارجی"
+
+#: src/disc_printer/gui/window.py:316
+msgid "Innendurchmesser"
+msgstr "قطر داخلی"
+
+#. TRANSLATORS: Unit symbol for millimetres, as in "5 mm". Use the
+#. usual symbol of your language.
+#: src/disc_printer/gui/window.py:323
+msgid "mm"
+msgstr "میلی‌متر"
+
+#. TRANSLATORS: Unit symbol for inches, as in "0.20 in". Use the usual
+#. symbol of your language.
+#: src/disc_printer/gui/window.py:326
+msgid "in"
+msgstr "اینچ"
+
+#: src/disc_printer/gui/window.py:334 src/disc_printer/gui/window.py:527
+msgid "Druckbereich"
+msgstr "ناحیه چاپ"
+
+#: src/disc_printer/gui/window.py:352
+msgid "Maßeinheit"
+msgstr "واحد"
+
+#: src/disc_printer/gui/window.py:365
+msgid "Außen:"
+msgstr "خارجی:"
+
+#: src/disc_printer/gui/window.py:365
+msgid "Innen:"
+msgstr "داخلی:"
+
+#. TRANSLATORS: Tooltip of a print area preset, e.g.
+#. "Inner 50 mm, outer 118 mm"
+#: src/disc_printer/gui/window.py:425
+#, python-format
+msgid "Innen %(inner)s, außen %(outer)s"
+msgstr "داخلی %(inner)s، خارجی %(outer)s"
+
+#: src/disc_printer/gui/window.py:435
+#, python-format
+msgid ""
+"Außerhalb des üblichen Druckbereichs (innen ab %(inner)s, außen bis "
+"%(outer)s): Tinte kann auf dem Disc-Fach landen."
+msgstr ""
+"خارج از ناحیه معمول قابل چاپ (داخلی از %(inner)s، خارجی تا %(outer)s): ممکن "
+"است جوهر روی سینی دیسک بریزد."
+
+#. TRANSLATORS: Tooltips of the arrow buttons that move the background
+#. image; %(length)s is the step, e.g. "5 mm" or "0.20 in".
+#: src/disc_printer/gui/window.py:537
+#, python-format
+msgid "%(length)s links"
+msgstr "%(length)s چپ"
+
+#: src/disc_printer/gui/window.py:538
+#, python-format
+msgid "%(length)s rechts"
+msgstr "%(length)s راست"
+
+#: src/disc_printer/gui/window.py:539
+#, python-format
+msgid "%(length)s oben"
+msgstr "%(length)s بالا"
+
+#: src/disc_printer/gui/window.py:540
+#, python-format
+msgid "%(length)s unten"
+msgstr "%(length)s پایین"
+
+#: src/disc_printer/gui/window.py:560 src/disc_printer/gui/window.py:1920
+#: src/disc_printer/gui/window.py:2019 src/disc_printer/gui/window.py:2034
 msgid "Hintergrund"
 msgstr "پس‌زمینه"
 
-#: src/disc_printer/gui/window.py:330 src/disc_printer/gui/window.py:1541
+#: src/disc_printer/gui/window.py:566 src/disc_printer/gui/window.py:1756
 msgid "Hintergrundfarbe"
 msgstr "رنگ پس‌زمینه"
 
-#: src/disc_printer/gui/window.py:338
+#: src/disc_printer/gui/window.py:574
 msgid "Zurücksetzen auf Weiß"
 msgstr "بازنشانی به سفید"
 
-#: src/disc_printer/gui/window.py:345
+#: src/disc_printer/gui/window.py:581
 msgid "Bild:"
 msgstr "تصویر:"
 
-#: src/disc_printer/gui/window.py:346
+#: src/disc_printer/gui/window.py:582
 msgid "Laden …"
 msgstr "بارگذاری …"
 
-#: src/disc_printer/gui/window.py:354 src/disc_printer/gui/window.py:781
-#: src/disc_printer/gui/window.py:1612 src/disc_printer/gui/window.py:1641
-#: src/disc_printer/gui/window.py:1664
+#: src/disc_printer/gui/window.py:590 src/disc_printer/gui/window.py:996
+#: src/disc_printer/gui/window.py:1827 src/disc_printer/gui/window.py:1856
+#: src/disc_printer/gui/window.py:1879
 msgid "(kein Bild)"
 msgstr "(بدون تصویر)"
 
-#: src/disc_printer/gui/window.py:359 src/disc_printer/gui/window.py:1671
+#: src/disc_printer/gui/window.py:595 src/disc_printer/gui/window.py:1886
 msgid "Hintergrundbild entfernen"
 msgstr "حذف تصویر پس‌زمینه"
 
-#: src/disc_printer/gui/window.py:367
+#: src/disc_printer/gui/window.py:603
 msgid "Hintergrundbild: nur Position &amp; Zoom, kein Drehen/Spiegeln."
 msgstr "تصویر پس‌زمینه: فقط موقعیت و بزرگ‌نمایی، بدون چرخش/قرینه‌سازی."
 
 #. TRANSLATORS: Section title; "&" must stay as "&amp;" in Pango markup
-#: src/disc_printer/gui/window.py:379
+#: src/disc_printer/gui/window.py:615
 msgid "Bild-Position & Zoom"
 msgstr "موقعیت تصویر و بزرگ‌نمایی"
 
-#: src/disc_printer/gui/window.py:384
+#: src/disc_printer/gui/window.py:620
 msgid "Zoom:"
 msgstr "بزرگ‌نمایی:"
 
-#: src/disc_printer/gui/window.py:402
-msgid "5 mm links"
-msgstr "۵ میلی‌متر چپ"
-
-#: src/disc_printer/gui/window.py:403
-msgid "5 mm rechts"
-msgstr "۵ میلی‌متر راست"
-
-#: src/disc_printer/gui/window.py:404
-msgid "5 mm oben"
-msgstr "۵ میلی‌متر بالا"
-
-#: src/disc_printer/gui/window.py:405
-msgid "5 mm unten"
-msgstr "۵ میلی‌متر پایین"
-
-#: src/disc_printer/gui/window.py:412
+#: src/disc_printer/gui/window.py:648
 msgid "⌂ Zentrieren"
 msgstr "⌂ وسط‌چین"
 
-#: src/disc_printer/gui/window.py:413 src/disc_printer/gui/window.py:1813
+#: src/disc_printer/gui/window.py:649 src/disc_printer/gui/window.py:2034
 msgid "Zurücksetzen"
 msgstr "بازنشانی"
 
-#: src/disc_printer/gui/window.py:421
+#: src/disc_printer/gui/window.py:657
 msgid "Bild ziehen = verschieben · Mausrad = Zoom"
 msgstr "کشیدن = جابجایی · چرخ ماوس = بزرگ‌نمایی"
 
-#: src/disc_printer/gui/window.py:435
+#: src/disc_printer/gui/window.py:671
 msgid "Text-Elemente"
 msgstr "عناصر متنی"
 
-#: src/disc_printer/gui/window.py:438 src/disc_printer/gui/window.py:855
+#: src/disc_printer/gui/window.py:674 src/disc_printer/gui/window.py:1070
 msgid "+ Hinzufügen"
 msgstr "+ افزودن"
 
-#: src/disc_printer/gui/window.py:439
+#: src/disc_printer/gui/window.py:675
 msgid "Neues Text-Element hinzufügen"
 msgstr "افزودن عنصر متنی جدید"
 
-#: src/disc_printer/gui/window.py:448
+#: src/disc_printer/gui/window.py:684
 msgid "Keine Text-Elemente"
 msgstr "بدون عناصر متنی"
 
-#: src/disc_printer/gui/window.py:459
+#: src/disc_printer/gui/window.py:695
 msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
 msgstr "کلیک = انتخاب · دوبار کلیک = ویرایش · کشیدن = جابجایی"
 
-#: src/disc_printer/gui/window.py:486 src/disc_printer/gui/window.py:924
+#: src/disc_printer/gui/window.py:722 src/disc_printer/gui/window.py:1139
 msgid "Sichtbarkeit umschalten"
 msgstr "تغییر وضعیت نمایش"
 
-#: src/disc_printer/gui/window.py:495 src/disc_printer/gui/window.py:933
+#: src/disc_printer/gui/window.py:731 src/disc_printer/gui/window.py:1148
 msgid "Sperren / Entsperren"
 msgstr "قفل / باز کردن قفل"
 
-#: src/disc_printer/gui/window.py:503 src/disc_printer/gui/window.py:941
+#: src/disc_printer/gui/window.py:739 src/disc_printer/gui/window.py:1156
 msgid "Element duplizieren"
 msgstr "تکثیر عنصر"
 
-#: src/disc_printer/gui/window.py:516 src/disc_printer/gui/window.py:959
+#: src/disc_printer/gui/window.py:752 src/disc_printer/gui/window.py:1174
 msgid "Element löschen"
 msgstr "حذف عنصر"
 
-#: src/disc_printer/gui/window.py:561
+#: src/disc_printer/gui/window.py:797
 msgid "(Kein Disc-Drucker gefunden)"
 msgstr "(چاپگر دیسک یافت نشد)"
 
-#: src/disc_printer/gui/window.py:564
+#: src/disc_printer/gui/window.py:800
 msgid "Kein Disc-fähiger Drucker erkannt."
 msgstr "چاپگر سازگار با دیسک شناسایی نشد."
 
-#: src/disc_printer/gui/window.py:568
+#: src/disc_printer/gui/window.py:804
 msgid "Kein Disc-fähiger Drucker gefunden"
 msgstr "چاپگر سازگار با دیسک یافت نشد"
 
-#: src/disc_printer/gui/window.py:607
+#: src/disc_printer/gui/window.py:843
 msgid "Prüfe Status …"
 msgstr "بررسی وضعیت …"
 
 #. TRANSLATORS: Placeholder for the file name in the print command shown
 #. below the printer selection ("lp -d PRINTER ... <file>"). One short
 #. lowercase word, as in command-line help texts.
-#: src/disc_printer/gui/window.py:615
+#: src/disc_printer/gui/window.py:851
 msgid "datei"
 msgstr "فایل"
 
-#: src/disc_printer/gui/window.py:638
-msgid "Hub-Größe"
-msgstr "اندازه هاب"
-
-#: src/disc_printer/gui/window.py:650
+#: src/disc_printer/gui/window.py:864
 msgid "Design speichern"
 msgstr "ذخیره طرح"
 
-#: src/disc_printer/gui/window.py:652 src/disc_printer/gui/window.py:691
+#: src/disc_printer/gui/window.py:866 src/disc_printer/gui/window.py:905
 msgid "DiscPrint-Design (*.discprint)"
 msgstr "طرح DiscPrint (*.discprint)"
 
-#: src/disc_printer/gui/window.py:655 src/disc_printer/gui/window.py:694
-#: src/disc_printer/gui/window.py:1033 src/disc_printer/gui/window.py:1560
+#: src/disc_printer/gui/window.py:869 src/disc_printer/gui/window.py:908
+#: src/disc_printer/gui/window.py:1248 src/disc_printer/gui/window.py:1775
 msgid "Alle Dateien"
 msgstr "همه فایل‌ها"
 
-#: src/disc_printer/gui/window.py:679
+#: src/disc_printer/gui/window.py:893
 #, python-format
 msgid ""
 "Design konnte nicht gespeichert werden:\n"
@@ -299,11 +326,11 @@ msgstr ""
 "ذخیره طرح ممکن نشد:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:689
+#: src/disc_printer/gui/window.py:903
 msgid "Design öffnen"
 msgstr "باز کردن طرح"
 
-#: src/disc_printer/gui/window.py:715
+#: src/disc_printer/gui/window.py:928
 #, python-format
 msgid ""
 "Design konnte nicht geöffnet werden:\n"
@@ -312,81 +339,81 @@ msgstr ""
 "باز کردن طرح ممکن نشد:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:777 src/disc_printer/gui/window.py:1605
-#: src/disc_printer/gui/window.py:1654
+#: src/disc_printer/gui/window.py:992 src/disc_printer/gui/window.py:1820
+#: src/disc_printer/gui/window.py:1869
 msgid "(aus Datei geladen)"
 msgstr "(بارگذاری‌شده از فایل)"
 
-#: src/disc_printer/gui/window.py:815
+#: src/disc_printer/gui/window.py:1030
 msgid "Ungespeicherte Änderungen verwerfen?"
 msgstr "تغییرات ذخیره‌نشده کنار گذاشته شود؟"
 
-#: src/disc_printer/gui/window.py:816
+#: src/disc_printer/gui/window.py:1031
 msgid "Das aktuelle Design wurde seit dem letzten Speichern geändert."
 msgstr "طرح فعلی از آخرین ذخیره تغییر کرده است."
 
-#: src/disc_printer/gui/window.py:817
+#: src/disc_printer/gui/window.py:1032
 msgid "Speichern …"
 msgstr "ذخیره …"
 
-#: src/disc_printer/gui/window.py:817
+#: src/disc_printer/gui/window.py:1032
 msgid "Verwerfen"
 msgstr "کنار گذاشتن"
 
-#: src/disc_printer/gui/window.py:852
+#: src/disc_printer/gui/window.py:1067
 msgid "Bild-Elemente"
 msgstr "عناصر تصویری"
 
-#: src/disc_printer/gui/window.py:856
+#: src/disc_printer/gui/window.py:1071
 msgid "Bild-Element hinzufügen"
 msgstr "افزودن عنصر تصویری"
 
-#: src/disc_printer/gui/window.py:863
+#: src/disc_printer/gui/window.py:1078
 msgid "H spiegeln"
 msgstr "قرینه افقی"
 
-#: src/disc_printer/gui/window.py:867
+#: src/disc_printer/gui/window.py:1082
 msgid "V spiegeln"
 msgstr "قرینه عمودی"
 
-#: src/disc_printer/gui/window.py:877
+#: src/disc_printer/gui/window.py:1092
 msgid "Keine Bild-Elemente"
 msgstr "بدون عناصر تصویری"
 
-#: src/disc_printer/gui/window.py:947
+#: src/disc_printer/gui/window.py:1162
 msgid "Ebene nach oben"
 msgstr "لایه بالاتر"
 
-#: src/disc_printer/gui/window.py:953
+#: src/disc_printer/gui/window.py:1168
 msgid "Ebene nach unten"
 msgstr "لایه پایین‌تر"
 
-#: src/disc_printer/gui/window.py:978
+#: src/disc_printer/gui/window.py:1193
 msgid "Zurücksetzen auf 100 %"
 msgstr "بازنشانی به 100 %"
 
-#: src/disc_printer/gui/window.py:986
+#: src/disc_printer/gui/window.py:1201
 msgid "Opazität:"
 msgstr "کدری:"
 
-#: src/disc_printer/gui/window.py:999
+#: src/disc_printer/gui/window.py:1214
 msgid "Helligkeit:"
 msgstr "روشنایی:"
 
-#: src/disc_printer/gui/window.py:1005
+#: src/disc_printer/gui/window.py:1220
 msgid "Kontrast:"
 msgstr "کنتراست:"
 
-#: src/disc_printer/gui/window.py:1026 src/disc_printer/gui/window.py:1081
+#: src/disc_printer/gui/window.py:1241 src/disc_printer/gui/window.py:1296
 msgid "Bild hinzufügen"
 msgstr "افزودن تصویر"
 
 #. TRANSLATORS: File filter label in the image chooser dialog
-#: src/disc_printer/gui/window.py:1028 src/disc_printer/gui/window.py:1555
+#: src/disc_printer/gui/window.py:1243 src/disc_printer/gui/window.py:1770
 msgid "Bilder (PNG, JPG, WEBP …)"
 msgstr "تصاویر (PNG, JPG, WEBP …)"
 
-#: src/disc_printer/gui/window.py:1084 src/disc_printer/gui/window.py:1632
+#: src/disc_printer/gui/window.py:1299 src/disc_printer/gui/window.py:1847
 #, python-format
 msgid ""
 "Bild konnte nicht geladen werden:\n"
@@ -395,117 +422,117 @@ msgstr ""
 "بارگذاری تصویر ممکن نشد:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:1121
+#: src/disc_printer/gui/window.py:1336
 msgid "Opazität"
 msgstr "کدری"
 
-#: src/disc_printer/gui/window.py:1163
+#: src/disc_printer/gui/window.py:1378
 msgid "Helligkeit"
 msgstr "روشنایی"
 
-#: src/disc_printer/gui/window.py:1205
+#: src/disc_printer/gui/window.py:1420
 msgid "Kontrast"
 msgstr "کنتراست"
 
-#: src/disc_printer/gui/window.py:1238
+#: src/disc_printer/gui/window.py:1453
 msgid "Helligkeit zurücksetzen"
 msgstr "بازنشانی روشنایی"
 
-#: src/disc_printer/gui/window.py:1267
+#: src/disc_printer/gui/window.py:1482
 msgid "Kontrast zurücksetzen"
 msgstr "بازنشانی کنتراست"
 
-#: src/disc_printer/gui/window.py:1284
+#: src/disc_printer/gui/window.py:1499
 msgid "Ebene"
 msgstr "لایه"
 
-#: src/disc_printer/gui/window.py:1312
+#: src/disc_printer/gui/window.py:1527
 msgid "Bild löschen"
 msgstr "حذف تصویر"
 
-#: src/disc_printer/gui/window.py:1341
+#: src/disc_printer/gui/window.py:1556
 msgid "H-Spiegeln"
 msgstr "قرینه افقی"
 
-#: src/disc_printer/gui/window.py:1355
+#: src/disc_printer/gui/window.py:1570
 msgid "V-Spiegeln"
 msgstr "قرینه عمودی"
 
-#: src/disc_printer/gui/window.py:1374 src/disc_printer/gui/window.py:1453
+#: src/disc_printer/gui/window.py:1589 src/disc_printer/gui/window.py:1668
 msgid "Sichtbarkeit"
 msgstr "نمایش"
 
-#: src/disc_printer/gui/window.py:1393 src/disc_printer/gui/window.py:1472
+#: src/disc_printer/gui/window.py:1608 src/disc_printer/gui/window.py:1687
 msgid "Sperren"
 msgstr "قفل"
 
-#: src/disc_printer/gui/window.py:1436
+#: src/disc_printer/gui/window.py:1651
 msgid "Bild duplizieren"
 msgstr "تکثیر تصویر"
 
-#: src/disc_printer/gui/window.py:1511
+#: src/disc_printer/gui/window.py:1726
 msgid "Text duplizieren"
 msgstr "تکثیر متن"
 
-#: src/disc_printer/gui/window.py:1552
+#: src/disc_printer/gui/window.py:1767
 msgid "Hintergrundbild wählen"
 msgstr "انتخاب تصویر پس‌زمینه"
 
-#: src/disc_printer/gui/window.py:1629
+#: src/disc_printer/gui/window.py:1844
 msgid "Hintergrundbild laden"
 msgstr "بارگذاری تصویر پس‌زمینه"
 
-#: src/disc_printer/gui/window.py:1705 src/disc_printer/gui/window.py:2224
+#: src/disc_printer/gui/window.py:1920 src/disc_printer/gui/window.py:2452
 msgid "Zoom"
 msgstr "بزرگ‌نمایی"
 
-#: src/disc_printer/gui/window.py:1798 src/disc_printer/gui/window.py:2167
-#: src/disc_printer/gui/window.py:2192
+#: src/disc_printer/gui/window.py:2019 src/disc_printer/gui/window.py:2395
+#: src/disc_printer/gui/window.py:2420
 msgid "Bewegen"
 msgstr "جابجایی"
 
-#: src/disc_printer/gui/window.py:1939
+#: src/disc_printer/gui/window.py:2167
 msgid "Text löschen"
 msgstr "حذف متن"
 
-#: src/disc_printer/gui/window.py:1957
+#: src/disc_printer/gui/window.py:2185
 msgid "Bereit"
 msgstr "آماده"
 
-#: src/disc_printer/gui/window.py:1960
+#: src/disc_printer/gui/window.py:2188
 msgid "Deaktiviert / gestoppt"
 msgstr "غیرفعال / متوقف"
 
-#: src/disc_printer/gui/window.py:1963
+#: src/disc_printer/gui/window.py:2191
 msgid "Status unbekannt"
 msgstr "وضعیت نامشخص"
 
-#: src/disc_printer/gui/window.py:1965
+#: src/disc_printer/gui/window.py:2193
 msgid "Nicht erreichbar (Timeout)"
 msgstr "غیرقابل دسترس (زمان پایان یافت)"
 
-#: src/disc_printer/gui/window.py:1968
+#: src/disc_printer/gui/window.py:2196
 #, python-format
 msgid "Fehler: %s"
 msgstr "خطا: %s"
 
-#: src/disc_printer/gui/window.py:1980
+#: src/disc_printer/gui/window.py:2208
 msgid "Im Netzwerk verfügbar (treiberlos)"
 msgstr "در شبکه در دسترس (بدون درایور)"
 
-#: src/disc_printer/gui/window.py:1985
+#: src/disc_printer/gui/window.py:2213
 msgid "Nicht mehr im Netzwerk gefunden (treiberlos)"
 msgstr "دیگر در شبکه یافت نمی‌شود (بدون درایور)"
 
-#: src/disc_printer/gui/window.py:2002
+#: src/disc_printer/gui/window.py:2230
 msgid "Kein Drucker ausgewählt."
 msgstr "چاپگری انتخاب نشده."
 
-#: src/disc_printer/gui/window.py:2007
+#: src/disc_printer/gui/window.py:2235
 msgid "Disc drucken?"
 msgstr "چاپ دیسک؟"
 
-#: src/disc_printer/gui/window.py:2011
+#: src/disc_printer/gui/window.py:2239
 #, python-format
 msgid ""
 "Drucker:    %(name)s\n"
@@ -518,11 +545,11 @@ msgstr ""
 "\n"
 "%(cmd)s"
 
-#: src/disc_printer/gui/window.py:2015
+#: src/disc_printer/gui/window.py:2243
 msgid "Drucken"
 msgstr "چاپ"
 
-#: src/disc_printer/gui/window.py:2040
+#: src/disc_printer/gui/window.py:2268
 #, python-format
 msgid ""
 "Render-Fehler:\n"
@@ -531,11 +558,11 @@ msgstr ""
 "خطای رندر:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:2076
+#: src/disc_printer/gui/window.py:2304
 msgid "Timeout: Drucker antwortet nicht (>30 s)."
 msgstr "زمان پایان یافت: چاپگر پاسخ نمی‌دهد (>30 ثانیه)."
 
-#: src/disc_printer/gui/window.py:2079 src/disc_printer/printer.py:45
+#: src/disc_printer/gui/window.py:2307 src/disc_printer/printer.py:45
 #, python-format
 msgid ""
 "Druckfehler:\n"
@@ -544,19 +571,19 @@ msgstr ""
 "خطای چاپ:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:2089
+#: src/disc_printer/gui/window.py:2317
 msgid "Druckauftrag gesendet"
 msgstr "کار چاپ ارسال شد"
 
-#: src/disc_printer/gui/window.py:2091
+#: src/disc_printer/gui/window.py:2319
 msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
 msgstr "کار چاپ با موفقیت در صف قرار گرفت."
 
-#: src/disc_printer/gui/window.py:2169
+#: src/disc_printer/gui/window.py:2397
 msgid "Drehen"
 msgstr "چرخش"
 
-#: src/disc_printer/gui/window.py:2171
+#: src/disc_printer/gui/window.py:2399
 msgid "Skalieren"
 msgstr "تغییر اندازه"
 
