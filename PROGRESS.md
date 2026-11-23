@@ -6,6 +6,27 @@ durch Klaus. GitHub-Release und AUR stehen noch aus (Schritt 7 unten erst nach
 dem Test). Zuletzt veröffentlicht: 0.1.3 am 2026-11-19 (GitHub-Release mit
 Flatpak-Bundle, AUR 0.1.3-1).
 
+## Geklärt
+
+Entschiedene Fragen, jeweils mit Datum und Begründung. Nicht erneut
+vorschlagen; neue Entscheidungen am Ende eines Auftrags hier eintragen.
+
+- **2026-11-13 (0.1.2), treiberlose Drucker:** Die Antwort ist eine feste
+  CUPS-Warteschlange, so steht es im README; damit ist das Problem für alle
+  Installationsarten gelöst. Im Flatpak läuft die IPP-Erkennung nicht
+  (`ippfind`/`ipptool` nicht im Bundle, CUPS dort ohne Avahi gebaut, kein
+  Netzrecht; geprüft am 2026-11-23 in der Runtime ohne Netz), derselbe Rat gilt
+  dort. Nichts ändern, weder am Manifest noch am README.
+- **2026-11-23, Programmsymbol:** nur ein Symbol für alle Größen, die
+  vereinfachte Fassung (Entscheidung von Klaus). Eine Fassung hält Manifest
+  und AUR-Paket einfach: keine festen Größenordner, keine Zusatzzeilen.
+- **2026-11-23, Updates:** Das Programm sucht nicht selbst nach Updates und
+  geht nicht ins Internet; das Menü „Nach neuer Version suchen“ öffnet nur die
+  Release-Seite im Browser. So bleibt die App ohne Netzverkehr, und das
+  Flatpak bekommt kein Netzrecht.
+- **2026-11-23, Flathub:** wird vorerst nicht verfolgt, wegen der dortigen
+  KI-Regel und weil dafür eine neue App-ID nötig wäre.
+
 ## Release-Ablauf (so lief 0.1.3, für 0.2.0 wiederholt)
 
 1. **Vorbereiten auf einem Zweig** (`prep/<version>`): Version in
@@ -46,8 +67,13 @@ Flatpak-Bundle, AUR 0.1.3-1).
    importierbar; alle `.mo` enthalten. sha256 des Bundles notieren.
    Das Paket wird ohne `dist-info` kopiert; die Version liest das Programm
    aus `_version.py` (Menü → „Über Disc Printer“ muss sie zeigen). Zusätzlich
-   das installierte Paket per `diff -r` mit
-   den Quellen aus dem Archiv vergleichen. Seit 0.2.0 außerdem: Druckbild über
+   das installierte Paket per `diff -r` mit den Quellen aus dem Archiv
+   vergleichen. Die drei Fassungen des Fensters „Nach neuer Version suchen“
+   lassen sich mit der Testhilfe `DISC_PRINTER_INSTALL_KIND=flatpak|pacman|other`
+   erzwingen (im Flatpak:
+   `flatpak run --env=DISC_PRINTER_INSTALL_KIND=pacman de.haku.disc-printer`);
+   andere Werte werden ignoriert, dann gilt die Erkennung. Seit 0.2.0
+   außerdem: Druckbild über
    `MainWindow._print_thread` mit abgefangenem `lp` erzeugen und die Maske
    innen und außen per Pixel prüfen (Skript mit `--filesystem=<tmp>` und
    `--command=python3` im Sandbox-Python).
@@ -122,10 +148,6 @@ genügt.
   selbst aus: Klaus fand Tintenreste in der Mitte des Fachs. Alle Versionen bis
   0.1.3 haben durch den Hub gedruckt; seit 0.2.0 maskiert die App das
   Druckbild innen und außen. Ein Probedruck mit 0.2.0 ließ die Mitte frei.
-- Im Flatpak läuft die IPP-Erkennung treiberloser Drucker nicht (`ippfind`/
-  `ipptool` sind nicht im Bundle, das mitgelieferte CUPS ist ohne Avahi gebaut,
-  kein Netzrecht; geprüft am 2026-11-23 in der Runtime ohne Netz). Der
-  README-Rat mit der festen Warteschlange gilt dort genauso. Kein offener Punkt.
 
 ## Offene Kleinigkeiten
 

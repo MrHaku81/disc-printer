@@ -9,6 +9,7 @@ import tomllib
 import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from unittest import mock
 
 from disc_printer import _version, install_kind as ik
 from disc_printer.constants import APP_ID, README_UPDATING_URL, RELEASES_URL, REPO_URL
@@ -69,6 +70,11 @@ class InstallKindTests(unittest.TestCase):
         self.db = self.base / "pacman-local"
         self.db.mkdir()
         self.no_flatpak = self.base / "missing-flatpak-info"
+        # Testhilfe vom Entwicklerrechner nicht übernehmen
+        env = mock.patch.dict(os.environ)
+        env.start()
+        self.addCleanup(env.stop)
+        os.environ.pop(ik.OVERRIDE_ENV, None)
 
     def package(self, dirname, *paths):
         d = self.db / dirname
@@ -111,6 +117,24 @@ class InstallKindTests(unittest.TestCase):
     def test_unreadable_files_list(self):
         (self.db / "disc-printer-0.2.0-2").mkdir()      # ohne files
         self.assertEqual(self.kind(), "other")
+
+    def test_override_each_kind(self):
+        info = self.base / ".flatpak-info"
+        info.write_text("[Application]\n")
+        self.package("disc-printer-0.2.0-2", self.module)
+        for forced in ("flatpak", "pacman", "other"):
+            os.environ[ik.OVERRIDE_ENV] = forced
+            with self.subTest(forced=forced):
+                # überschreibt sowohl Flatpak als auch pacman
+                self.assertEqual(self.kind(flatpak_info=info), forced)
+                self.assertEqual(self.kind(), forced)
+
+    def test_override_other_values_ignored(self):
+        self.package("disc-printer-0.2.0-2", self.module)
+        for value in ("", "Flatpak", " pacman", "aur", "pipx", "flatpak,pacman"):
+            os.environ[ik.OVERRIDE_ENV] = value
+            with self.subTest(value=value):
+                self.assertEqual(self.kind(), "pacman")
 
     def test_default_from_source_tree(self):
         # Start aus dem Quelltext: Modul liegt im Repo, nie pacman

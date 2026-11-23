@@ -11,14 +11,20 @@ Drei Fälle, jeweils mit eigenem Hinweis zum Aktualisieren:
 - ``"other"``: alles andere (pipx, Quelltext).
 
 Nur Dateizugriffe, kein Unterprozess, kein Netz.
+
+Testhilfe: ``DISC_PRINTER_INSTALL_KIND`` mit genau ``flatpak``, ``pacman``
+oder ``other`` überschreibt die Erkennung; jeder andere Wert wird ignoriert.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 FLATPAK_INFO = Path("/.flatpak-info")
 PACMAN_LOCAL = Path("/var/lib/pacman/local")
 PACKAGE      = "disc-printer"
+OVERRIDE_ENV = "DISC_PRINTER_INSTALL_KIND"
+KINDS        = ("flatpak", "pacman", "other")
 
 
 def _module_file() -> Path:
@@ -50,6 +56,9 @@ def install_kind(
     pacman_local: Path = PACMAN_LOCAL,
 ) -> str:
     """``"flatpak"``, ``"pacman"`` oder ``"other"``."""
+    forced = os.environ.get(OVERRIDE_ENV)
+    if forced in KINDS:
+        return forced
     if flatpak_info.exists():
         return "flatpak"
     if _owned_by_pacman(module_file or _module_file(), pacman_local):

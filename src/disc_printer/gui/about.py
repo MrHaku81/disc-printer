@@ -18,6 +18,10 @@ from ..install_kind import install_kind
 CMD_FLATPAK = "flatpak install --user ./disc-printer.flatpak"
 CMD_AUR     = "yay -Syu disc-printer"
 
+ICON_COPY   = "edit-copy-symbolic"
+ICON_COPIED = "object-select-symbolic"    # Häkchen nach dem Kopieren
+COPIED_MS   = 1500
+
 
 def open_uri(parent: Gtk.Window, uri: str) -> None:
     """Adresse im Browser des Systems öffnen."""
@@ -90,6 +94,8 @@ class UpdateWindow(_SmallWindow):
         self.kind = kind or install_kind()
         self.commands: dict[str, Gtk.Label] = {}     # Befehl -> Label (Tests)
         self.copy_buttons: dict[str, Gtk.Button] = {}
+        self._copied_timers: dict[str, int] = {}
+        self.connect("close-request", self._stop_copied_timers)
 
         version = _("Installiert: Version %(version)s") % {"version": __version__}
         self.heading = self.add_text(
@@ -121,14 +127,35 @@ class UpdateWindow(_SmallWindow):
         row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         lbl = Gtk.Label(label=cmd, xalign=0.0, selectable=True, hexpand=True)
         lbl.add_css_class("monospace")
-        btn = Gtk.Button(icon_name="edit-copy-symbolic")
+        btn = Gtk.Button(icon_name=ICON_COPY)
         btn.set_tooltip_text(_("Befehl kopieren"))
-        btn.connect("clicked", lambda _b: self.get_clipboard().set(cmd))
+        btn.connect("clicked", lambda b: self._copy(b, cmd))
         row.append(lbl)
         row.append(btn)
         self.box.append(row)
         self.commands[cmd] = lbl
         self.copy_buttons[cmd] = btn
+
+    def _copy(self, btn: Gtk.Button, cmd: str) -> None:
+        """Befehl kopieren; der Knopf zeigt kurz ein Häkchen."""
+        self.get_clipboard().set(cmd)
+        btn.set_icon_name(ICON_COPIED)
+        old = self._copied_timers.pop(cmd, 0)
+        if old:
+            GLib.source_remove(old)               # erneuter Klick: Zeit neu
+
+        def restore() -> bool:
+            self._copied_timers.pop(cmd, None)
+            btn.set_icon_name(ICON_COPY)
+            return GLib.SOURCE_REMOVE
+
+        self._copied_timers[cmd] = GLib.timeout_add(COPIED_MS, restore)
+
+    def _stop_copied_timers(self, *_args) -> bool:
+        for timer in self._copied_timers.values():
+            GLib.source_remove(timer)
+        self._copied_timers.clear()
+        return False                              # Schließen nicht aufhalten
 
 
 class AboutWindow(_SmallWindow):

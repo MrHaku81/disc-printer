@@ -65,7 +65,8 @@ class BroadwayCase(unittest.TestCase):
         # Deutsch-Fallback (keine Sprache gewählt), den Fall des Sprachfeld-Fehlers.
         env = {k: v for k, v in os.environ.items()
                if k not in ("DISPLAY", "WAYLAND_DISPLAY", "LANGUAGE", "LC_ALL",
-                            "LC_MESSAGES")}
+                            "LC_MESSAGES",
+                            "DISC_PRINTER_INSTALL_KIND")}
         env["LANG"] = "C.UTF-8"
         env.update(GDK_BACKEND="broadway", BROADWAY_DISPLAY=":5",
                    XDG_RUNTIME_DIR=str(self.run_dir), HOME=str(self.home),

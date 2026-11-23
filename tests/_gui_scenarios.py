@@ -1607,15 +1607,39 @@ def scenario_update_menu(win):
             assert dlg.get_focus() is dlg.close_btn, dlg.get_focus()
             assert dlg.commands[cmd].get_selection_bounds()[0] is False
             assert dlg.copy_buttons[cmd].get_tooltip_text() == "Befehl kopieren"
-            dlg.copy_buttons[cmd].emit("clicked")
+            btn = dlg.copy_buttons[cmd]
+            assert btn.get_icon_name() == about.ICON_COPY
+            btn.emit("clicked")
             assert _clipboard_text(dlg) == cmd, kind
+            if kind == "flatpak":
+                # Häkchen für etwa 1,5 s, dann wieder das Kopier-Symbol
+                assert about.COPIED_MS == 1500
+                assert btn.get_icon_name() == about.ICON_COPIED
+                pump(800)
+                btn.emit("clicked")                 # erneuter Klick: Zeit neu
+                pump(1100)
+                assert btn.get_icon_name() == about.ICON_COPIED, "zu früh zurück"
+                pump(600)
+                assert btn.get_icon_name() == about.ICON_COPY, btn.get_icon_name()
+            else:
+                # Schließen mit laufendem Häkchen: Zeitgeber wird entfernt
+                assert btn.get_icon_name() == about.ICON_COPIED
             if kind == "pacman":
                 assert "Mit jedem anderen AUR-Helfer geht es genauso." in texts
                 assert dlg.readme_link.get_text() == "Andere Installationsarten: siehe README"
             else:
                 assert not hasattr(dlg, "readme_link")
             _close(dlg, about.UpdateWindow)
+        pump(1700)                                  # kein Zeitgeber feuert mehr
         unchanged("Befehle kopiert")
+
+        # Testhilfe DISC_PRINTER_INSTALL_KIND bestimmt die Fassung des Fensters
+        for value, want in (("pacman", "pacman"), ("flatpak", "flatpak"),
+                            ("other", "other"), ("aur", "other")):
+            with mock.patch.dict(os.environ, {"DISC_PRINTER_INSTALL_KIND": value}):
+                dlg = _activate(win, "win.check-update", about.UpdateWindow)
+                assert dlg.kind == want, (value, dlg.kind)
+                _close(dlg, about.UpdateWindow)
 
         # Über
         dlg = _activate(win, "win.about", about.AboutWindow)
