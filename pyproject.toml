@@ -4,7 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "disc-printer"
-version = "0.2.0"
+# Versionsnummer: src/disc_printer/_version.py (einzige Quelle)
+dynamic = ["version"]
 description = "CD/DVD Disc Label Printer (GTK4 + CUPS)"
 requires-python = ">=3.11"
 # PyGObject, pycairo und CUPS-Bindings müssen per Paketmanager installiert werden:
@@ -20,6 +21,9 @@ enhanced = [
 
 [project.scripts]
 disc-printer = "disc_printer.gui.window:main"
+
+[tool.hatch.version]
+path = "src/disc_printer/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/disc_printer"]

@@ -23,7 +23,7 @@ pot:
 		--keyword=_ \
 		--keyword=ngettext:1,2 \
 		--package-name=disc-printer \
-		--package-version=$(shell grep '^version' pyproject.toml | head -1 | cut -d'"' -f2) \
+		--package-version=$(shell grep '^__version__' $(SRCDIR)/_version.py | cut -d'"' -f2) \
 		--msgid-bugs-address=haku81.kk@gmail.com \
 		--copyright-holder="haku" \
 		--from-code=UTF-8 \

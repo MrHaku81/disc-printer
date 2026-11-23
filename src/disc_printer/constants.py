@@ -34,3 +34,9 @@ _PRINT_SAT      = 1.20   # Sättigungsboost für Druckausgabe
 _PRINT_CONTRAST = 1.10   # Kontrastboost für Druckausgabe
 
 APP_ID   = "de.haku.disc-printer"
+
+# Projektseiten (Menü „Nach neuer Version suchen“ und „Über“)
+REPO_URL     = "https://github.com/MrHaku81/disc-printer"
+RELEASES_URL = REPO_URL + "/releases/latest"
+# Sprungmarke des README-Abschnitts „Updating“
+README_UPDATING_URL = REPO_URL + "#updating"

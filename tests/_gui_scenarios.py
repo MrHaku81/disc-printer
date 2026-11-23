@@ -1491,6 +1491,173 @@ def scenario_area_lang(win):
     assert area_widgets(win) == ("50,0", "118,0") and win._unit == "mm"
 
 
+# ── Menü: Nach neuer Version suchen, Über ────────────────────────────────────
+
+def _menu_items(win):
+    m = win._menu_btn.get_menu_model()
+    return [(m.get_item_attribute_value(i, "label").get_string(),
+             m.get_item_attribute_value(i, "action").get_string())
+            for i in range(m.get_n_items())]
+
+
+def _open_windows(cls):
+    return [x for x in w.Gtk.Window.list_toplevels()
+            if isinstance(x, cls) and x.get_visible()]
+
+
+def _activate(win, action, cls):
+    assert not _open_windows(cls)
+    win.activate_action(action, None)
+    pump(50)
+    found = _open_windows(cls)
+    assert len(found) == 1, f"{action}: {found}"
+    dlg = found[0]
+    assert dlg.get_modal() and dlg.get_transient_for() is win
+    return dlg
+
+
+def _close(dlg, cls):
+    dlg.close_btn.emit("clicked")
+    pump(50)
+    assert not _open_windows(cls)
+
+
+def _clipboard_text(widget):
+    out = {}
+    widget.get_clipboard().read_text_async(
+        None, lambda cb, res: out.setdefault("t", cb.read_text_finish(res)))
+    for _ in range(100):
+        if "t" in out:
+            break
+        pump(10)
+    return out.get("t")
+
+
+def _menu_lang(win, code):
+    exp = lambda m: _expected_ui(code, m)
+    assert _menu_items(win) == [(exp("Nach neuer Version suchen"), "win.check-update"),
+                                (exp("Über Disc Printer"), "win.about")], _menu_items(win)
+    assert win._menu_btn.get_tooltip_text() == exp("Hauptmenü")
+    # ganz rechts, direkt neben „Drucken“
+    assert win._print_btn.get_parent() is win._menu_btn.get_parent()
+    assert win._print_btn.get_next_sibling() is win._menu_btn
+    # danach nur noch die Fensterknöpfe (Schließen usw.)
+    nxt = win._menu_btn.get_next_sibling()
+    assert nxt is None or (isinstance(nxt, w.Gtk.WindowControls)
+                           and nxt.get_next_sibling() is None), nxt
+
+
+def scenario_update_menu(win):
+    from disc_printer.gui import about
+    from disc_printer._version import __version__
+    from disc_printer.constants import README_UPDATING_URL, RELEASES_URL, REPO_URL
+    app = win.get_application()
+    i18n._LOCALE_DIR = _compile_locales(["en", "ja"])
+    i18n.switch_language(None)
+    w.MainWindow(app).present(); win.close(); pump(50)
+    win = _main_window(app)
+    _KEYS["n"] = _key_ctrls(win)
+    opened = []
+
+    # Design mit Undo-Eintrag und ungespeicherter Änderung: bleibt unverändert
+    win._add_image_from_path(png("u.png"))
+    pump(50)
+    fp0, n_undo = _fp(win), len(win._history._undo)
+    assert win._has_unsaved_changes() and n_undo >= 1
+
+    def unchanged(step):
+        assert _fp(win) == fp0, f"{step}: Design geändert"
+        assert len(win._history._undo) == n_undo, f"{step}: Undo-Eintrag"
+        assert not win._history.can_redo, f"{step}: Redo-Stapel"
+        assert win._has_unsaved_changes()
+
+    with mock.patch.object(about, "open_uri", lambda parent, uri: opened.append((parent, uri))):
+        _menu_lang(win, "de")
+
+        # Quelltext-Start: weder Flatpak noch pacman
+        dlg = _activate(win, "win.check-update", about.UpdateWindow)
+        assert dlg.kind == "other" and dlg.commands == {}
+        assert dlg.get_title() == "Nach neuer Version suchen"
+        assert dlg.heading.get_text() == f"Installiert: Version {__version__}"
+        assert dlg.readme_link.get_text() == "So aktualisierst du: siehe README"
+        dlg.readme_link.emit("activate-link", README_UPDATING_URL)
+        dlg.release_btn.emit("clicked")
+        assert opened == [(win, README_UPDATING_URL), (win, RELEASES_URL)], opened
+        _close(dlg, about.UpdateWindow)
+        unchanged("Update-Fenster")
+
+        # Flatpak und pacman: Befehl markierbar, Kopierknopf
+        for kind, cmd, extra in (
+                ("flatpak", "flatpak install --user ./disc-printer.flatpak",
+                 "Datei herunterladen, dann im Terminal:"),
+                ("pacman", "yay -Syu disc-printer",
+                 "Aus dem AUR aktualisierst du im Terminal mit:")):
+            dlg = about.UpdateWindow(win, kind=kind)
+            dlg.present(); pump(50)
+            texts = []
+            child = dlg.box.get_first_child()
+            while child is not None:
+                if isinstance(child, w.Gtk.Label):
+                    texts.append(child.get_text())
+                child = child.get_next_sibling()
+            assert extra in texts, (kind, texts)
+            assert list(dlg.commands) == [cmd]
+            assert dlg.commands[cmd].get_selectable()
+            # Fokus auf „Schließen“, der Befehl steht nicht vorab markiert da
+            assert dlg.get_focus() is dlg.close_btn, dlg.get_focus()
+            assert dlg.commands[cmd].get_selection_bounds()[0] is False
+            assert dlg.copy_buttons[cmd].get_tooltip_text() == "Befehl kopieren"
+            dlg.copy_buttons[cmd].emit("clicked")
+            assert _clipboard_text(dlg) == cmd, kind
+            if kind == "pacman":
+                assert "Mit jedem anderen AUR-Helfer geht es genauso." in texts
+                assert dlg.readme_link.get_text() == "Andere Installationsarten: siehe README"
+            else:
+                assert not hasattr(dlg, "readme_link")
+            _close(dlg, about.UpdateWindow)
+        unchanged("Befehle kopiert")
+
+        # Über
+        dlg = _activate(win, "win.about", about.AboutWindow)
+        assert dlg.get_title() == "Über Disc Printer"
+        assert dlg.version_lbl.get_text() == f"Version {__version__}"
+        assert dlg.license_lbl.get_text() == "Lizenz: MIT"
+        assert dlg.name_lbl.get_text() == "Disc Printer"
+        assert dlg.icon.get_icon_name() in ("de.haku.disc-printer", "media-optical")
+        opened.clear()
+        dlg.repo_link.emit("activate-link", REPO_URL)
+        assert opened == [(win, REPO_URL)]
+        _close(dlg, about.AboutWindow)
+        unchanged("Über-Fenster")
+
+        # Sprachwechsel: Menü und Fenster in der neuen Sprache, Aktionen einmal
+        for code in ("en", "ja", "de"):
+            _switch(win, code)
+            _menu_lang(win, code)
+            dlg = _activate(win, "win.check-update", about.UpdateWindow)
+            assert dlg.heading.get_text() == \
+                _expected_ui(code, "Installiert: Version %(version)s") % {"version": __version__}
+            assert dlg.release_btn.get_label() == _expected_ui(code, "Release-Seite öffnen")
+            _close(dlg, about.UpdateWindow)
+            dlg = _activate(win, "win.about", about.AboutWindow)
+            assert dlg.license_lbl.get_text() == _expected_ui(code, "Lizenz: MIT")
+            _close(dlg, about.AboutWindow)
+        assert sorted(a for a in win.list_actions() if a in ("check-update", "about")) == \
+            ["about", "check-update"]
+        assert _fp(win) == fp0 and win._has_unsaved_changes()
+
+
+def scenario_update_escape(win):
+    from disc_printer.gui import about
+    for cls, action in ((about.UpdateWindow, "win.check-update"),
+                        (about.AboutWindow, "win.about")):
+        dlg = _activate(win, action, cls)
+        dlg._on_key(None, w.Gdk.KEY_Escape, 0, 0)
+        pump(50)
+        assert not _open_windows(cls), cls
+    assert not win._has_unsaved_changes() and not win._history.can_undo
+
+
 def pytest_approx(v, tol=1e-3):
     """Kleiner Vergleich ohne pytest: Zahl oder Tupel mit Toleranz."""
     class _A:

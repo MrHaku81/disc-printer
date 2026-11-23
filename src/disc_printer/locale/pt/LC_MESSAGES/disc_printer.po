@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: disc-printer 0.2.0\n"
 "Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
-"POT-Creation-Date: 2026-11-21 13:45+0100\n"
+"POT-Creation-Date: 2026-11-23 20:17+0100\n"
 "PO-Revision-Date: 2026-04-24 14:00+0000\n"
 "Last-Translator: Claude AI\n"
 "Language-Team: Portuguese\n"
@@ -16,12 +16,70 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:753
-#: src/disc_printer/gui/window.py:2147
+#: src/disc_printer/gui/about.py:85 src/disc_printer/gui/window.py:143
+msgid "Nach neuer Version suchen"
+msgstr "Procurar nova versão"
+
+#: src/disc_printer/gui/about.py:90
+#, python-format
+msgid "Installiert: Version %(version)s"
+msgstr "Instalado: versão %(version)s"
+
+#: src/disc_printer/gui/about.py:93
+msgid "Auf der Release-Seite siehst du die neueste Version."
+msgstr "A página de lançamentos mostra a versão mais recente."
+
+#: src/disc_printer/gui/about.py:96
+msgid "Datei herunterladen, dann im Terminal:"
+msgstr "Transferir o ficheiro e depois, num terminal:"
+
+#: src/disc_printer/gui/about.py:99
+msgid "Aus dem AUR aktualisierst du im Terminal mit:"
+msgstr "Para atualizar a partir do AUR, num terminal:"
+
+#: src/disc_printer/gui/about.py:101
+msgid "Mit jedem anderen AUR-Helfer geht es genauso."
+msgstr "Qualquer outro assistente do AUR funciona da mesma forma."
+
+#: src/disc_printer/gui/about.py:102
+msgid "Andere Installationsarten: siehe README"
+msgstr "Outros métodos de instalação: ver o README"
+
+#: src/disc_printer/gui/about.py:106
+msgid "So aktualisierst du: siehe README"
+msgstr "Como atualizar: ver o README"
+
+#: src/disc_printer/gui/about.py:110
+msgid "Release-Seite öffnen"
+msgstr "Abrir página de lançamentos"
+
+#: src/disc_printer/gui/about.py:112 src/disc_printer/gui/about.py:152
+msgid "Schließen"
+msgstr "Fechar"
+
+#: src/disc_printer/gui/about.py:121
+msgid "Befehl kopieren"
+msgstr "Copiar comando"
+
+#: src/disc_printer/gui/about.py:134 src/disc_printer/gui/window.py:144
+msgid "Über Disc Printer"
+msgstr "Acerca do Disc Printer"
+
+#: src/disc_printer/gui/about.py:145
+#, python-format
+msgid "Version %(version)s"
+msgstr "Versão %(version)s"
+
+#: src/disc_printer/gui/about.py:147
+msgid "Lizenz: MIT"
+msgstr "Licença: MIT"
+
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:771
+#: src/disc_printer/gui/window.py:2165
 msgid "Text bearbeiten"
 msgstr "Editar texto"
 
-#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:2093
+#: src/disc_printer/gui/dialogs.py:17 src/disc_printer/gui/window.py:2111
 msgid "Text hinzufügen"
 msgstr "Adicionar texto"
 
@@ -41,125 +99,129 @@ msgstr "Fonte:"
 msgid "Textfarbe"
 msgstr "Cor do texto"
 
-#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:573
+#: src/disc_printer/gui/dialogs.py:52 src/disc_printer/gui/window.py:591
 msgid "Farbe:"
 msgstr "Cor:"
 
-#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:1040
-#: src/disc_printer/gui/window.py:2251
+#: src/disc_printer/gui/dialogs.py:58 src/disc_printer/gui/window.py:1058
+#: src/disc_printer/gui/window.py:2269
 msgid "Abbrechen"
 msgstr "Cancelar"
 
-#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:2329
+#: src/disc_printer/gui/dialogs.py:62 src/disc_printer/gui/window.py:2347
 msgid "OK"
 msgstr "OK"
 
-#: src/disc_printer/gui/window.py:83 src/disc_printer/gui/window.py:288
+#: src/disc_printer/gui/window.py:87 src/disc_printer/gui/window.py:306
 msgid "Initialisierung …"
 msgstr "A inicializar …"
 
-#: src/disc_printer/gui/window.py:105
+#: src/disc_printer/gui/window.py:115
 msgid "Neues Design"
 msgstr "Novo design"
 
-#: src/disc_printer/gui/window.py:110
+#: src/disc_printer/gui/window.py:120
 msgid "Design öffnen …"
 msgstr "Abrir design …"
 
-#: src/disc_printer/gui/window.py:115
+#: src/disc_printer/gui/window.py:125
 msgid "Design speichern …"
 msgstr "Guardar design …"
 
-#: src/disc_printer/gui/window.py:120 src/disc_printer/gui/window.py:2345
+#: src/disc_printer/gui/window.py:130 src/disc_printer/gui/window.py:2363
 msgid "Rückgängig"
 msgstr "Anular"
 
-#: src/disc_printer/gui/window.py:126 src/disc_printer/gui/window.py:2348
+#: src/disc_printer/gui/window.py:136 src/disc_printer/gui/window.py:2366
 msgid "Wiederherstellen"
 msgstr "Refazer"
 
-#: src/disc_printer/gui/window.py:132
+#: src/disc_printer/gui/window.py:146
+msgid "Hauptmenü"
+msgstr "Menu principal"
+
+#: src/disc_printer/gui/window.py:150
 msgid "Drucken …"
 msgstr "Imprimir …"
 
-#: src/disc_printer/gui/window.py:154
+#: src/disc_printer/gui/window.py:172
 msgid "Disc-Vorschau"
 msgstr "Pré-visualização do disco"
 
-#: src/disc_printer/gui/window.py:205
+#: src/disc_printer/gui/window.py:223
 msgid "Sprache:"
 msgstr "Idioma:"
 
-#: src/disc_printer/gui/window.py:261
+#: src/disc_printer/gui/window.py:279
 msgid "Drucker"
 msgstr "Impressora"
 
-#: src/disc_printer/gui/window.py:268
+#: src/disc_printer/gui/window.py:286
 msgid "Drucker:"
 msgstr "Impressora:"
 
-#: src/disc_printer/gui/window.py:272 src/disc_printer/gui/window.py:776
+#: src/disc_printer/gui/window.py:290 src/disc_printer/gui/window.py:794
 msgid "Erkenne Drucker …"
 msgstr "A detetar impressora …"
 
-#: src/disc_printer/gui/window.py:280
+#: src/disc_printer/gui/window.py:298
 msgid "Drucker neu erkennen"
 msgstr "Detetar impressora novamente"
 
 #. TRANSLATORS: Print area presets: "Standard" = inner 50 mm, outer 118 mm
 #. (regular discs); "Vollflächig" = inner 33 mm (hub-printable discs).
-#: src/disc_printer/gui/window.py:312
+#: src/disc_printer/gui/window.py:330
 msgid "Standard"
 msgstr "Padrão"
 
-#: src/disc_printer/gui/window.py:312
+#: src/disc_printer/gui/window.py:330
 msgid "Vollflächig"
 msgstr "Superfície total"
 
-#: src/disc_printer/gui/window.py:316
+#: src/disc_printer/gui/window.py:334
 msgid "Außendurchmesser"
 msgstr "Diâmetro externo"
 
-#: src/disc_printer/gui/window.py:316
+#: src/disc_printer/gui/window.py:334
 msgid "Innendurchmesser"
 msgstr "Diâmetro interno"
 
 #. TRANSLATORS: Unit symbol for millimetres, as in "5 mm". Use the
 #. usual symbol of your language.
-#: src/disc_printer/gui/window.py:323
+#: src/disc_printer/gui/window.py:341
 msgid "mm"
 msgstr "mm"
 
 #. TRANSLATORS: Unit symbol for inches, as in "0.20 in". Use the usual
 #. symbol of your language.
-#: src/disc_printer/gui/window.py:326
+#: src/disc_printer/gui/window.py:344
 msgid "in"
 msgstr "in"
 
-#: src/disc_printer/gui/window.py:334 src/disc_printer/gui/window.py:535
+#: src/disc_printer/gui/window.py:352 src/disc_printer/gui/window.py:553
 msgid "Druckbereich"
 msgstr "Área de impressão"
 
-#: src/disc_printer/gui/window.py:352
+#: src/disc_printer/gui/window.py:370
 msgid "Maßeinheit"
 msgstr "Unidade"
 
-#: src/disc_printer/gui/window.py:365
+#: src/disc_printer/gui/window.py:383
 msgid "Außen:"
 msgstr "Externo:"
 
-#: src/disc_printer/gui/window.py:365
+#: src/disc_printer/gui/window.py:383
 msgid "Innen:"
 msgstr "Interno:"
 
 #. TRANSLATORS: Tooltip of a print area preset, e.g.
 #. "Inner 50 mm, outer 118 mm"
-#: src/disc_printer/gui/window.py:433
+#: src/disc_printer/gui/window.py:451
 #, python-format
 msgid "Innen %(inner)s, außen %(outer)s"
 msgstr "Interno %(inner)s, externo %(outer)s"
 
-#: src/disc_printer/gui/window.py:443
+#: src/disc_printer/gui/window.py:461
 #, python-format
 msgid ""
 "Außerhalb des üblichen Druckbereichs (innen ab %(inner)s, außen bis "
@@ -170,155 +232,155 @@ msgstr ""
 
 #. TRANSLATORS: Tooltips of the arrow buttons that move the background
 #. image; %(length)s is the step, e.g. "5 mm" or "0.20 in".
-#: src/disc_printer/gui/window.py:545
+#: src/disc_printer/gui/window.py:563
 #, python-format
 msgid "%(length)s links"
 msgstr "%(length)s esquerda"
 
-#: src/disc_printer/gui/window.py:546
+#: src/disc_printer/gui/window.py:564
 #, python-format
 msgid "%(length)s rechts"
 msgstr "%(length)s direita"
 
-#: src/disc_printer/gui/window.py:547
+#: src/disc_printer/gui/window.py:565
 #, python-format
 msgid "%(length)s oben"
 msgstr "%(length)s cima"
 
-#: src/disc_printer/gui/window.py:548
+#: src/disc_printer/gui/window.py:566
 #, python-format
 msgid "%(length)s unten"
 msgstr "%(length)s baixo"
 
-#: src/disc_printer/gui/window.py:568 src/disc_printer/gui/window.py:1928
-#: src/disc_printer/gui/window.py:2027 src/disc_printer/gui/window.py:2042
+#: src/disc_printer/gui/window.py:586 src/disc_printer/gui/window.py:1946
+#: src/disc_printer/gui/window.py:2045 src/disc_printer/gui/window.py:2060
 msgid "Hintergrund"
 msgstr "Fundo"
 
-#: src/disc_printer/gui/window.py:574 src/disc_printer/gui/window.py:1764
+#: src/disc_printer/gui/window.py:592 src/disc_printer/gui/window.py:1782
 msgid "Hintergrundfarbe"
 msgstr "Cor de fundo"
 
-#: src/disc_printer/gui/window.py:582
+#: src/disc_printer/gui/window.py:600
 msgid "Zurücksetzen auf Weiß"
 msgstr "Repor para branco"
 
-#: src/disc_printer/gui/window.py:589
+#: src/disc_printer/gui/window.py:607
 msgid "Bild:"
 msgstr "Imagem:"
 
-#: src/disc_printer/gui/window.py:590
+#: src/disc_printer/gui/window.py:608
 msgid "Laden …"
 msgstr "Carregar …"
 
-#: src/disc_printer/gui/window.py:598 src/disc_printer/gui/window.py:1004
-#: src/disc_printer/gui/window.py:1835 src/disc_printer/gui/window.py:1864
-#: src/disc_printer/gui/window.py:1887
+#: src/disc_printer/gui/window.py:616 src/disc_printer/gui/window.py:1022
+#: src/disc_printer/gui/window.py:1853 src/disc_printer/gui/window.py:1882
+#: src/disc_printer/gui/window.py:1905
 msgid "(kein Bild)"
 msgstr "(sem imagem)"
 
-#: src/disc_printer/gui/window.py:603 src/disc_printer/gui/window.py:1894
+#: src/disc_printer/gui/window.py:621 src/disc_printer/gui/window.py:1912
 msgid "Hintergrundbild entfernen"
 msgstr "Remover imagem de fundo"
 
-#: src/disc_printer/gui/window.py:611
+#: src/disc_printer/gui/window.py:629
 msgid "Hintergrundbild: nur Position &amp; Zoom, kein Drehen/Spiegeln."
 msgstr "Imagem de fundo: apenas posição e zoom, sem rodar/espelhar."
 
 #. TRANSLATORS: Section title; "&" must stay as "&amp;" in Pango markup
-#: src/disc_printer/gui/window.py:623
+#: src/disc_printer/gui/window.py:641
 msgid "Bild-Position & Zoom"
 msgstr "Posição da imagem & zoom"
 
-#: src/disc_printer/gui/window.py:628
+#: src/disc_printer/gui/window.py:646
 msgid "Zoom:"
 msgstr "Zoom:"
 
-#: src/disc_printer/gui/window.py:656
+#: src/disc_printer/gui/window.py:674
 msgid "⌂ Zentrieren"
 msgstr "⌂ Centrar"
 
-#: src/disc_printer/gui/window.py:657 src/disc_printer/gui/window.py:2042
+#: src/disc_printer/gui/window.py:675 src/disc_printer/gui/window.py:2060
 msgid "Zurücksetzen"
 msgstr "Repor"
 
-#: src/disc_printer/gui/window.py:665
+#: src/disc_printer/gui/window.py:683
 msgid "Bild ziehen = verschieben · Mausrad = Zoom"
 msgstr "Arrastar = mover · Roda do rato = zoom"
 
-#: src/disc_printer/gui/window.py:679
+#: src/disc_printer/gui/window.py:697
 msgid "Text-Elemente"
 msgstr "Elementos de texto"
 
-#: src/disc_printer/gui/window.py:682 src/disc_printer/gui/window.py:1078
+#: src/disc_printer/gui/window.py:700 src/disc_printer/gui/window.py:1096
 msgid "+ Hinzufügen"
 msgstr "+ Adicionar"
 
-#: src/disc_printer/gui/window.py:683
+#: src/disc_printer/gui/window.py:701
 msgid "Neues Text-Element hinzufügen"
 msgstr "Adicionar novo elemento de texto"
 
-#: src/disc_printer/gui/window.py:692
+#: src/disc_printer/gui/window.py:710
 msgid "Keine Text-Elemente"
 msgstr "Sem elementos de texto"
 
-#: src/disc_printer/gui/window.py:703
+#: src/disc_printer/gui/window.py:721
 msgid "Klick = auswählen · Doppelklick = bearbeiten · Ziehen = verschieben"
 msgstr "Clique = selecionar · Duplo clique = editar · Arrastar = mover"
 
-#: src/disc_printer/gui/window.py:730 src/disc_printer/gui/window.py:1147
+#: src/disc_printer/gui/window.py:748 src/disc_printer/gui/window.py:1165
 msgid "Sichtbarkeit umschalten"
 msgstr "Mostrar / ocultar"
 
-#: src/disc_printer/gui/window.py:739 src/disc_printer/gui/window.py:1156
+#: src/disc_printer/gui/window.py:757 src/disc_printer/gui/window.py:1174
 msgid "Sperren / Entsperren"
 msgstr "Bloquear / desbloquear"
 
-#: src/disc_printer/gui/window.py:747 src/disc_printer/gui/window.py:1164
+#: src/disc_printer/gui/window.py:765 src/disc_printer/gui/window.py:1182
 msgid "Element duplizieren"
 msgstr "Duplicar elemento"
 
-#: src/disc_printer/gui/window.py:760 src/disc_printer/gui/window.py:1182
+#: src/disc_printer/gui/window.py:778 src/disc_printer/gui/window.py:1200
 msgid "Element löschen"
 msgstr "Eliminar elemento"
 
-#: src/disc_printer/gui/window.py:805
+#: src/disc_printer/gui/window.py:823
 msgid "(Kein Disc-Drucker gefunden)"
 msgstr "(Nenhuma impressora de disco encontrada)"
 
-#: src/disc_printer/gui/window.py:808
+#: src/disc_printer/gui/window.py:826
 msgid "Kein Disc-fähiger Drucker erkannt."
 msgstr "Nenhuma impressora compatível com disco detetada."
 
-#: src/disc_printer/gui/window.py:812
+#: src/disc_printer/gui/window.py:830
 msgid "Kein Disc-fähiger Drucker gefunden"
 msgstr "Nenhuma impressora compatível com disco encontrada"
 
-#: src/disc_printer/gui/window.py:851
+#: src/disc_printer/gui/window.py:869
 msgid "Prüfe Status …"
 msgstr "A verificar estado …"
 
 #. TRANSLATORS: Placeholder for the file name in the print command shown
 #. below the printer selection ("lp -d PRINTER ... <file>"). One short
 #. lowercase word, as in command-line help texts.
-#: src/disc_printer/gui/window.py:859
+#: src/disc_printer/gui/window.py:877
 msgid "datei"
 msgstr "ficheiro"
 
-#: src/disc_printer/gui/window.py:872
+#: src/disc_printer/gui/window.py:890
 msgid "Design speichern"
 msgstr "Guardar design"
 
-#: src/disc_printer/gui/window.py:874 src/disc_printer/gui/window.py:913
+#: src/disc_printer/gui/window.py:892 src/disc_printer/gui/window.py:931
 msgid "DiscPrint-Design (*.discprint)"
 msgstr "Design DiscPrint (*.discprint)"
 
-#: src/disc_printer/gui/window.py:877 src/disc_printer/gui/window.py:916
-#: src/disc_printer/gui/window.py:1256 src/disc_printer/gui/window.py:1783
+#: src/disc_printer/gui/window.py:895 src/disc_printer/gui/window.py:934
+#: src/disc_printer/gui/window.py:1274 src/disc_printer/gui/window.py:1801
 msgid "Alle Dateien"
 msgstr "Todos os ficheiros"
 
-#: src/disc_printer/gui/window.py:901
+#: src/disc_printer/gui/window.py:919
 #, python-format
 msgid ""
 "Design konnte nicht gespeichert werden:\n"
@@ -327,11 +389,11 @@ msgstr ""
 "Não foi possível guardar o design:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:911
+#: src/disc_printer/gui/window.py:929
 msgid "Design öffnen"
 msgstr "Abrir design"
 
-#: src/disc_printer/gui/window.py:936
+#: src/disc_printer/gui/window.py:954
 #, python-format
 msgid ""
 "Design konnte nicht geöffnet werden:\n"
@@ -340,81 +402,81 @@ msgstr ""
 "Não foi possível abrir o design:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:1000 src/disc_printer/gui/window.py:1828
-#: src/disc_printer/gui/window.py:1877
+#: src/disc_printer/gui/window.py:1018 src/disc_printer/gui/window.py:1846
+#: src/disc_printer/gui/window.py:1895
 msgid "(aus Datei geladen)"
 msgstr "(carregada do ficheiro)"
 
-#: src/disc_printer/gui/window.py:1038
+#: src/disc_printer/gui/window.py:1056
 msgid "Ungespeicherte Änderungen verwerfen?"
 msgstr "Descartar as alterações não guardadas?"
 
-#: src/disc_printer/gui/window.py:1039
+#: src/disc_printer/gui/window.py:1057
 msgid "Das aktuelle Design wurde seit dem letzten Speichern geändert."
 msgstr "O design atual foi alterado desde a última vez que foi guardado."
 
-#: src/disc_printer/gui/window.py:1040
+#: src/disc_printer/gui/window.py:1058
 msgid "Speichern …"
 msgstr "Guardar …"
 
-#: src/disc_printer/gui/window.py:1040
+#: src/disc_printer/gui/window.py:1058
 msgid "Verwerfen"
 msgstr "Descartar"
 
-#: src/disc_printer/gui/window.py:1075
+#: src/disc_printer/gui/window.py:1093
 msgid "Bild-Elemente"
 msgstr "Elementos de imagem"
 
-#: src/disc_printer/gui/window.py:1079
+#: src/disc_printer/gui/window.py:1097
 msgid "Bild-Element hinzufügen"
 msgstr "Adicionar elemento de imagem"
 
-#: src/disc_printer/gui/window.py:1086
+#: src/disc_printer/gui/window.py:1104
 msgid "H spiegeln"
 msgstr "Espelhar H"
 
-#: src/disc_printer/gui/window.py:1090
+#: src/disc_printer/gui/window.py:1108
 msgid "V spiegeln"
 msgstr "Espelhar V"
 
-#: src/disc_printer/gui/window.py:1100
+#: src/disc_printer/gui/window.py:1118
 msgid "Keine Bild-Elemente"
 msgstr "Sem elementos de imagem"
 
-#: src/disc_printer/gui/window.py:1170
+#: src/disc_printer/gui/window.py:1188
 msgid "Ebene nach oben"
 msgstr "Subir camada"
 
-#: src/disc_printer/gui/window.py:1176
+#: src/disc_printer/gui/window.py:1194
 msgid "Ebene nach unten"
 msgstr "Descer camada"
 
-#: src/disc_printer/gui/window.py:1201
+#: src/disc_printer/gui/window.py:1219
 msgid "Zurücksetzen auf 100 %"
 msgstr "Repor para 100%"
 
-#: src/disc_printer/gui/window.py:1209
+#: src/disc_printer/gui/window.py:1227
 msgid "Opazität:"
 msgstr "Opacidade:"
 
-#: src/disc_printer/gui/window.py:1222
+#: src/disc_printer/gui/window.py:1240
 msgid "Helligkeit:"
 msgstr "Brilho:"
 
-#: src/disc_printer/gui/window.py:1228
+#: src/disc_printer/gui/window.py:1246
 msgid "Kontrast:"
 msgstr "Contraste:"
 
-#: src/disc_printer/gui/window.py:1249 src/disc_printer/gui/window.py:1304
+#: src/disc_printer/gui/window.py:1267 src/disc_printer/gui/window.py:1322
 msgid "Bild hinzufügen"
 msgstr "Adicionar imagem"
 
 #. TRANSLATORS: File filter label in the image chooser dialog
-#: src/disc_printer/gui/window.py:1251 src/disc_printer/gui/window.py:1778
+#: src/disc_printer/gui/window.py:1269 src/disc_printer/gui/window.py:1796
 msgid "Bilder (PNG, JPG, WEBP …)"
 msgstr "Imagens (PNG, JPG, WEBP …)"
 
-#: src/disc_printer/gui/window.py:1307 src/disc_printer/gui/window.py:1855
+#: src/disc_printer/gui/window.py:1325 src/disc_printer/gui/window.py:1873
 #, python-format
 msgid ""
 "Bild konnte nicht geladen werden:\n"
@@ -423,117 +485,117 @@ msgstr ""
 "Não foi possível carregar a imagem:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:1344
+#: src/disc_printer/gui/window.py:1362
 msgid "Opazität"
 msgstr "Opacidade"
 
-#: src/disc_printer/gui/window.py:1386
+#: src/disc_printer/gui/window.py:1404
 msgid "Helligkeit"
 msgstr "Brilho"
 
-#: src/disc_printer/gui/window.py:1428
+#: src/disc_printer/gui/window.py:1446
 msgid "Kontrast"
 msgstr "Contraste"
 
-#: src/disc_printer/gui/window.py:1461
+#: src/disc_printer/gui/window.py:1479
 msgid "Helligkeit zurücksetzen"
 msgstr "Repor brilho"
 
-#: src/disc_printer/gui/window.py:1490
+#: src/disc_printer/gui/window.py:1508
 msgid "Kontrast zurücksetzen"
 msgstr "Repor contraste"
 
-#: src/disc_printer/gui/window.py:1507
+#: src/disc_printer/gui/window.py:1525
 msgid "Ebene"
 msgstr "Camada"
 
-#: src/disc_printer/gui/window.py:1535
+#: src/disc_printer/gui/window.py:1553
 msgid "Bild löschen"
 msgstr "Eliminar imagem"
 
-#: src/disc_printer/gui/window.py:1564
+#: src/disc_printer/gui/window.py:1582
 msgid "H-Spiegeln"
 msgstr "Espelhar horizontalmente"
 
-#: src/disc_printer/gui/window.py:1578
+#: src/disc_printer/gui/window.py:1596
 msgid "V-Spiegeln"
 msgstr "Espelhar verticalmente"
 
-#: src/disc_printer/gui/window.py:1597 src/disc_printer/gui/window.py:1676
+#: src/disc_printer/gui/window.py:1615 src/disc_printer/gui/window.py:1694
 msgid "Sichtbarkeit"
 msgstr "Visibilidade"
 
-#: src/disc_printer/gui/window.py:1616 src/disc_printer/gui/window.py:1695
+#: src/disc_printer/gui/window.py:1634 src/disc_printer/gui/window.py:1713
 msgid "Sperren"
 msgstr "Bloquear"
 
-#: src/disc_printer/gui/window.py:1659
+#: src/disc_printer/gui/window.py:1677
 msgid "Bild duplizieren"
 msgstr "Duplicar imagem"
 
-#: src/disc_printer/gui/window.py:1734
+#: src/disc_printer/gui/window.py:1752
 msgid "Text duplizieren"
 msgstr "Duplicar texto"
 
-#: src/disc_printer/gui/window.py:1775
+#: src/disc_printer/gui/window.py:1793
 msgid "Hintergrundbild wählen"
 msgstr "Escolher imagem de fundo"
 
-#: src/disc_printer/gui/window.py:1852
+#: src/disc_printer/gui/window.py:1870
 msgid "Hintergrundbild laden"
 msgstr "Carregar imagem de fundo"
 
-#: src/disc_printer/gui/window.py:1928 src/disc_printer/gui/window.py:2460
+#: src/disc_printer/gui/window.py:1946 src/disc_printer/gui/window.py:2478
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/disc_printer/gui/window.py:2027 src/disc_printer/gui/window.py:2403
-#: src/disc_printer/gui/window.py:2428
+#: src/disc_printer/gui/window.py:2045 src/disc_printer/gui/window.py:2421
+#: src/disc_printer/gui/window.py:2446
 msgid "Bewegen"
 msgstr "Mover"
 
-#: src/disc_printer/gui/window.py:2175
+#: src/disc_printer/gui/window.py:2193
 msgid "Text löschen"
 msgstr "Eliminar texto"
 
-#: src/disc_printer/gui/window.py:2193
+#: src/disc_printer/gui/window.py:2211
 msgid "Bereit"
 msgstr "Pronto"
 
-#: src/disc_printer/gui/window.py:2196
+#: src/disc_printer/gui/window.py:2214
 msgid "Deaktiviert / gestoppt"
 msgstr "Desativado / parado"
 
-#: src/disc_printer/gui/window.py:2199
+#: src/disc_printer/gui/window.py:2217
 msgid "Status unbekannt"
 msgstr "Estado desconhecido"
 
-#: src/disc_printer/gui/window.py:2201
+#: src/disc_printer/gui/window.py:2219
 msgid "Nicht erreichbar (Timeout)"
 msgstr "Inacessível (tempo esgotado)"
 
-#: src/disc_printer/gui/window.py:2204
+#: src/disc_printer/gui/window.py:2222
 #, python-format
 msgid "Fehler: %s"
 msgstr "Erro: %s"
 
-#: src/disc_printer/gui/window.py:2216
+#: src/disc_printer/gui/window.py:2234
 msgid "Im Netzwerk verfügbar (treiberlos)"
 msgstr "Disponível na rede (sem controlador)"
 
-#: src/disc_printer/gui/window.py:2221
+#: src/disc_printer/gui/window.py:2239
 msgid "Nicht mehr im Netzwerk gefunden (treiberlos)"
 msgstr "Já não encontrada na rede (sem controlador)"
 
-#: src/disc_printer/gui/window.py:2238
+#: src/disc_printer/gui/window.py:2256
 msgid "Kein Drucker ausgewählt."
 msgstr "Nenhuma impressora selecionada."
 
-#: src/disc_printer/gui/window.py:2243
+#: src/disc_printer/gui/window.py:2261
 msgid "Disc drucken?"
 msgstr "Imprimir disco?"
 
-#: src/disc_printer/gui/window.py:2247
+#: src/disc_printer/gui/window.py:2265
 #, python-format
 msgid ""
 "Drucker:    %(name)s\n"
@@ -546,11 +608,11 @@ msgstr ""
 "\n"
 "%(cmd)s"
 
-#: src/disc_printer/gui/window.py:2251
+#: src/disc_printer/gui/window.py:2269
 msgid "Drucken"
 msgstr "Imprimir"
 
-#: src/disc_printer/gui/window.py:2276
+#: src/disc_printer/gui/window.py:2294
 #, python-format
 msgid ""
 "Render-Fehler:\n"
@@ -559,11 +621,11 @@ msgstr ""
 "Erro de renderização:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:2312
+#: src/disc_printer/gui/window.py:2330
 msgid "Timeout: Drucker antwortet nicht (>30 s)."
 msgstr "Tempo esgotado: a impressora não responde (>30 s)."
 
-#: src/disc_printer/gui/window.py:2315 src/disc_printer/printer.py:45
+#: src/disc_printer/gui/window.py:2333 src/disc_printer/printer.py:45
 #, python-format
 msgid ""
 "Druckfehler:\n"
@@ -572,19 +634,19 @@ msgstr ""
 "Erro de impressão:\n"
 "%s"
 
-#: src/disc_printer/gui/window.py:2325
+#: src/disc_printer/gui/window.py:2343
 msgid "Druckauftrag gesendet"
 msgstr "Trabalho de impressão enviado"
 
-#: src/disc_printer/gui/window.py:2327
+#: src/disc_printer/gui/window.py:2345
 msgid "Druckauftrag erfolgreich in Warteschlange eingereiht."
 msgstr "Trabalho de impressão colocado na fila com sucesso."
 
-#: src/disc_printer/gui/window.py:2405
+#: src/disc_printer/gui/window.py:2423
 msgid "Drehen"
 msgstr "Rodar"
 
-#: src/disc_printer/gui/window.py:2407
+#: src/disc_printer/gui/window.py:2425
 msgid "Skalieren"
 msgstr "Redimensionar"
 

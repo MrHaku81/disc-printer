@@ -260,6 +260,64 @@ The file is created on the first log entry. Version 0.1.2 and earlier wrote
 `DISC_PRINTER_LOG_FILE=/path/to/file` writes the log elsewhere; set but empty, it turns
 the log file off.
 
+## Updating
+
+Disc Printer does not look for updates by itself and never connects to the internet.
+The menu button at the right of the header bar → **Check for a new version** shows the
+installed version, the update command for your installation and a button that opens the
+[release page](https://github.com/MrHaku81/disc-printer/releases/latest) in your browser.
+**About Disc Printer** in the same menu shows the version as well.
+
+### Flatpak
+
+Download the new `disc-printer.flatpak` from the
+[latest release](https://github.com/MrHaku81/disc-printer/releases/latest), then:
+
+```bash
+flatpak install --user ./disc-printer.flatpak
+```
+
+This replaces the installed version. If Flatpak reports that this version is already
+installed, you are up to date. After a runtime change, `flatpak uninstall --unused`
+removes the previous runtime.
+
+### AUR
+
+```bash
+yay -Syu disc-printer
+```
+
+Any other AUR helper works the same way.
+
+### pipx
+
+```bash
+pipx upgrade disc-printer
+```
+
+pipx remembers the Git address from the installation and updates as soon as a new
+version has been released. If it reports the package as unchanged although a newer
+release exists, reinstall it:
+
+```bash
+pipx install --force --system-site-packages git+https://github.com/MrHaku81/disc-printer.git
+```
+
+If the AUR package is installed on the same system, `pipx install --system-site-packages`
+fails with *No apps associated with package disc-printer*: pip finds the system-wide copy
+and installs nothing into the pipx environment. Use one of the two, not both.
+
+### From source
+
+```bash
+cd disc-printer
+git pull
+.venv/bin/pip install -e .
+```
+
+Reinstalling compiles the translations again. When running directly from the source
+tree without installing, `git pull` followed by `make compile-mo` is enough.
+
 ## How it works
 
 1. **Printer detection** — on startup, Disc Printer queries CUPS for all installed
@@ -280,8 +338,10 @@ the log file off.
 src/disc_printer/
 ├── __init__.py        # GI version pinning (GTK 4), exports the logger
 ├── __main__.py        # `python -m disc_printer` entry point
+├── _version.py        # Version number (single source; pyproject.toml reads it)
 ├── gui/
 │   ├── __init__.py
+│   ├── about.py       # Menu windows "Check for a new version" and "About"
 │   ├── canvas.py      # Cairo drawing area, handles, drag/rotate/scale
 │   ├── dialogs.py     # Text-edit dialog
 │   └── window.py      # Main GTK4 window, panel, undo/redo wiring, main()
@@ -291,6 +351,7 @@ src/disc_printer/
 ├── history.py         # Command-pattern undo/redo stack
 ├── i18n.py            # gettext localisation
 ├── image_utils.py     # Pixbuf → Cairo, print colour boost, print PNG export
+├── install_kind.py    # Flatpak, pacman (AUR) or other: which update hint to show
 ├── _log.py            # Logging to the log file (opened on first use) and the console
 ├── model.py           # DesignState, ImageElement, TextElement
 ├── paths.py           # Design folder (XDG documents dir, legacy ~/Dokumente), log file path
@@ -301,8 +362,9 @@ src/disc_printer/
                        # disc_printer.pot template, LINGUAS;
                        # German is the source language
 tests/                 # unit tests (detection, print errors, i18n, units, print area,
-                       # design folder, log file, start without display) and GUI
-                       # scenarios on a private Broadway server
+                       # design folder, log file, start without display, version,
+                       # installation kind) and GUI scenarios on a private
+                       # Broadway server
 ```
 
 ## License

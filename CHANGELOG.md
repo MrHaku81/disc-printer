@@ -7,7 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Menü in der Kopfleiste** (ganz rechts, neben „Drucken“) mit „Nach neuer
+  Version suchen“ und „Über Disc Printer“. Das Programm geht dafür nicht ins
+  Internet: Das Fenster zeigt die installierte Version, den passenden Befehl
+  zum Aktualisieren (Flatpak bzw. AUR, mit Knopf zum Kopieren) und öffnet auf
+  Wunsch die Release-Seite im Browser. Im Flatpak ohne zusätzliches Recht.
+  Alle neuen Texte in allen 34 Sprachen
+- **README:** neuer Abschnitt „Updating“ für Flatpak, AUR, pipx und Quelltext
+
 ### Changed
+- **Versionsnummer an einer Stelle:** `src/disc_printer/_version.py`;
+  `pyproject.toml` und `make pot` lesen sie dort
 - **Neues Programmsymbol:** eine Disc in Schrägansicht mit Klecksen in
   Magenta, Cyan und Gelb, darüber fällt ein schwarzer Tropfen. Entworfen von
   Klaus mit Claude, Lizenz MIT wie das Projekt. Eine vereinfachte Zeichnung

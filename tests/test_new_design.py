@@ -111,5 +111,13 @@ class LanguageSelectorGuiTests(BroadwayCase):
         self.run_scenario("lang_switch")
 
 
+class UpdateMenuGuiTests(BroadwayCase):
+    def test_menu_windows_language_and_no_design_change(self):
+        self.run_scenario("update_menu")
+
+    def test_escape_closes(self):
+        self.run_scenario("update_escape")
+
+
 if __name__ == "__main__":
     unittest.main()

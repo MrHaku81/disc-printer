@@ -30,6 +30,7 @@ from ..image_utils import pixbuf_to_cairo, write_print_png
 from ..units import UNITS, clamp, format_number, parse_number, shown_value, snap
 from .canvas import DiscCanvas
 from .dialogs import TextEditDialog
+from . import about as _about
 
 
 class MainWindow(Gtk.ApplicationWindow):
@@ -85,6 +86,12 @@ class MainWindow(Gtk.ApplicationWindow):
         # Druckerstatus als (Farbe, Text-Funktion): folgt einem Sprachwechsel
         self._led_state: tuple[str, object] = ("gray", lambda: _("Initialisierung …"))
         self._printers_known = False          # Erkennung abgeschlossen?
+        # Menü-Aktionen einmal anlegen; das Menü selbst baut _build_ui (Sprache)
+        for name, handler in (("check-update", self._on_check_update),
+                              ("about", self._on_about)):
+            action = Gio.SimpleAction.new(name, None)
+            action.connect("activate", handler)
+            self.add_action(action)
         self._build_ui()
         key_ctrl = Gtk.EventControllerKey()
         key_ctrl.connect("key-pressed", self._on_key_pressed)
@@ -130,6 +137,14 @@ class MainWindow(Gtk.ApplicationWindow):
         self._redo_btn.set_sensitive(False)
         self._redo_btn.connect("clicked", lambda _b: self._do_redo())
         hb.pack_start(self._redo_btn)
+
+        # Menüknopf ganz rechts (pack_end: der erste steht außen)
+        menu = Gio.Menu()
+        menu.append(_("Nach neuer Version suchen"), "win.check-update")
+        menu.append(_("Über Disc Printer"), "win.about")
+        self._menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic", menu_model=menu)
+        self._menu_btn.set_tooltip_text(_("Hauptmenü"))
+        hb.pack_end(self._menu_btn)
 
         self._print_btn = Gtk.Button(icon_name="document-print-symbolic")
         self._print_btn.set_tooltip_text(_("Drucken …"))
@@ -2468,6 +2483,15 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self._scroll_timer[img_id] = GLib.timeout_add(600, commit)
         self._track_img_gesture("zoom", img_id, self._scroll_timer, commit)
+
+    # ── Menü: neue Version, Über ──────────────────────────────────────────────
+    # Nicht Teil des Designs: kein Undo-Eintrag, keine ungespeicherte Änderung.
+
+    def _on_check_update(self, *_args) -> None:
+        _about.UpdateWindow(self).present()
+
+    def _on_about(self, *_args) -> None:
+        _about.AboutWindow(self).present()
 
     def _show_error(self, message: str) -> None:
         Gtk.AlertDialog(message=message).show(self)

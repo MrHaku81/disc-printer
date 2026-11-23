@@ -9,7 +9,9 @@ Flatpak-Bundle, AUR 0.1.3-1).
 ## Release-Ablauf (so lief 0.1.3, für 0.2.0 wiederholt)
 
 1. **Vorbereiten auf einem Zweig** (`prep/<version>`): Version in
-   `pyproject.toml`, `make pot` und `make update-po` (übernimmt die Version in
+   `src/disc_printer/_version.py` (einzige Quelle; `pyproject.toml` und
+   `make pot` lesen sie dort, ein Test vergleicht sie mit der Metainfo),
+   `make pot` und `make update-po` (übernimmt die Version in
    die `.pot`; die Köpfe der `.po` von Hand anpassen), Release-Eintrag mit
    Datum in `flatpak/de.haku.disc-printer.metainfo.xml`
    (`appstreamcli validate --no-net --pedantic`), CHANGELOG: „Unreleased“ →
@@ -42,8 +44,9 @@ Flatpak-Bundle, AUR 0.1.3-1).
    selbst), Läufe mit einem Scratch-`HOME`. Prüfen: Start ohne Anzeige gibt
    die einzeilige Meldung mit Exit 1; numpy, Pillow und `PIL.ImageCms`
    importierbar; alle `.mo` enthalten. sha256 des Bundles notieren.
-   Die Version steht im Flatpak nur in der Metainfo (das Paket wird ohne
-   `dist-info` kopiert); zusätzlich das installierte Paket per `diff -r` mit
+   Das Paket wird ohne `dist-info` kopiert; die Version liest das Programm
+   aus `_version.py` (Menü → „Über Disc Printer“ muss sie zeigen). Zusätzlich
+   das installierte Paket per `diff -r` mit
    den Quellen aus dem Archiv vergleichen. Seit 0.2.0 außerdem: Druckbild über
    `MainWindow._print_thread` mit abgefangenem `lp` erzeugen und die Maske
    innen und außen per Pixel prüfen (Skript mit `--filesystem=<tmp>` und
@@ -56,11 +59,31 @@ Flatpak-Bundle, AUR 0.1.3-1).
 7. **GitHub-Release über `gh`** (angemeldet als MrHaku81), erst nach dem Test
    durch den Tester:
    `gh release create v<version> --verify-tag --title "Disc Printer <version>" --notes-file <body> --latest <bundle>`.
-   Im Text unter den Notizen die sha256 des Bundles (Format wie bei 0.1.2).
+   Am Ende der Notizen die Vorlage „So aktualisierst du“ (unten), darunter
+   die sha256 des Bundles (Format wie bei 0.1.2).
    Danach: Asset wieder laden und sha256 vergleichen, `/releases/latest`
    prüfen, CHANGELOG-Link samt Sprungmarke prüfen.
 8. Aufräumen: Bauordner, Test-Installation, `/var/tmp`-Ablage. Die Runtime im
    Konto bleibt für den nächsten Bau.
+
+### Vorlage „So aktualisierst du“ (Ende jeder Release-Notiz)
+
+Fest übernehmen, nur bei geänderten Befehlen anpassen (gleiche Befehle wie im
+README-Abschnitt „Updating“ und im Menü „Nach neuer Version suchen“):
+
+````markdown
+## How to update
+
+- **Flatpak:** download `disc-printer.flatpak` below, then
+  `flatpak install --user ./disc-printer.flatpak`
+- **AUR:** `yay -Syu disc-printer` (any other AUR helper works the same way)
+- **pipx:** `pipx upgrade disc-printer`; if it reports the package as unchanged:
+  `pipx install --force --system-site-packages git+https://github.com/MrHaku81/disc-printer.git`
+- **From source:** `git pull`, then `.venv/bin/pip install -e .`
+  (or `make compile-mo` when running from the source tree)
+
+More details: [Updating](https://github.com/MrHaku81/disc-printer#updating)
+````
 
 ## AUR-Paket hängt am Ordner `flatpak/`
 
@@ -99,6 +122,10 @@ genügt.
   selbst aus: Klaus fand Tintenreste in der Mitte des Fachs. Alle Versionen bis
   0.1.3 haben durch den Hub gedruckt; seit 0.2.0 maskiert die App das
   Druckbild innen und außen. Ein Probedruck mit 0.2.0 ließ die Mitte frei.
+- Im Flatpak läuft die IPP-Erkennung treiberloser Drucker nicht (`ippfind`/
+  `ipptool` sind nicht im Bundle, das mitgelieferte CUPS ist ohne Avahi gebaut,
+  kein Netzrecht; geprüft am 2026-11-23 in der Runtime ohne Netz). Der
+  README-Rat mit der festen Warteschlange gilt dort genauso. Kein offener Punkt.
 
 ## Offene Kleinigkeiten
 
