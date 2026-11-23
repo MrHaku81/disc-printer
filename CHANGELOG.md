@@ -10,9 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Neues Programmsymbol:** eine Disc in Schrägansicht mit Klecksen in
   Magenta, Cyan und Gelb, darüber fällt ein schwarzer Tropfen. Entworfen von
-  Klaus mit Claude, Lizenz MIT wie das Projekt. Für 16, 22, 24 und 32 Pixel
-  gibt es eine vereinfachte Fassung (`de.haku.disc-printer-klein.svg`), die
-  unverändert in die festen hicolor-Größenordner installiert wird
+  Klaus mit Claude, Lizenz MIT wie das Projekt. Eine vereinfachte Zeichnung
+  für alle Größen, installiert nur nach `hicolor/scalable/apps`
 
 ### Fixed
 - **Rotes Platzhaltersymbol in der Titelleiste:** Das Fenster fragte nach dem

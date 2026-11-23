@@ -78,11 +78,12 @@ Wayland-`app_id` = Name der `.desktop`-Datei = `Icon=` = Symboldateiname.
 Programmnamen `disc-printer` (Startskript) bildet. Das Fenster setzt keinen
 eigenen Symbolnamen (siehe `MainWindow.__init__`).
 
-Neu auf `feat/new-icon`: `flatpak/de.haku.disc-printer-klein.svg` (vereinfachte
-Fassung für 16, 22, 24, 32 px). Das Flatpak installiert sie unverändert nach
-`hicolor/<n>x<n>/apps/de.haku.disc-printer.svg`. Das AUR-Paket braucht dafür
-eigene Zeilen im PKGBUILD (siehe Bericht zum Zweig); ohne sie fehlt nur die
-kleine Fassung, GTK skaliert dann die große.
+Seit `feat/new-icon` gibt es nur noch ein Symbol für alle Größen:
+`flatpak/de.haku.disc-printer.svg` (die vereinfachte Zeichnung), installiert
+nach `hicolor/scalable/apps/`. Die frühere `-klein.svg` und die festen
+Größenordner 16/22/24/32 entfallen. **Das AUR-Paket braucht keine
+Zusatzzeilen für kleine Größen mehr**; die bestehende Zeile für das Symbol
+genügt.
 
 ## Offene Punkte
 

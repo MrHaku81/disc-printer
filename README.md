@@ -309,6 +309,6 @@ tests/                 # unit tests (detection, print errors, i18n, units, print
 
 MIT, see [LICENSE](LICENSE).
 
-The application icon (`flatpak/de.haku.disc-printer.svg` and the simplified
-`flatpak/de.haku.disc-printer-klein.svg` for small sizes) was designed by Klaus
-together with Claude and is licensed under the same MIT license as the project.
+The application icon (`flatpak/de.haku.disc-printer.svg`, one drawing for all
+sizes) was designed by Klaus together with Claude and is licensed under the
+same MIT license as the project.

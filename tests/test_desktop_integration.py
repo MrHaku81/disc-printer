@@ -21,8 +21,7 @@ WINDOW = os.path.join(ROOT, "src", "disc_printer", "gui", "window.py")
 
 class DesktopIntegrationTest(unittest.TestCase):
     def test_files_named_after_app_id(self):
-        for suffix in (".desktop", ".metainfo.xml", ".svg", ".yml",
-                       "-klein.svg"):
+        for suffix in (".desktop", ".metainfo.xml", ".svg", ".yml"):
             path = os.path.join(FLATPAK, APP_ID + suffix)
             self.assertTrue(os.path.isfile(path), path)
 
@@ -46,8 +45,14 @@ class DesktopIntegrationTest(unittest.TestCase):
             text = f.read()
         self.assertRegex(text, r"(?m)^id: " + re.escape(APP_ID) + r"$")
         self.assertIn(f"hicolor/scalable/apps/{APP_ID}.svg", text)
-        self.assertIn(f"hicolor/${{s}}x${{s}}/apps/{APP_ID}.svg", text)
-        self.assertIn(f"path: {APP_ID}-klein.svg", text)
+        # Nur ein Symbol für alle Größen: keine festen Größenordner, keine
+        # zweite Fassung
+        self.assertNotRegex(text, r"hicolor/[^/\s]*x[^/\s]*/apps/")
+        self.assertNotIn("-klein.svg", text)
+
+    def test_single_icon(self):
+        svgs = sorted(n for n in os.listdir(FLATPAK) if n.endswith(".svg"))
+        self.assertEqual(svgs, [APP_ID + ".svg"])
 
     def test_window_sets_no_own_icon_name(self):
         # Gtk.Application setzt den Standard-Symbolnamen auf die App-ID;
