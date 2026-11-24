@@ -48,6 +48,9 @@ vorschlagen; neue Entscheidungen am Ende eines Auftrags hier eintragen.
    Version mit Datum, Vergleichslinks unten. Kataloge prüfen: jede Sprache
    vollständig, 0 fuzzy, 0 leer, 0 veraltet (`msgfmt --statistics`,
    `msgattrib --only-fuzzy/--untranslated`, `msgcmp`). Alle Tests.
+   Prüfen, ob die Bildschirmfotos in `docs/screenshots/` (README) noch zur
+   Oberfläche passen. Neue Aufnahmen macht Klaus mit dem Flatpak, Sprache
+   English, Fenstergröße unverändert.
 2. **main per Fast-Forward** auf den Release-Commit, kein Force, pushen; den
    prep-Zweig auf origin löschen. **Dann anhalten:** Claude Code nennt Klaus
    den Commit (volle Prüfsumme) und den Tag-Text (`Disc Printer <version>`).
@@ -155,6 +158,9 @@ genügt.
   prüfen, ob der Druck zentriert landet (#3).
 - Notiz, nicht geplant: Idee eines 80-mm-Adapters für das Canon-Fach, um
   Mini-Discs auch hier testen zu können.
+- **Nächste Version:** `<screenshots>`-Block in der Metainfo mit
+  `main-window.png` (Standard) und `print-area-full-face.png`, als Adressen
+  auf die Bilder in `docs/screenshots/` am Release-Tag.
 
 ## Befunde
 
@@ -171,3 +177,7 @@ genügt.
   `developer-name-tag-deprecated` (das `<developer_name>`-Tag ist veraltet)
   und `developer-info-missing` (es fehlt ein `<developer>`-Block).
 - Die Druckererkennung braucht beim Start aus dem Quellcode rund 8 Sekunden.
+- Im Fenster „Nach neuer Version suchen“ steht der Befehl beim Systempaket
+  (AUR) nicht in Schreibmaschinenschrift, im Flatpak schon (von Klaus am
+  2026-11-24 beobachtet). Das Label hat die CSS-Klasse `monospace`; ob das
+  Theme des Systems sie nicht kennt, ist nicht geprüft.

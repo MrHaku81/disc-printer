@@ -3,6 +3,11 @@
 A universal disc label editor for Linux — design and print CD, DVD, and Blu-ray labels
 directly from a GTK4 application, without proprietary software or manufacturer lock-in.
 
+<p align="center">
+  <img src="docs/screenshots/main-window.png" width="600"
+       alt="Disc Printer main window: printer selection, a disc preview with a test design, and controls for background, image and text elements">
+</p>
+
 Disc Printer detects compatible printers automatically by analysing their installed PPD
 files for disc-tray media support (Canon, Epson, and others); driverless network printers
 without a permanent CUPS queue are additionally detected via IPP (see
@@ -18,6 +23,54 @@ directly onto printable CDs/DVDs/Blu-rays and has a CUPS driver installed, Disc 
 should work with it.
 
 See [Printer Compatibility](#printer-compatibility) for tested models.
+
+## Screenshots
+
+The penguin in the example design is Tux, the Linux mascot, originally drawn by
+Larry Ewing.
+
+<p align="center">
+  <img src="docs/screenshots/print-area-full-face.png" width="380"
+       alt="Preview with the Full face print area preset: inner diameter 33 mm, outer 118 mm">
+  <img src="docs/screenshots/printed-disc.jpg" width="380"
+       alt="Photo of the printed disc lying in the disc tray of a Canon PIXMA TS705a">
+  <br>
+  <em>The preview, and the printed result on a Canon PIXMA TS705a.</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/image-element.png" width="380"
+       alt="An image element selected on the disc, with handles and sliders for opacity, brightness and contrast">
+  <img src="docs/screenshots/text-element.png" width="380"
+       alt="The Edit text window with text, font, size and colour settings">
+  <br>
+  <em>Image elements with their own sliders; text elements are edited in a small window.</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/print-area-inch-hint.png" width="480"
+       alt="Print area shown in inches, with a hint that the values are outside the usual printable area">
+  <br>
+  <em>Measurements in millimetres or inches; a hint appears outside the usual printable area.</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/update-window.png" width="380"
+       alt="The Check for a new version window with the installed version and the command to update the Flatpak">
+  <img src="docs/screenshots/about.png" width="380"
+       alt="The About Disc Printer window with icon, version, licence and repository link">
+  <br>
+  <em>Check for a new version, and About. The app does not go online for this.</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/main-window-ja.png" width="380"
+       alt="Main window with the user interface in Japanese">
+  <img src="docs/screenshots/main-window-de.png" width="380"
+       alt="Main window with the user interface in German">
+  <br>
+  <em>The interface in Japanese and German, two of 34 languages.</em>
+</p>
 
 ## Printer Compatibility
 

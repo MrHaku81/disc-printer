@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **README mit Bildschirmfotos:** Hauptfenster oben, neuer Abschnitt
+  „Screenshots“ (Druckbereich mit Foto der bedruckten Disc, Bild- und
+  Textelemente, Zoll-Angaben, die beiden Menüfenster, Japanisch und Deutsch).
+  Die Bilder liegen in `docs/screenshots/` und gehören nicht zum Paket
+
 ## [0.3.0] – 2026-11-24
 
 Neues Symbol und ein Menü in der Kopfleiste; am Drucken hat sich nichts
