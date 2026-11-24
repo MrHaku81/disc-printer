@@ -118,8 +118,8 @@ modules:
           /app/share/icons/hicolor/scalable/apps/de.haku.disc-printer.svg
     sources:
       - type: archive
-        url: https://github.com/MrHaku81/disc-printer/archive/refs/tags/v0.2.0.tar.gz
-        sha256: d5b61ca48d2035e226fe0087ab582435e58782fdd711dadddba5ca23711d4def
+        url: https://github.com/MrHaku81/disc-printer/archive/refs/tags/v0.3.0.tar.gz
+        sha256: c3c1cc9d91f0b33abb2146a4789292e74cbab987161cfede4b8fa0b4a731037b
         strip-components: 1
       - type: file
         path: de.haku.disc-printer.desktop
