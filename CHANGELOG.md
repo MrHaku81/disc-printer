@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] – 2026-11-24
+
+Neues Symbol und ein Menü in der Kopfleiste; am Drucken hat sich nichts
+geändert.
+
 ### Added
 - **Menü in der Kopfleiste** (ganz rechts, neben „Drucken“) mit „Nach neuer
   Version suchen“ und „Über Disc Printer“. Das Programm geht dafür nicht ins
@@ -481,7 +486,8 @@ Technisches für Installation, Fehlerberichte und Entwicklung.
   (TypeError: 'int' object is not callable) wenn keine Disc-Drucker gefunden
 
 
-[Unreleased]: https://github.com/MrHaku81/disc-printer/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/MrHaku81/disc-printer/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/MrHaku81/disc-printer/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/MrHaku81/disc-printer/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/MrHaku81/disc-printer/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/MrHaku81/disc-printer/compare/v0.1.1...v0.1.2

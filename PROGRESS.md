@@ -1,10 +1,10 @@
 # Arbeitsstand und Release-Notizen
 
-Stand: 0.2.0 vorbereitet am 2026-11-21: main, Tag `v0.2.0`, Manifest mit
-Archiv-Prüfsumme, Flatpak-Bundle in `/var/tmp/disc-printer-0.2.0/` zum Test
-durch Klaus. GitHub-Release und AUR stehen noch aus (Schritt 7 unten erst nach
-dem Test). Zuletzt veröffentlicht: 0.1.3 am 2026-11-19 (GitHub-Release mit
-Flatpak-Bundle, AUR 0.1.3-1).
+Stand: 0.2.0 ist seit 2026-11-21 veröffentlicht (GitHub-Release mit
+Flatpak-Bundle, AUR 0.2.0-2). 0.3.0 vorbereitet am 2026-11-24: main, Tag
+`v0.3.0`, Manifest mit Archiv-Prüfsumme, Flatpak-Bundle in
+`/var/tmp/disc-printer-0.3.0/` zum Test durch Klaus. GitHub-Release und AUR
+stehen noch aus (Schritt 7 unten erst nach dem Probedruck).
 
 ## Geklärt
 
@@ -26,8 +26,14 @@ vorschlagen; neue Entscheidungen am Ende eines Auftrags hier eintragen.
   Flatpak bekommt kein Netzrecht.
 - **2026-11-23, Flathub:** wird vorerst nicht verfolgt, wegen der dortigen
   KI-Regel und weil dafür eine neue App-ID nötig wäre.
+- **2026-11-24, CLAUDE.md:** bleibt lokal, `.gitignore` bleibt wie sie ist
+  (Entscheidung von Klaus); die Datei ist eine Arbeitshilfe für Claude, nicht
+  für Mitwirkende.
+- **2026-11-24, Versionsnummer 0.3.0:** Das Menü mit „Nach neuer Version
+  suchen“ und „Über Disc Printer“ ist eine neue Funktion, deshalb steigt die
+  mittlere Stelle (Semantic Versioning); am Drucken ändert sich nichts.
 
-## Release-Ablauf (so lief 0.1.3, für 0.2.0 wiederholt)
+## Release-Ablauf (so lief 0.1.3, für 0.2.0 und 0.3.0 wiederholt)
 
 1. **Vorbereiten auf einem Zweig** (`prep/<version>`): Version in
    `src/disc_printer/_version.py` (einzige Quelle; `pyproject.toml` und

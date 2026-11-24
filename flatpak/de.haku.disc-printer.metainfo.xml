@@ -35,6 +35,11 @@
     <category>Publishing</category>
   </categories>
   <releases>
+    <release version="0.3.0" date="2026-11-24">
+      <description>
+        <p>New application icon. A menu in the header bar offers "Check for a new version" and "About Disc Printer". The Flatpak bundle does not update itself, so the window shows the installed version and the command to update, and opens the release page in the browser on request. The app does not connect to the internet for this. Printing is unchanged.</p>
+      </description>
+    </release>
     <release version="0.2.0" date="2026-11-21">
       <description>
         <p>Fixes printing into the centre of the disc: earlier versions printed through the hub, so ink could end up on the hub and on the disc tray. If you printed with an earlier version, clean the centre of the tray. The print area is now adjustable: inner and outer diameter can be set freely, with the presets "Standard" and "Full face" (suggested by JPinTX). Measurements can be shown in millimetres or inches. Mini discs (80 mm) are not yet tested on a printer.</p>

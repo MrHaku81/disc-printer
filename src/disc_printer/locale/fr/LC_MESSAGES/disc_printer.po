@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: disc-printer 0.2.0\n"
+"Project-Id-Version: disc-printer 0.3.0\n"
 "Report-Msgid-Bugs-To: haku81.kk@gmail.com\n"
-"POT-Creation-Date: 2026-11-23 20:17+0100\n"
+"POT-Creation-Date: 2026-11-24 05:45+0100\n"
 "PO-Revision-Date: 2026-04-24 14:00+0000\n"
 "Last-Translator: Claude AI\n"
 "Language-Team: French\n"
@@ -16,61 +16,61 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/disc_printer/gui/about.py:85 src/disc_printer/gui/window.py:143
+#: src/disc_printer/gui/about.py:93 src/disc_printer/gui/window.py:143
 msgid "Nach neuer Version suchen"
 msgstr "Rechercher une nouvelle version"
 
-#: src/disc_printer/gui/about.py:90
+#: src/disc_printer/gui/about.py:100
 #, python-format
 msgid "Installiert: Version %(version)s"
 msgstr "Installé : version %(version)s"
 
-#: src/disc_printer/gui/about.py:93
+#: src/disc_printer/gui/about.py:103
 msgid "Auf der Release-Seite siehst du die neueste Version."
 msgstr "La page des versions indique la dernière version."
 
-#: src/disc_printer/gui/about.py:96
+#: src/disc_printer/gui/about.py:106
 msgid "Datei herunterladen, dann im Terminal:"
 msgstr "Téléchargez le fichier, puis dans un terminal :"
 
-#: src/disc_printer/gui/about.py:99
+#: src/disc_printer/gui/about.py:109
 msgid "Aus dem AUR aktualisierst du im Terminal mit:"
 msgstr "Pour mettre à jour depuis l'AUR, dans un terminal :"
 
-#: src/disc_printer/gui/about.py:101
+#: src/disc_printer/gui/about.py:111
 msgid "Mit jedem anderen AUR-Helfer geht es genauso."
 msgstr "Tout autre assistant AUR fonctionne de la même façon."
 
-#: src/disc_printer/gui/about.py:102
+#: src/disc_printer/gui/about.py:112
 msgid "Andere Installationsarten: siehe README"
 msgstr "Autres modes d'installation : voir le README"
 
-#: src/disc_printer/gui/about.py:106
+#: src/disc_printer/gui/about.py:116
 msgid "So aktualisierst du: siehe README"
 msgstr "Mettre à jour : voir le README"
 
-#: src/disc_printer/gui/about.py:110
+#: src/disc_printer/gui/about.py:120
 msgid "Release-Seite öffnen"
 msgstr "Ouvrir la page des versions"
 
-#: src/disc_printer/gui/about.py:112 src/disc_printer/gui/about.py:152
+#: src/disc_printer/gui/about.py:122 src/disc_printer/gui/about.py:183
 msgid "Schließen"
 msgstr "Fermer"
 
-#: src/disc_printer/gui/about.py:121
+#: src/disc_printer/gui/about.py:131
 msgid "Befehl kopieren"
 msgstr "Copier la commande"
 
-#: src/disc_printer/gui/about.py:134 src/disc_printer/gui/window.py:144
+#: src/disc_printer/gui/about.py:165 src/disc_printer/gui/window.py:144
 msgid "Über Disc Printer"
 msgstr "À propos de Disc Printer"
 
-#: src/disc_printer/gui/about.py:145
+#: src/disc_printer/gui/about.py:176
 #, python-format
 msgid "Version %(version)s"
 msgstr "Version %(version)s"
 
-#: src/disc_printer/gui/about.py:147
+#: src/disc_printer/gui/about.py:178
 msgid "Lizenz: MIT"
 msgstr "Licence : MIT"
 
