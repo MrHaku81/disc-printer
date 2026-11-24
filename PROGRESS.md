@@ -1,10 +1,9 @@
 # Arbeitsstand und Release-Notizen
 
-Stand: 0.2.0 ist seit 2026-11-21 veröffentlicht (GitHub-Release mit
-Flatpak-Bundle, AUR 0.2.0-2). 0.3.0 vorbereitet am 2026-11-24: main, Tag
-`v0.3.0`, Manifest mit Archiv-Prüfsumme, Flatpak-Bundle in
-`/var/tmp/disc-printer-0.3.0/` zum Test durch Klaus. GitHub-Release und AUR
-stehen noch aus (Schritt 7 unten erst nach dem Probedruck).
+Stand: 0.3.0 ist seit 2026-11-24 auf GitHub veröffentlicht (Release mit
+Flatpak-Bundle, Tag `v0.3.0` von Klaus unterschrieben). Das AUR-Paket 0.3.0
+folgt durch Klaus; bis dahin bleibt `/var/tmp/disc-printer-0.3.0/` liegen.
+Davor: 0.2.0 am 2026-11-21 (GitHub, AUR 0.2.0-2).
 
 ## Geklärt
 
@@ -32,8 +31,12 @@ vorschlagen; neue Entscheidungen am Ende eines Auftrags hier eintragen.
 - **2026-11-24, Versionsnummer 0.3.0:** Das Menü mit „Nach neuer Version
   suchen“ und „Über Disc Printer“ ist eine neue Funktion, deshalb steigt die
   mittlere Stelle (Semantic Versioning); am Drucken ändert sich nichts.
+- **2026-11-24, Release-Tags:** Klaus setzt sie selbst unter seinem Konto,
+  unterschrieben mit seinem SSH-Schlüssel (`git tag -s`). Claude Code legt
+  keine Release-Tags mehr an, pusht und ändert keine Tags. Grund: Der
+  Schlüssel bleibt bei Klaus, und GitHub zeigt den Tag als „Verified“.
 
-## Release-Ablauf (so lief 0.1.3, für 0.2.0 und 0.3.0 wiederholt)
+## Release-Ablauf (so lief 0.1.3, für 0.2.0 und 0.3.0 wiederholt; Tags seit 0.3.0 durch Klaus)
 
 1. **Vorbereiten auf einem Zweig** (`prep/<version>`): Version in
    `src/disc_printer/_version.py` (einzige Quelle; `pyproject.toml` und
@@ -45,9 +48,14 @@ vorschlagen; neue Entscheidungen am Ende eines Auftrags hier eintragen.
    Version mit Datum, Vergleichslinks unten. Kataloge prüfen: jede Sprache
    vollständig, 0 fuzzy, 0 leer, 0 veraltet (`msgfmt --statistics`,
    `msgattrib --only-fuzzy/--untranslated`, `msgcmp`). Alle Tests.
-2. **main per Fast-Forward** auf den Release-Commit, kein Force. Annotierten
-   Tag `v<version>` auf diesen Commit setzen und pushen; den prep-Zweig auf
-   origin löschen.
+2. **main per Fast-Forward** auf den Release-Commit, kein Force, pushen; den
+   prep-Zweig auf origin löschen. **Dann anhalten:** Claude Code nennt Klaus
+   den Commit (volle Prüfsumme) und den Tag-Text (`Disc Printer <version>`).
+   Klaus setzt den Tag selbst und pusht ihn:
+   `git tag -s v<version> -m "Disc Printer <version>" <commit>`.
+   Claude Code legt keinen Tag an und pusht keinen.
+   Weiter erst, wenn der Tag auf GitHub liegt: `git fetch --tags --force
+   origin`, dann prüfen, dass `v<version>^{}` der genannte Commit ist.
 3. **Erst nach dem Tag: Manifest-Prüfsumme.** Archiv
    `https://github.com/MrHaku81/disc-printer/archive/refs/tags/v<version>.tar.gz`
    laden (zweimal, Prüfsumme muss gleich sein; Inhalt mit
